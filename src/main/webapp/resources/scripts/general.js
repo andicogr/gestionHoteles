@@ -1,5 +1,10 @@
 baseURL = $("#baseURL").val();
 
+/**
+ * Autor: Andres Gonzales - 29-06-2017
+ * @param idMenu
+ * @param urlContenido
+ */
 function cargarContenidoMenu(idMenu, urlContenido){
 	$("#" + idMenu).click(function() {
 		$("#contenidoPrincipal").html("Cargando . . .");
