@@ -8,6 +8,8 @@ $(function(){
 	var baseURL;
 	baseURL = $("#baseURL").val();
 
-	cargarContenidoMenu("companiaMenuListar", "mantenimiento/compania/listar");
+	abrirMenuEnDivContenidoPrincipal("companiaMenuListar", "mantenimiento/compania/listar");
+	
+	abrirMenuEnDivContenidoPrincipal("usuarioMenuListar", "mantenimiento/usuario/listar");
 
 });

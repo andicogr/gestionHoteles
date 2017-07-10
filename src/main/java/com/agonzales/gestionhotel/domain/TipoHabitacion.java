@@ -15,12 +15,14 @@ import com.agonzales.gestionhotel.util.EntidadBase;
 @Table(name="tipo_habitacion")
 public class TipoHabitacion extends EntidadBase implements Entidad{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@SequenceGenerator(name="tipo_habitacion_id_seq_generator",sequenceName="tipo_habitacion_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="tipo_habitacion_id_seq_generator")
 	@Column(unique=true, nullable=false)
 	private Integer id;
-	
+
 	@Column(length=60, nullable=false)
 	private String nombre;
 	

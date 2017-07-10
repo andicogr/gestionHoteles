@@ -7,12 +7,9 @@
 
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">
-		<h3 id="tituloPagina">Compa&ntilde;ias</h3>
+		<h3 id="tituloPagina">Usuarios</h3>
 	</div>
 </div>
-
-
-
 
 <div class="row">
 
@@ -43,10 +40,9 @@
 					<thead>
 						<tr>
 							<th><input type="checkbox" id="checkBoxAll" onclick="seleccionarAllCheckBoxDeDataTable();" class="flat"/></th>
-							<th>Razon Social</th>
-							<th>RUC</th>
-							<th>Telefono</th>
-							<th>Correo Contacto</th>
+							<th>Compa&ntilde;ia</th>
+							<th>Usuario</th>
+							<th>Estado</th>
                         </tr>
 					</thead>
 					<tbody>
@@ -67,5 +63,5 @@
 <!-- Data Tables JS-->
 
 
-<script src="resources/scripts/mantenimiento/compania/listar.js"></script>    
+<script src="resources/scripts/mantenimiento/usuario/listarUsuarios.js"></script>    
 <script src="resources/build/js/custom2.js"></script>

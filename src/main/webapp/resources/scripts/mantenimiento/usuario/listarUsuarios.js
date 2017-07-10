@@ -4,19 +4,18 @@ var aoColumns = [
                  { sClass: "center"},
                  { sClass: "center"},
                  { sClass: "center"},
-                 { sClass: "center"},
              ];
 
-cargarConfiguracionDataTable("dataTableLista", "mantenimiento/compania/listaJson", aoColumns, "mantenimiento/compania/ver?id=");
+cargarConfiguracionDataTable("dataTableLista", "mantenimiento/usuario/listaJson", aoColumns, "mantenimiento/usuario/ver?id=");
 
 //$("#paginacionDiv").append($(".dataTables_paginate"));
 
 $("#btnCrearRegistro").click(function() {
-	cargarUrlEnDivContenidoPrincipal("mantenimiento/compania/ver");
+	cargarUrlEnDivContenidoPrincipal("mantenimiento/usuario/ver");
 });
 
 $("#btnEliminarRegistro").click(function(){
-	eliminarRegistrosSeleccionadosDeDataTable("dataTableLista", "mantenimiento/compania/eliminar?ids=", "mantenimiento/compania/listar");
+	eliminarRegistrosSeleccionadosDeDataTable("dataTableLista", "mantenimiento/usuario/eliminar?ids=", "mantenimiento/usuario/listar");
 });
 
 $("#btnImprimirRegistro").click(function(){

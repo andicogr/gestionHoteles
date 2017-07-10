@@ -29,9 +29,9 @@
 								Actualizar
 							</c:if>
 						</button>
-							<c:if test="${not empty compania}">
-								<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
-							</c:if>
+						<c:if test="${not empty compania}">
+							<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
+						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty compania}">
@@ -46,8 +46,7 @@
 			</div>
 
             <div class="x_content">
-            	<form id="enviarFormulario" class="form-horizontal form-label-left" 
-            		>
+            	<form id="enviarFormulario" class="form-horizontal form-label-left">
             		<c:if test="${not empty compania}">
             			<input type="hidden" id="id" name="id" value="${compania.id}">
             		</c:if>
@@ -58,15 +57,24 @@
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
 							<div class="profile_img">
-							    	<img id="logo" class="img-responsive avatar-view img-thumbnail" src="resources/images/default_image.png"
-							    	width="187px" height="187px">
-							    	<!-- div class="botonImagen">
-								    	<button type="button" class="closeImg eliminarImg" onclick="alert('wsw');">
-								    		<span>×</span>
-                  						</button>
-							    	</div -->
-							    	<input style="display: none" id="inputFile" name="logo1" type="file" onchange="readURL(this);" />
-							  	
+								<c:if test="${empty compania.archivo}">
+									<img name="imgLogo" class="img-responsive avatar-view img-thumbnail" src="<c:url value="${pathImg}"/>"
+						    		width="187px" height="187px">
+								</c:if>
+								<c:if test="${not empty compania.archivo}">
+									<img name="imgLogo" class="img-responsive avatar-view img-thumbnail" src="<c:url value="/imagenes/getImage/${compania.archivo.id}"/>"
+						    		width="187px" height="187px">
+								</c:if>
+						    	
+						    	<!-- div class="botonImagen">
+							    	<button type="button" class="closeImg eliminarImg" onclick="alert('wsw');">
+							    		<span>×</span>
+                 						</button>
+						    	</div -->
+						    	<input type="hidden" name="archivo.id" value="${compania.archivo.id}"/>
+						    	<input type="checkbox" style="display: none" id="guardarImagen" name="guardarImagen"/>
+						    	<input style="display: none" name="logo" type="file" onchange="readURL(this);" />
+						    	<button type="button" id="eliminarImagen">EliminarImagen</button>
 							</div>
                         </div>
 					</div>

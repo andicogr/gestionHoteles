@@ -1,4 +1,4 @@
-package com.agonzales.gestionhotel.controller;
+package com.agonzales.gestionhotel.controller.mantenimiento;
 
 import java.util.Map;
 
@@ -11,31 +11,36 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.agonzales.gestionhotel.domain.Archivo;
 import com.agonzales.gestionhotel.domain.Compania;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
+import com.agonzales.gestionhotel.service.ArchivoService;
 import com.agonzales.gestionhotel.service.CompaniaService;
+import com.agonzales.gestionhotel.util.Constantes;
 
 @Controller
-@RequestMapping("/mantenimiento")
-public class MantenimientoController {
+@RequestMapping("/mantenimiento/compania")
+public class MantenimientoCompaniaController {
 
-	private static final Logger logger = LoggerFactory.getLogger(MantenimientoController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MantenimientoCompaniaController.class);
+
+	@Autowired
+	private CompaniaService companiaService;
 	
 	@Autowired
-	CompaniaService companiaService;
-	
-	@RequestMapping(value="/compania/listar")
+	private ArchivoService archivoService;
+
+	@RequestMapping(value="/listar")
 	public String companiaListar(){
 		logger.info("[MantenimientoController] - method: companiaListar");
 		return "mantenimiento/compania/listar";
 	}
-	
-	@RequestMapping(value="/compania/listaJson")
-	public @ResponseBody Map<String, Object> companiaListaJson(PaginacionDTO paginacion){
+
+	@RequestMapping(value="/listaJson")
+	@ResponseBody
+	public  Map<String, Object> companiaListaJson(PaginacionDTO paginacion){
 		logger.info("[MantenimientoController] - method: companiaListaJson");
 		
 		Map<String, Object> datos = companiaService.listarJson(paginacion);
@@ -43,28 +48,37 @@ public class MantenimientoController {
 		return datos;
 	}
 
-	@RequestMapping(value="/compania/ver")
+	@RequestMapping(value="/ver")
 	public String companiaVer(Model model, Integer id){
-		logger.info("[MantenimientoController] - method: companiaVer");
+		logger.info("[MantenimientoController] - method: companiaVer - id: " + id);
 		if(id != null){
 			Compania compania = companiaService.get(id);
 			model.addAttribute("compania", compania);
 			model.addAttribute("nombreMostrar", compania.getRazonSocial());
 		}
+		model.addAttribute("pathImg", Constantes.PATH_DEFAULT_IMAGEN);
+
 		return "mantenimiento/compania/ver";
 	}
 
-	@RequestMapping(value="/compania/guardar", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> companiaGuardar(HttpServletRequest request, Model model, Compania compania, @RequestParam("logo1") MultipartFile logo){
+	@RequestMapping(value="/guardar", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> companiaGuardar(HttpServletRequest request, Model model, Compania compania){
 		logger.info("[MantenimientoController] - method: companiaGuardar");
+		if(compania.isGuardarImagen() && compania.existeLogo()){
+			Archivo archivo = archivoService.guardarArchivoYOtorgarNormbreConPrefijo(request, compania.getLogo(), Constantes.PREFIJO_IMG_LOGO);
+			compania.setArchivo(archivo);
+		}
 		Map<String, Object> retorno = companiaService.guardar(compania);
 		return retorno;
 	}
-	
-	@RequestMapping(value="/compania/eliminar")
-	public @ResponseBody Map<String, Object> companiaEliminar(Model model, Integer[] ids){
-		logger.info("[MantenimientoController] - method: companiaEliminar");
+
+	@RequestMapping(value="/eliminar")
+	@ResponseBody
+	public Map<String, Object> companiaEliminar(Model model, Integer[] ids){
+		logger.info("[MantenimientoController] - method: companiaEliminar - ids: " + ids);
 		Map<String, Object> retorno = companiaService.eliminar(ids);
 		return retorno;
 	}
+
 }

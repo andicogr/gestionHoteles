@@ -1,7 +1,15 @@
 package com.agonzales.gestionhotel.util;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -19,10 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 public class Util {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Util.class);
+	
 	
 	public static Map<String, Object> crearNotificacion(String type, String title, String text, Integer delay){
 		logger.info("[Util] - Method: crearNotificacion");
@@ -38,13 +49,26 @@ public class Util {
 
 	public static Map<String, Object> crearNotificacion(String type, String title, String text){
 		logger.info("[Util] - Method: crearNotificacion");
-		return crearNotificacion( type, title, text, 3000);
+		return crearNotificacion(type, title, text, 3000);
+	}
+	
+	public static Map<String, Object> crearNotificacionError(String title, String text){
+		logger.info("[Util] - Method: crearNotificacionError");
+		return crearNotificacion("error", title, text);
+	}
+	
+	public static Map<String, Object> crearNotificacionInfo(String title, String text){
+		logger.info("[Util] - Method: crearNotificacionInfo");
+		return crearNotificacion("info", title, text);
+	}
+	
+	public static Map<String, Object> crearNotificacionSuccess(String title, String text){
+		logger.info("[Util] - Method: crearNotificacionSuccess");
+		return crearNotificacion("success", title, text);
 	}
 
-	//private static Logger log=org.slf4j.LoggerFactory.getLogger(Util.class);
-	
-	
 	public static String OrderByPagination(Map<String, Object> valor, Integer columna, String orden){
+		logger.info("[Util] - Method: OrderByPagination");
 		String query="";
 		for (Map.Entry<String, Object> entry : valor.entrySet()) {
 			if (entry.getKey().equals(columna.toString())){
@@ -61,6 +85,7 @@ public class Util {
 	}
 	
 	public static String querySelect(Map<String, Object> columnas){
+		logger.info("[Util] - Method: querySelect");
 		String query = "Select ";
 
 		for (Map.Entry<String, Object> entry : columnas.entrySet()) {
@@ -105,10 +130,6 @@ public class Util {
 	public static boolean vacio(String cadena){
 		return cadena == null || cadena.equals("");
 	}
-
-//	public static File getImagen(String imagen){
-//		return new File(Config.getPropiedad("juergologo.img") + File.separator + imagen);
-//	}
 
 	@SuppressWarnings("unchecked")
 	public static String crearJson(Map<? extends Object,? extends Object> objeto){
@@ -266,35 +287,8 @@ public class Util {
 		
 	}
 	
-//	public static String formatearMontos(String monto){
-//		
-//		if(monto.equals("0") || !(monto.contains("."))){
-//			
-//			String valorFinal=monto+".00";
-//			
-//			return valorFinal;
-//			
-//		}
-//		else{
-//			
-//			String [] valores=monto.split("\\.");
-//			String parteEntera=valores[0];
-//			String parteDecimal=valores[1];
-//			if(parteDecimal.length()<2){
-//				parteDecimal=parteDecimal+"0";
-//			}
-//			
-//			String montoFinal=parteEntera+"."+parteDecimal;
-//			
-//			return montoFinal;
-//			
-//		}
-//	}
-	
 	public static String formatearMontos(Float monto){
-		
-		
-		
+
 		DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
 		simbolos.setDecimalSeparator('.');
 		   //float d = 300.99f;
@@ -303,5 +297,89 @@ public class Util {
 		
 		   return f.format(monto);
 	}
+	
+	
+	public static String subeArchivo(MultipartFile archivoSubir, HttpServletRequest request, String prefijo) {
+		logger.info("[Util] - method: subeArchivo");
+		String resultado = "error";
+		String archivo = archivoSubir.getOriginalFilename();
+		Integer indexExtencion =  archivo.lastIndexOf(".");
+		String extencion = archivo.substring(indexExtencion);
+		String fileName = null;
+		InputStream inputStream = null;
+		OutputStream outputStream = null;
+		if (archivoSubir.getSize() > 0) {
+			try {
+				String nombreArchivo = prefijo + extencion;
+				inputStream = archivoSubir.getInputStream();
+				String archivosDir = Config.getPropiedad(Constantes.PROPERTIES_IMAGENES_PATH);
+				fileName = archivosDir + File.separator + nombreArchivo;
+				outputStream = new FileOutputStream(fileName);
+				int readBytes = 0;
+				byte[] buffer = new byte[10000];
+				while ((readBytes = inputStream.read(buffer, 0, 10000)) != -1) {
+					outputStream.write(buffer, 0, readBytes);
+				}
+				outputStream.close();
+				inputStream.close();
+				resultado = nombreArchivo;
+			} catch (IOException e) {
+				return resultado = "error";
+			}
+		} else {
+			resultado = "vacio";
+		}
+		return resultado;
+	}
+	
+	/**
+	 * 
+	 * @param nombreArchivo Nombre del archivo en funcion a la noticia
+	 * @return 0 = no existe la imagen, 1 = se elimno la imagen, 2 = no se elimino la imagen 
+	 */
+	public static Integer eliminarArchivo(String nombreArchivo) {
+		logger.info("[Util] - method: eliminarArchivo - nombreArchivo: " + nombreArchivo);
+		Integer resultado = 0;
+		String archivosDir = Config.getPropiedad(Constantes.PROPERTIES_IMAGENES_PATH);
+
+		File archivo = new File(archivosDir + File.separator + nombreArchivo);
+		if (archivo.exists()) {
+			logger.info("Existe la imagen "+ nombreArchivo);
+			if (archivo.delete()) {
+				logger.info("Se elimino la imagen "+ nombreArchivo);
+				resultado = 1;
+			} else {
+				resultado = 2;
+				logger.debug("No se elimino la imagen");
+			}
+		} else {
+			resultado = 0;
+			logger.debug("No existe la imagen");
+		}
+		return resultado;
+	}
+
+	public static String otorgarNombreImagen(HttpServletRequest request,MultipartFile mImagen, String nombreOriginalImagen, String perfijoImg){
+		logger.info("[Util] - method: otorgarNombreImagen");
+		String nombreImagen = "";
+		if(mImagen.getSize() > 0){
+			String[] inicialesTitulo = nombreOriginalImagen.split(" ");
+			nombreImagen = perfijoImg;
+			String numeroRandom = RandomStringUtils.randomNumeric(4);
+			for(String x : inicialesTitulo){
+				nombreImagen += x.substring(0, 1);
+			}
+			nombreImagen += numeroRandom;
+			
+			nombreImagen  = subeArchivo(mImagen, request, nombreImagen);
+		}
+		return nombreImagen;
+	}
+	
+	public static String otorgarNombreImagen(HttpServletRequest request,MultipartFile mImagen, String perfijoImg){
+		logger.info("[Util] - method: otorgarNombreImagen");
+		return otorgarNombreImagen(request, mImagen, mImagen.getOriginalFilename(), perfijoImg);
+	}
+
 
 }

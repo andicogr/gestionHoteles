@@ -2,10 +2,8 @@ package com.agonzales.gestionhotel.domain;
 
 import java.util.List;
 
-import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,8 +18,9 @@ import com.agonzales.gestionhotel.util.EntidadBase;
 
 @Entity
 @Table(name="usuario")
-@AssociationOverride(name="compania", joinColumns=@JoinColumn(name="compania_id"))
 public class Usuario extends EntidadBase implements Entidad{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@SequenceGenerator(name="usuario_id_seq_generator",sequenceName="usuario_id_seq", allocationSize=1)
@@ -86,6 +85,13 @@ public class Usuario extends EntidadBase implements Entidad{
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String getNombreCompania(){
+		if(getCompania() != null){
+			return getCompania().getRazonSocial();
+		}
+		return "";
 	}
 
 }

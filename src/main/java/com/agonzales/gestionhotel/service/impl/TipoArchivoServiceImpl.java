@@ -6,28 +6,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.agonzales.gestionhotel.dao.UsuarioDao;
-import com.agonzales.gestionhotel.domain.Usuario;
+import com.agonzales.gestionhotel.dao.TipoArchivoDao;
+import com.agonzales.gestionhotel.domain.TipoArchivo;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
+import com.agonzales.gestionhotel.service.TipoArchivoService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Util;
 
-@Service("UsuarioService")
-public class UsuarioServiceImpl implements UsuarioService{
+@Service("TipoArchivoService")
+public class TipoArchivoServiceImpl implements TipoArchivoService{
+
+	@Autowired
+	private TipoArchivoDao tipoArchivoDAO;
 	
 	@Autowired
-	private UsuarioDao usuarioDAO;
-	
-	public Integer getUID(){
-		User usuario = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return usuarioDAO.getUID(usuario.getUsername());
-	}
+	private UsuarioService usuarioService;
 	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
@@ -37,11 +34,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 		Map<String, Object> columnas = new HashMap<String, Object>();
 		
-		columnas.put("1", "a.compania.razonSocial");
-		columnas.put("2", "a.usuario");
+		columnas.put("1", "a.nombre");
 
-		List<Usuario> listaJson = usuarioDAO.listarJson(paginacion, columnas);
-		Number total = usuarioDAO.totalListaJson();
+		List<TipoArchivo> listaJson = tipoArchivoDAO.listarJson(paginacion, columnas);
+		Number total = tipoArchivoDAO.totalListaJson();
 
 		Map<String, Object> datos = new HashMap<String, Object>();
 
@@ -51,15 +47,15 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 		List<String[]> listas = new ArrayList<String[]>();
 		
-		for (Usuario usuario: listaJson) {
+		for (TipoArchivo tipoArchivo: listaJson) {
 			
-			String checkbox ="<input type=\"checkbox\" name=\"checkBoxRow\" class=\"flat\" value=\"" + usuario.getId() + "\"/>";
+			String checkbox ="<input type=\"checkbox\" name=\"checkBoxRow\" class=\"flat\" value=\"" + tipoArchivo.getId() + "\"/>";
+			String activo = tipoArchivo.isActivo() ? Constantes.ESTADO_ACTIVO : Constantes.ESTADO_INACTIVO;
 
 			String[] aaDato = {
 						checkbox,
-						usuario.getNombreCompania(),
-						usuario.getUsuario(),
-						usuario.getEstado()
+						tipoArchivo.getNombre(),
+						activo
 					};
 			listas.add(aaDato);
 		}
@@ -70,44 +66,44 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Transactional
-	public Map<String, Object> guardar(Usuario usuario){
+	public Map<String, Object> guardar(TipoArchivo tipoArchivo){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
 		String texto = "";
 
-		if(usuarioDAO.isUniqueValue("usuario", usuario.getUsuario(), usuario.getId())){
-			notifiaccion = Util.crearNotificacionError("Error", "El nombre de usuario ya esta registrado en el sistema.");
+		if(tipoArchivoDAO.isUniqueValue("nombre", tipoArchivo.getNombre(), tipoArchivo.getId())){
+			notifiaccion = Util.crearNotificacionError("Error", "El nombre ya esta registrado en el sistema.");
 			retorno.put("notificacion", notifiaccion);
 			retorno.put("estado", false);
 			return retorno;
 		}
 
-		if(usuario.getId() != null){
-			Usuario actual = usuarioDAO.get(usuario.getId());
-			actual.setUsuario(usuario.getUsuario());
-			actual.setClave(usuario.getClave());
-			actual.setEstado(usuario.getEstado());
-			usuario = actual;
+		if(tipoArchivo.getId() != null){
+			TipoArchivo actual = tipoArchivoDAO.get(tipoArchivo.getId());
+			actual.setNombre(tipoArchivo.getNombre());
+			actual.setDescripcion(tipoArchivo.getDescripcion());
+			actual.setActivo(tipoArchivo.isActivo());
+			tipoArchivo = actual;
 		}
 
-		if(usuario.getId() == null){
+		if(tipoArchivo.getId() == null){
 			texto = Constantes.MENSAJE_REGISTRO_CORRECTO;
 		}else{
 			texto = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
 		}
 		notifiaccion = Util.crearNotificacionSuccess("Correcto", texto);
 
-		usuarioDAO.guardar(usuario, getUID());
+		tipoArchivoDAO.guardar(tipoArchivo, usuarioService.getUID());
 
 		retorno.put("notificacion", notifiaccion);
-		retorno.put("id", usuario.getId());
+		retorno.put("id", tipoArchivo.getId());
 		retorno.put("estado", true);
 
 		return retorno;
 	}
-
-	public Usuario get(Integer id){
-		return usuarioDAO.get(id);
+	
+	public TipoArchivo get(Integer id){
+		return tipoArchivoDAO.get(id);
 	}
 
 	@Transactional
@@ -120,8 +116,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 			texto = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
 		}
 		for(Integer id : ids){
-			Usuario usuario = usuarioDAO.get(id);
-			estado = usuarioDAO.eliminar(usuario);
+			TipoArchivo tipoArchivo = tipoArchivoDAO.get(id);
+			estado = tipoArchivoDAO.eliminar(tipoArchivo);
 		}
 		if(estado){
 			notifiaccion = Util.crearNotificacionInfo("Informacion", texto);
@@ -136,9 +132,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return retorno;
 	}
 	
-	public List<Usuario> listarTodos(){
-		return usuarioDAO.getTodos();
+	public List<TipoArchivo> listarTodos(){
+		return tipoArchivoDAO.getTodos();
 	}
-
-
 }

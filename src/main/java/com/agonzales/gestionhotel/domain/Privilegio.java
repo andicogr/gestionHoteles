@@ -15,13 +15,15 @@ import com.agonzales.gestionhotel.util.EntidadBase;
 @Entity
 @Table(name="privilegio")
 public class Privilegio extends EntidadBase implements Entidad{
-
+	
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@SequenceGenerator(name="privilegio_id_seq_generator",sequenceName="privilegio_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="privilegio_id_seq_generator")
 	@Column(unique=true, nullable=false)
 	private Integer id;
-	
+
 	@Column(length=45, nullable=true)
 	private String privilegio;
 	

@@ -1,5 +1,6 @@
 package com.agonzales.gestionhotel.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,17 +8,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.agonzales.gestionhotel.util.Entidad;
 
 @Entity
 @Table(name="compania")
-public class Compania implements Entidad{
+public class Compania implements Entidad, Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@SequenceGenerator(name="compania_id_seq_generator",sequenceName="compania_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="compania_id_seq_generator")
@@ -39,7 +47,15 @@ public class Compania implements Entidad{
 	@Column(name="correo_contacto", length=64)
 	private String correoContacto;
 	
-	private byte[] logo;
+	@ManyToOne
+	@JoinColumn(name="archivo_id")
+	private Archivo archivo;
+	
+	@Transient
+	private MultipartFile logo;
+
+	@Transient
+	private boolean guardarImagen;
 	
 	@Column(name="uid_creacion")
 	protected Integer usuarioCreacion;
@@ -103,12 +119,28 @@ public class Compania implements Entidad{
 		this.correoContacto = correoContacto;
 	}
 
-	public byte[] getLogo() {
+	public Archivo getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(Archivo archivo) {
+		this.archivo = archivo;
+	}
+
+	public MultipartFile getLogo() {
 		return logo;
 	}
 
-	public void setLogo(byte[] logo) {
+	public void setLogo(MultipartFile logo) {
 		this.logo = logo;
+	}
+
+	public boolean isGuardarImagen() {
+		return guardarImagen;
+	}
+
+	public void setGuardarImagen(boolean guardarImagen) {
+		this.guardarImagen = guardarImagen;
 	}
 
 	public Integer getUsuarioCreacion() {
@@ -147,6 +179,20 @@ public class Compania implements Entidad{
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean existeArchivo(){
+		if(getId() != null && getArchivo() != null && getArchivo().getId() != null){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean existeLogo(){
+		if(!getLogo().isEmpty()){
+			return true;
+		}
+		return false;
 	}
 
 }

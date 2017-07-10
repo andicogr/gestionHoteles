@@ -17,6 +17,8 @@ import com.agonzales.gestionhotel.util.EntidadBase;
 @Table(name="habitacion")
 public class Habitacion extends EntidadBase implements Entidad{
 	
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@SequenceGenerator(name="habitacion_id_seq_generator",sequenceName="habitacion_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="habitacion_id_seq_generator")

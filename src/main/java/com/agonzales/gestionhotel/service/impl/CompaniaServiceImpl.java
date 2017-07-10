@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.agonzales.gestionhotel.dao.CompaniaDao;
 import com.agonzales.gestionhotel.domain.Compania;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
+import com.agonzales.gestionhotel.service.ArchivoService;
 import com.agonzales.gestionhotel.service.CompaniaService;
 import com.agonzales.gestionhotel.service.UsuarioService;
+import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Util;
 
 @Service("CompaniaService")
@@ -25,6 +27,8 @@ public class CompaniaServiceImpl implements CompaniaService{
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private ArchivoService archivoService;
 	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
@@ -74,21 +78,21 @@ public class CompaniaServiceImpl implements CompaniaService{
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
 		String texto = "";
+		Integer archivoEliminarId = null;
 
 		if(companiaDAO.isUniqueValue("razonSocial", compania.getRazonSocial(), compania.getId())){
-			notifiaccion = Util.crearNotificacion("error", "Error", "La Razon Social ya esta registrada en el sistema.");
+			notifiaccion = Util.crearNotificacionError("Error", "La Razon Social ya esta registrada en el sistema.");
 			retorno.put("notificacion", notifiaccion);
 			retorno.put("estado", false);
 			return retorno;
 		}
 
 		if(companiaDAO.isUniqueValue("ruc", compania.getRuc(), compania.getId())){
-			notifiaccion = Util.crearNotificacion("error", "Error", "El RUC ya esta registrado en el sistema.");
+			notifiaccion = Util.crearNotificacionError("Error", "El RUC ya esta registrado en el sistema.");
 			retorno.put("notificacion", notifiaccion);
 			retorno.put("estado", false);
 			return retorno;
 		}
-
 
 		if(compania.getId() != null){
 			Compania actual = companiaDAO.get(compania.getId());
@@ -98,17 +102,32 @@ public class CompaniaServiceImpl implements CompaniaService{
 			actual.setRazonSocial(compania.getRazonSocial());
 			actual.setRuc(compania.getRuc());
 			actual.setTelefono(compania.getTelefono());
+
+			if(compania.isGuardarImagen()){
+				if(actual.existeArchivo()){
+					archivoEliminarId = actual.getArchivo().getId();
+				}
+				if(compania.getArchivo().estaVacio()){
+					actual.setArchivo(null);
+				}else{
+					actual.setArchivo(compania.getArchivo());
+				}
+			}
 			compania = actual;
 		}
-		
+
 		if(compania.getId() == null){
-			texto = "Los datos se registraron correctamente.";
+			texto = Constantes.MENSAJE_REGISTRO_CORRECTO;
 		}else{
-			texto = "Los datos se actualizaron correctamente.";
+			texto = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
 		}
-		notifiaccion = Util.crearNotificacion("success", "Correcto", texto);
+		notifiaccion = Util.crearNotificacionSuccess("Correcto", texto);
 
 		companiaDAO.guardar(compania, usuarioService.getUID());
+
+		if(archivoEliminarId != null){
+			archivoService.eliminar(new Integer[] {archivoEliminarId});
+		}
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", compania.getId());
@@ -116,7 +135,7 @@ public class CompaniaServiceImpl implements CompaniaService{
 
 		return retorno;
 	}
-	
+
 	public Compania get(Integer id){
 		return companiaDAO.get(id);
 	}
@@ -126,16 +145,16 @@ public class CompaniaServiceImpl implements CompaniaService{
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
 		boolean estado = false;
-		String texto = "El registro se elimino correctamente";
+		String texto = Constantes.MENSAJE_REGISTRO_ELIMINADO;
 		if(ids.length > 1){
-			texto = "Los registros se eliminaron correctamente";
+			texto = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
 		}
 		for(Integer id : ids){
 			Compania compania = companiaDAO.get(id);
 			estado = companiaDAO.eliminar(compania);
 		}
 		if(estado){
-			notifiaccion = Util.crearNotificacion("info", "Informacion", texto);
+			notifiaccion = Util.crearNotificacionInfo("Informacion", texto);
 		}else{
 			notifiaccion = Util.crearNotificacion("error", "Error", 
 					"Ocurrio un error mientras se eliminaba el registro, "
@@ -150,5 +169,5 @@ public class CompaniaServiceImpl implements CompaniaService{
 	public List<Compania> listarTodos(){
 		return companiaDAO.getTodos();
 	}
-	
+
 }

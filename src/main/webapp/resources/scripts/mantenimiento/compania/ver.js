@@ -1,25 +1,31 @@
 function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-            reader.onload = function (e) {
-                $('#logo').attr('src', e.target.result).width(177).height(177);
-                
-                $('#logo').attr('title', input.files[0].name)
-            };
+        reader.onload = function (e) {
+            $('[name="imgLogo"]').attr('src', e.target.result).width(177).height(177);
+            $('[name="imgLogo"]').attr('title', input.files[0].name);
+            $("#guardarImagen").prop('checked', true);
+        };
 
-            reader.readAsDataURL(input.files[0]);
-        }
+        reader.readAsDataURL(input.files[0]);
     }
+}
 
-$('#logo').click(function(){
-    $("#inputFile").click();
+$('[name="imgLogo"]').click(function(){
+    $('[name="logo"]').click();
 });
 
+$("#eliminarImagen").click(function(){
+	$.get(baseURL + "/imagenes/obtenerDefaultImagenPath", function(defaultPath){
+		$('[name="imgLogo"]').attr('src', defaultPath).width(177).height(177);
+	});
+	$("[name='logo']").val("");
+	$("[name='archivo.id']").val("");
+	$("#guardarImagen").prop('checked', true);
+});
 
-
-
-capturarFormOriginal();
+capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
 				'razonSocial': {required: true, maxlength: 200},
@@ -54,7 +60,7 @@ aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion);
 
 $("#botonRegistrar").click(function() {
 
-	if(validarCambiosForm()){
+	if(cambiaronLosDatosDelFormularioInicial()){
 
 		if($form.valid()){
 			$.ajax({
@@ -72,7 +78,7 @@ $("#botonRegistrar").click(function() {
 					}
 						
 					if(eval(retorno['estado']) == true){
-						cargarContenido("mantenimiento/compania/ver?id=" + retorno['id'])
+						cargarUrlEnDivContenidoPrincipal("mantenimiento/compania/ver?id=" + retorno['id'])
 					}
 				}
 			})
@@ -80,21 +86,21 @@ $("#botonRegistrar").click(function() {
 
 
 	}else{
-		notificacionNingunCambioFormulario();
+		mostrarNotificacionNingunCambioFormulario();
 	}
 });
 
 $("#btnCrearRegistro").click(function() {
-	cargarUrlConValidacionCambiosFormulario("mantenimiento/compania/ver");
+	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/compania/ver");
 });
 
 $("#botonAtras").click(function() {
-	cargarUrlConValidacionCambiosFormulario("mantenimiento/compania/listar");
+	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/compania/listar");
 });
 
 $("#btnEliminarRegistro").click(function(){
-	if(confirmar("Esta seguro que  quiere eliminar este registro?")){
-	    eliminarUrlCargarContenidoUrl("mantenimiento/compania/eliminar?ids="+ [$("#id").val()], 
+	if(mensajeDeConfirmacionPersonalizado("Esta seguro que  quiere eliminar este registro?")){
+	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal("mantenimiento/compania/eliminar?ids="+ [$("#id").val()], 
 	    		"mantenimiento/compania/listar");
 	}
 });	

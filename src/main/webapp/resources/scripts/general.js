@@ -1,11 +1,6 @@
 baseURL = $("#baseURL").val();
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * @param idMenu
- * @param urlContenido
- */
-function cargarContenidoMenu(idMenu, urlContenido){
+function abrirMenuEnDivContenidoPrincipal(idMenu, urlContenido){
 	$("#" + idMenu).click(function() {
 		$("#contenidoPrincipal").html("Cargando . . .");
 		$.get(baseURL + urlContenido, function(respuesta) {
@@ -16,13 +11,8 @@ function cargarContenidoMenu(idMenu, urlContenido){
 		});
 	});
 }
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * cargarContenido realiza una peticion al controlador y carga la pagina en el div contenidoPrincipal 
- * @param url - Url que devuelve una pagina.
- */
-function cargarContenido(url){
 
+function cargarUrlEnDivContenidoPrincipal(url){
 	$("#contenidoPrincipal").html("Cargando . . .");
 	$.get(baseURL + url, function(respuesta) {
 		$("#contenidoPrincipal").html(respuesta);
@@ -31,77 +21,37 @@ function cargarContenido(url){
 	});
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * alerta muestra mensaje de alerta, en caso de usar un estilo diferente de alert solo se modifica
- * este metodo y el cambio se realizara en todo el proyecto.
- * @param mensaje
- */
-function alerta(mensaje){
+function mensajeDeAlertaPersonalizado(mensaje){
 	alert(mensaje);
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * confirmar muestra mensaje de confirmacion, en caso de usar un estilo diferente de confirm solo se modifica
- * este metodo y el cambio se realizara en todo el proyecto.
- * @param mensaje
- * @returns valor true/false del mensaje de confirmacion
- */
-function confirmar(mensaje){
+function mensajeDeConfirmacionPersonalizado(mensaje){
 	return confirm(mensaje);
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * capturarFormOriginal obtiene el formulario cada vez que se carga una pagina, para crear o editar registros,
- * para luego compararla con la captura del fomulario en otro momento y verificar si existen cambios o no.
- */
-function capturarFormOriginal(){
+function capturarDatosInicialesDelFormulario(){
 	$form = $('form');
 	origForm = $form.serialize();
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * validarCambiosForm compara el formulario en el momento que se activa el metodo con el formulario capturado en el metodo
- * capturarFormOriginal() y verifica si se realiza alguna cambio.
- * @returns {Boolean}
- */
-function validarCambiosForm(){
+function cambiaronLosDatosDelFormularioInicial(){
 	return ($form.serialize() !== origForm);
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * capturarValores captura los valores en todos los inputs del form al momento de cargar una pagina, para luego
- * restaurarlos en caso sea necesario.
- */
-function capturarValores(){
+function capturarValoresInicialesDelFormulario(){
 	$form.find(':input').each(function(i, elem) {
       $(this).data("previous-value", $(this).val());
     });
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * restaurarValores restaura los valores capturados con el metodo capturarValores() en el mismo formulario y
- * luego activa la validacion del formulario.
- */
-function restaurarValores() {
-
+function restaurarValoresInicialesDelFormulario() {
 	$form.find(':input').each(function(i, elem) {
         $(this).val($(this).data("previous-value"));
     });
 	$form.parsley().validate();
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * notificacionNingunCambioFormulario muestra notificacion con mensaje prederterminado
- * Se usa cuando se intenta guardar/actualizar un formulario y no se han registrado cambios 
- */
-function notificacionNingunCambioFormulario(){
+function mostrarNotificacionNingunCambioFormulario(){
 	new PNotify({
 	    title: 'Informacion',
 	    text: 'No se realizo ningun cambio en el formulario',
@@ -116,34 +66,21 @@ function notificacionNingunCambioFormulario(){
 	});*/
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * cargarUrlConValidacionCambiosFormulario abre una URL consultado si desea descartar
- * los cambios encontrados en el formulario.
- * @param url
- */
-function cargarUrlConValidacionCambiosFormulario(url){
+function cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario(url){
 	
 	var cargar = true;
-	if(validarCambiosForm()){
-		if(!confirmar("Desea descartar los cambios?")){
+	if(cambiaronLosDatosDelFormularioInicial()){
+		if(!mensajeDeConfirmacionPersonalizado("Desea descartar los cambios?")){
 			cargar = false;
 		}
 	}
 
 	if(cargar){
-		cargarContenido(url);
+		cargarUrlEnDivContenidoPrincipal(url);
 	}
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * eliminarUrlCargarContenidoUrl elimina una registro y luego carga otra pagina, recibe una 
- * notificacion del controlador y un estado de la eliminacion del registro
- * @param urlEliminar - url del registro al eliminar con el parametro ids y su valor en la url < ?ids=[25] >
- * @param urlContenido - url del contenido que se desea cargar
- */
-function eliminarUrlCargarContenidoUrl(urlEliminar, urlContenido){
+function eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar, urlContenido){
     $.post(baseURL + urlEliminar,function(retorno) {
 
 		if(retorno['notificacion'] != null){
@@ -151,13 +88,14 @@ function eliminarUrlCargarContenidoUrl(urlEliminar, urlContenido){
 		}
 
 		if(eval(retorno['estado']) == true){
-			cargarContenido(urlContenido)
+			cargarUrlEnDivContenidoPrincipal(urlContenido)
 		}
 
     }).fail(function() {
   		$("#contenidoPrincipal").html("No se ha podido visualizar esta pagina");
   	});
 }
+
 /**
  * Autor: Andres Gonzales - 29-06-2017
  * cargarConfiguracionDataTable convierte una tabla en DataTable JS, activa el atributo click de cada fila para abrir
@@ -191,7 +129,7 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 	    	$('#' + dataTableId + ' tr td:not(:first-child)').click(function () {
 
 	    	    var id = $(this).closest('tr').find('td:eq(0) input').val();
-	    	    cargarContenido(urlVerRegistro + id)
+	    	    cargarUrlEnDivContenidoPrincipal(urlVerRegistro + id)
 
 	    	});
 	    	
@@ -242,12 +180,7 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * seleccionarAllCheckBox selecciona todos los checkbox de las filas del dataTable cada vez que se
- * cambia el estado al checkbox en la cabecera de la tabla
- */
-function seleccionarAllCheckBox(){
+function seleccionarAllCheckBoxDeDataTable(){
 	if($("#checkBoxAll").is(":checked")){
 		$(":checkbox[name='checkBoxRow']").prop('checked', true);
 		$("#botoneraCentro").show();
@@ -257,12 +190,7 @@ function seleccionarAllCheckBox(){
 	}
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * obtenerCheckBoxDataTableSeleccionados obtiene el ID de los registros de cada fila seleccionada por su respectivo checkbox
- * @returns {Array}
- */
-function obtenerCheckBoxDataTableSeleccionados(){
+function obtenerCheckBoxSeleccionadosDeDataTable(){
 	var selectedIds = [];
 
     $('input[name=checkBoxRow]:checked').each(function(){
@@ -272,32 +200,18 @@ function obtenerCheckBoxDataTableSeleccionados(){
     return selectedIds;
 }
 
-/**
- * Autor: Andres Gonzales - 29-06-2017
- * eliminarRegistroDataTable elimina los registros seleccionados de las filas del dataTable
- * @param dataTableId - Id de la tabla en la vista
- * @param urlEliminar - url del registro al eliminar con el parametro ids esperando un valor en la url < ?ids= >
- * @param urlContenido - url del contenido a abrir luego de eliminar el registro de la tabla
- */
-function eliminarRegistroDataTable(dataTableId, urlEliminar, urlContenido){
+function eliminarRegistrosSeleccionadosDeDataTable(dataTableId, urlEliminar, urlContenido){
 	var mensaje = "Esta seguro que quiere eliminar este registro?";
 	if($('#' + dataTableId + ' :checked').length > 1){
 		mensaje = "Esta seguro que quiere eliminar estos registros?";
 	}
-	if(confirmar(mensaje)){
-		var selectedIds = obtenerCheckBoxDataTableSeleccionados();
+	if(mensajeDeConfirmacionPersonalizado(mensaje)){
+		var selectedIds = obtenerCheckBoxSeleccionadosDeDataTable();
 
-	    eliminarUrlCargarContenidoUrl(urlEliminar + selectedIds, urlContenido);
+	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar + selectedIds, urlContenido);
 	}
 }
 
-/**
- * Autor: Andres Gonzales - 02-07-2017
- * aplicarValidacionesFormulario Valida formularios con las reglas indicadas y muestras los mensajes indicados en
- * diccionarios de datos
- * @param reglasValidacion
- * @param mensajesValidacion
- */
 function aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion){
 	$form.validate({
 		onkeyup: function (element) {

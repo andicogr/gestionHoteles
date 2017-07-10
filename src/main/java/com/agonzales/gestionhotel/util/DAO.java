@@ -58,7 +58,6 @@ public class DAO<T extends Entidad> implements IDAO<T>{
 			objeto.setFechaActualizacion(new Date());
 			this.em.merge(objeto);
 			this.em.flush();
-			//return (Entidad) this.em.find(this.clazz, objeto.getId());
 			return (T) this.em.find(this.clazz, objeto.getId());
 		}
 		objeto.setUsuarioCreacion(uid);
