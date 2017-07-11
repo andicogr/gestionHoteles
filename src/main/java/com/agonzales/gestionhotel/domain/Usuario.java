@@ -1,5 +1,6 @@
 package com.agonzales.gestionhotel.domain;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -35,10 +36,18 @@ public class Usuario extends EntidadBase implements Entidad{
 	private String clave;
 	
 	@ManyToMany
-	@JoinTable(name="usuario_privilegio", joinColumns = {@JoinColumn(name = "usuario_id")}, inverseJoinColumns = {@JoinColumn(name = "privilegio_id")})
-	private List<Privilegio> Privilegio;
+	@JoinTable(name="usuario_rol", joinColumns = {@JoinColumn(name = "usuario_id")}, inverseJoinColumns = {@JoinColumn(name = "rol_id")})
+	private List<Rol> roles;
 	
-	private String estado;
+	private boolean activo;
+	
+	private boolean bloqueado;
+	
+	@Column(name="expirar_usuario")
+	private boolean expirarUsuario;
+	
+	@Column(name="fecha_expirancion_usuario")
+	private Date fechaExpiracionUsuario;
 
 	public Integer getId() {
 		return id;
@@ -65,20 +74,44 @@ public class Usuario extends EntidadBase implements Entidad{
 	}
 
 
-	public List<Privilegio> getPrivilegio() {
-		return Privilegio;
+	public List<Rol> getRoles() {
+		return roles;
 	}
 
-	public void setPrivilegio(List<Privilegio> privilegio) {
-		Privilegio = privilegio;
+	public void setRoles(List<Rol> roles) {
+		this.roles = roles;
 	}
 
-	public String getEstado() {
-		return estado;
+	public boolean isActivo() {
+		return activo;
 	}
 
-	public void setEstado(String estado) {
-		this.estado = estado;
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
+	public boolean isBloqueado() {
+		return bloqueado;
+	}
+
+	public void setBloqueado(boolean bloqueado) {
+		this.bloqueado = bloqueado;
+	}
+
+	public boolean isExpirarUsuario() {
+		return expirarUsuario;
+	}
+
+	public void setExpirarUsuario(boolean expirarUsuario) {
+		this.expirarUsuario = expirarUsuario;
+	}
+
+	public Date getFechaExpiracionUsuario() {
+		return fechaExpiracionUsuario;
+	}
+
+	public void setFechaExpiracionUsuario(Date fechaExpiracionUsuario) {
+		this.fechaExpiracionUsuario = fechaExpiracionUsuario;
 	}
 
 	@Override
@@ -86,12 +119,28 @@ public class Usuario extends EntidadBase implements Entidad{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public String getNombreCompania(){
 		if(getCompania() != null){
 			return getCompania().getRazonSocial();
 		}
 		return "";
+	}
+
+	public boolean isRolesActivos(){
+		for(Rol rol : getRoles()){
+			if(rol.isActivo()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isUsuarioExpirado(){
+		if(isExpirarUsuario() && getFechaExpiracionUsuario().compareTo(new Date()) > 0){
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -24,8 +24,11 @@ public class Privilegio extends EntidadBase implements Entidad{
 	@Column(unique=true, nullable=false)
 	private Integer id;
 
-	@Column(length=45, nullable=true)
+	@Column(length=50, nullable=true)
 	private String privilegio;
+	
+	@Column(length=250)
+	private String descripcion;
 	
 	private String estado;
 
@@ -43,6 +46,14 @@ public class Privilegio extends EntidadBase implements Entidad{
 
 	public void setPrivilegio(String privilegio) {
 		this.privilegio = privilegio;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	public String getEstado() {

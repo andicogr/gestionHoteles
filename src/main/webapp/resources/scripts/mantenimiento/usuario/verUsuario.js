@@ -1,8 +1,8 @@
 capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
-				'usuario': {required: true, maxlength: 20, minlength: 8},
-				'clave': {required: true, maxlength: 20, minlength: 8}
+				'usuario': {required: true, maxlength: 20, minlength: 5},
+				'clave': {required: true, maxlength: 20, minlength: 5}
 			};
 
 var mensajesValidacion = {

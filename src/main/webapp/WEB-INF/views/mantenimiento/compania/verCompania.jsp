@@ -134,5 +134,5 @@
 <!-- Parsley -->
 <script src="resources/vendors/validate/jquery.validate.js"></script>
 <script src="resources/vendors/validate/localization/messages_es_PE.js"></script>
-<script src="resources/scripts/mantenimiento/compania/ver.js"></script>    
+<script src="resources/scripts/mantenimiento/compania/verCompania.js"></script>    
 <script src="resources/build/js/custom2.js"></script>

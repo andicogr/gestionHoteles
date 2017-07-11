@@ -67,5 +67,5 @@
 <!-- Data Tables JS-->
 
 
-<script src="resources/scripts/mantenimiento/compania/listar.js"></script>    
+<script src="resources/scripts/mantenimiento/compania/listarCompanias.js"></script>    
 <script src="resources/build/js/custom2.js"></script>

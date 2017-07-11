@@ -35,7 +35,7 @@ public class MantenimientoCompaniaController {
 	@RequestMapping(value="/listar")
 	public String companiaListar(){
 		logger.info("[MantenimientoController] - method: companiaListar");
-		return "mantenimiento/compania/listar";
+		return "mantenimiento/compania/listarCompanias";
 	}
 
 	@RequestMapping(value="/listaJson")
@@ -58,7 +58,7 @@ public class MantenimientoCompaniaController {
 		}
 		model.addAttribute("pathImg", Constantes.PATH_DEFAULT_IMAGEN);
 
-		return "mantenimiento/compania/ver";
+		return "mantenimiento/compania/verCompanias";
 	}
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)

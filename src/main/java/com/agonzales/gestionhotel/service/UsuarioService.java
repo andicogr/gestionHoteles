@@ -10,7 +10,11 @@ public interface UsuarioService {
 
 	public Integer getUID();
 	
+	public Map<String, String> obtenerEstadosDeUsuario();
+	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion);
+	
+	public String obtenerNombreParaMostrarDeEstado(String estadoDeUsuario);
 
 	public Map<String, Object> guardar(Usuario compania);
 
@@ -19,4 +23,6 @@ public interface UsuarioService {
 	public Map<String, Object> eliminar(Integer[] ids);
 
 	public List<Usuario> listarTodos();
+	
+
 }

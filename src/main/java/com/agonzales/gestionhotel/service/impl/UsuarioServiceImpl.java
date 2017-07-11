@@ -29,6 +29,14 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return usuarioDAO.getUID(usuario.getUsername());
 	}
 	
+	public Map<String, String> obtenerEstadosDeUsuario(){
+		Map<String, String> listaDeEstados = new HashMap<String, String>();
+		listaDeEstados.put(Constantes.ESTADO_BLOQUEADO, "Bloqueado");
+		listaDeEstados.put(Constantes.ESTADO_INACTIVO, "Inactivo");
+		listaDeEstados.put(Constantes.ESTADO_ACTIVO, "Activo");
+		return listaDeEstados;
+	}
+	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
 		if(paginacion.getiDisplayLength()==null){
@@ -59,14 +67,19 @@ public class UsuarioServiceImpl implements UsuarioService{
 						checkbox,
 						usuario.getNombreCompania(),
 						usuario.getUsuario(),
-						usuario.getEstado()
+						usuario.isActivo() ? Constantes.ESTADO_ACTIVO : Constantes.ESTADO_INACTIVO
 					};
 			listas.add(aaDato);
 		}
-		
+
 		datos.put("aaData", listas);
 		
 		return datos;
+	}
+	
+	public String obtenerNombreParaMostrarDeEstado(String estadoDeUsuario){
+		Map<String, String> listaDeEstados = obtenerEstadosDeUsuario();
+		return listaDeEstados.get(estadoDeUsuario);
 	}
 
 	@Transactional
@@ -86,7 +99,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 			Usuario actual = usuarioDAO.get(usuario.getId());
 			actual.setUsuario(usuario.getUsuario());
 			actual.setClave(usuario.getClave());
-			actual.setEstado(usuario.getEstado());
+			actual.setActivo(usuario.isActivo());
 			usuario = actual;
 		}
 
@@ -139,6 +152,5 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public List<Usuario> listarTodos(){
 		return usuarioDAO.getTodos();
 	}
-
 
 }
