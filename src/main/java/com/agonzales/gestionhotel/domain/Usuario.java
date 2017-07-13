@@ -1,16 +1,16 @@
 package com.agonzales.gestionhotel.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,19 +28,18 @@ public class Usuario extends EntidadBase implements Entidad{
 	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="usuario_id_seq_generator")
 	@Column(unique=true, nullable=false)
 	private Integer id;
-	
+
 	@Column(length=20, nullable=false)
 	private String usuario;
 
 	@Column(length=20, nullable=false)
 	private String clave;
 	
-	@ManyToMany
-	@JoinTable(name="usuario_rol", joinColumns = {@JoinColumn(name = "usuario_id")}, inverseJoinColumns = {@JoinColumn(name = "rol_id")})
-	private List<Rol> roles;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+	private List<UsuarioRol> roles;
 	
 	private boolean activo;
-	
+
 	private boolean bloqueado;
 	
 	@Column(name="expirar_usuario")
@@ -73,12 +72,11 @@ public class Usuario extends EntidadBase implements Entidad{
 		this.clave = clave;
 	}
 
-
-	public List<Rol> getRoles() {
+	public List<UsuarioRol> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Rol> roles) {
+	public void setRoles(List<UsuarioRol> roles) {
 		this.roles = roles;
 	}
 
@@ -128,8 +126,8 @@ public class Usuario extends EntidadBase implements Entidad{
 	}
 
 	public boolean isRolesActivos(){
-		for(Rol rol : getRoles()){
-			if(rol.isActivo()){
+		for(UsuarioRol rol : getRoles()){
+			if(rol.isUsuarioRolYRolActivo()){
 				return true;
 			}
 		}
@@ -141,6 +139,16 @@ public class Usuario extends EntidadBase implements Entidad{
 			return true;
 		}
 		return false;
+	}
+	
+	public List<Rol> getRolesActivos(){
+		List<Rol> listaRolesActivos = new ArrayList<Rol>();
+		for(UsuarioRol rol : getRoles()){
+			if(rol.isUsuarioRolYRolActivo()){
+				listaRolesActivos.add(rol.getRol());
+			}
+		}
+		return listaRolesActivos;
 	}
 
 }

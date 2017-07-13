@@ -58,7 +58,7 @@ public class MantenimientoCompaniaController {
 		}
 		model.addAttribute("pathImg", Constantes.PATH_DEFAULT_IMAGEN);
 
-		return "mantenimiento/compania/verCompanias";
+		return "mantenimiento/compania/verCompania";
 	}
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)

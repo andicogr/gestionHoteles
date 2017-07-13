@@ -48,7 +48,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 			return new User(
 					username, usuario.getClave(), usuario.isActivo(),
 					!usuario.isUsuarioExpirado(), usuario.isRolesActivos(), !usuario.isBloqueado(),
-					getAuthorities(usuario.getRoles()));
+					getAuthorities(usuario.getRolesActivos()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +68,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<String> privilegios = new ArrayList<String>();
         List<Privilegio> collection = new ArrayList<Privilegio>();
         for (Rol rol : roles) {
-            collection.addAll(rol.getPrivilegios());
+        	collection.addAll(rol.getPrivilegios());  
         }
         for (Privilegio item : collection) {
         	privilegios.add(item.getPrivilegio());

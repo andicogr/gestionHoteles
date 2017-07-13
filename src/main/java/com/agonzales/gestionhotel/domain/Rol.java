@@ -14,11 +14,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.agonzales.gestionhotel.util.Entidad;
-import com.agonzales.gestionhotel.util.EntidadBase;
+import com.agonzales.gestionhotel.util.EntidadAuditoria;
 
 @Entity
 @Table(name="rol")
-public class Rol extends EntidadBase implements Entidad{
+public class Rol extends EntidadAuditoria implements Entidad{
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,11 +29,11 @@ public class Rol extends EntidadBase implements Entidad{
 	private Integer id;
 
 	@Column(length=50, nullable=true)
-	private String rol;
+	private String nombre;
 
 	@Column(length=250)
 	private String descripcion;
-	
+
 	@ManyToMany
 	@JoinTable(name="rol_privilegio", joinColumns = {@JoinColumn(name = "rol_id")}, inverseJoinColumns = {@JoinColumn(name = "privilegio_id")})
 	private List<Privilegio> privilegios;
@@ -48,12 +48,12 @@ public class Rol extends EntidadBase implements Entidad{
 		this.id = id;
 	}
 
-	public String getRol() {
-		return rol;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setRol(String rol) {
-		this.rol = rol;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public String getDescripcion() {
