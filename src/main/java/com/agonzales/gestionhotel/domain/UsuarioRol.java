@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import com.agonzales.gestionhotel.util.Entidad;
 import com.agonzales.gestionhotel.util.EntidadAuditoria;
+import com.agonzales.gestionhotel.util.Util;
 
 @Entity
 @Table(name="usuario_rol")
@@ -91,5 +92,16 @@ public class UsuarioRol extends EntidadAuditoria implements Entidad{
 			return true;
 		}
 		return false;
+	}
+	
+	public String obtenerNombreRol(){
+		if(getRol() != null){
+			return getRol().getNombre();
+		}
+		return "";
+	}
+	
+	public String obtenerEstadoUsuarioRol(){
+		return Util.obtenerNombreEstado(isActivo());
 	}
 }

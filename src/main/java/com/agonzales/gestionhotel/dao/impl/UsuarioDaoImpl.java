@@ -14,13 +14,13 @@ import com.agonzales.gestionhotel.util.DAO;
 @Repository("UsuarioDao")
 public class UsuarioDaoImpl extends DAO<Usuario> implements UsuarioDao{
 	
-	public Usuario existeUsuario(String username, String clave){
-		String sql = "from Usuario where usuario like :usuario and clave like :clave";
+	public Usuario existeUsuario(String username, String pasword){
+		String sql = "from Usuario where username like :username and password like :password";
 		
 		Query q = em.createQuery(sql);
 		
-		q.setParameter("usuario", username);
-		q.setParameter("clave", clave);
+		q.setParameter("username", username);
+		q.setParameter("password", pasword);
 		
 		Usuario usuario = (Usuario) q.getSingleResult();
 		return usuario;
@@ -30,9 +30,9 @@ public class UsuarioDaoImpl extends DAO<Usuario> implements UsuarioDao{
 	@Transactional(readOnly = true)
 	public Usuario buscaUsuario(String username) {
 			
-		String sql="from Usuario a where a.usuario=:usuario";
+		String sql="from Usuario a where a.username=:username";
 		Query q = em.createQuery(sql);
-		q.setParameter("usuario",username);
+		q.setParameter("username",username);
 
 		try{
 			return (Usuario) q.getSingleResult();
@@ -43,11 +43,11 @@ public class UsuarioDaoImpl extends DAO<Usuario> implements UsuarioDao{
 	}
 	
 	public Integer getUID(String username){
-		String sql = "SELECT id FROM Usuario WHERE usuario =:usuario";
+		String sql = "SELECT id FROM Usuario WHERE username =:username";
 		
 		Query q = em.createQuery(sql);
 		
-		q.setParameter("usuario", username);
+		q.setParameter("username", username);
 		
 		Integer uid = (Integer) q.getSingleResult();
 		

@@ -1,5 +1,6 @@
 package com.agonzales.gestionhotel.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Entidad;
 import com.agonzales.gestionhotel.util.EntidadBase;
 
@@ -30,12 +32,12 @@ public class Usuario extends EntidadBase implements Entidad{
 	private Integer id;
 
 	@Column(length=20, nullable=false)
-	private String usuario;
+	private String username;
 
 	@Column(length=20, nullable=false)
-	private String clave;
+	private String password;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="usuario")
 	private List<UsuarioRol> roles;
 	
 	private boolean activo;
@@ -56,20 +58,20 @@ public class Usuario extends EntidadBase implements Entidad{
 		this.id = id;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getClave() {
-		return clave;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setClave(String clave) {
-		this.clave = clave;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public List<UsuarioRol> getRoles() {
@@ -149,6 +151,19 @@ public class Usuario extends EntidadBase implements Entidad{
 			}
 		}
 		return listaRolesActivos;
+	}
+	
+	public Date getFechaExpiracionUsuarioValidandoNull(){
+		if(getFechaExpiracionUsuario() != null){
+			return getFechaExpiracionUsuario();
+		}
+		return new Date();
+	}
+	
+	public String getFechaExpiracionUsuarioConFormato(){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constantes.FORMATO_FECHA_DDMMYYYY);
+		String fechaFormateada = simpleDateFormat.format(getFechaExpiracionUsuarioValidandoNull());
+		return fechaFormateada;
 	}
 
 }

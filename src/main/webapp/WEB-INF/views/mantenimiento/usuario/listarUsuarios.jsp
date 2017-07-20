@@ -5,6 +5,8 @@
 <link href="resources/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
 <!-- Datatables CSS-->
 
+<input type="hidden" id="isMultiCompaniaActivado" value="${isMultiCompaniaActivado}">
+
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">
 		<h3 id="tituloPagina">Usuarios</h3>
@@ -40,8 +42,10 @@
 					<thead>
 						<tr>
 							<th><input type="checkbox" id="checkBoxAll" onclick="seleccionarAllCheckBoxDeDataTable();" class="flat"/></th>
-							<th>Compa&ntilde;ia</th>
-							<th>Usuario</th>
+							<c:if test="${isMultiCompaniaActivado == true}">
+								<th>Compa&ntilde;ia</th>
+							</c:if>
+							<th>Username</th>
 							<th>Estado</th>
                         </tr>
 					</thead>

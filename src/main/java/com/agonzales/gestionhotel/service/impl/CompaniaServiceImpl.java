@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -168,6 +170,14 @@ public class CompaniaServiceImpl implements CompaniaService{
 	
 	public List<Compania> listarTodos(){
 		return companiaDAO.getTodos();
+	}
+	
+	public boolean isMultiCompaniaActivado(){
+		List<Compania> listaCompanias = companiaDAO.getTodos();
+		if(listaCompanias.size() > 1){
+			return true;
+		}
+		return false;
 	}
 
 }

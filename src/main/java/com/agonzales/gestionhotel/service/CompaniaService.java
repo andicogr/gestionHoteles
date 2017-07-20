@@ -17,5 +17,7 @@ public interface CompaniaService {
 	public Map<String, Object> eliminar(Integer[] ids);
 
 	public List<Compania> listarTodos();
+	
+	public boolean isMultiCompaniaActivado();
 
 }

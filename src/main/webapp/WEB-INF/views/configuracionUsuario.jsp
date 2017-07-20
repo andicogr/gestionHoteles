@@ -38,8 +38,6 @@
 								</c:forEach>
 							</select>
 
-
-
                           <div class="checkbox">
                             <label>
                               <input type="checkbox" class="flat" checked="checked"> Por Defecto

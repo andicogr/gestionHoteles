@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -23,21 +24,13 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	@Autowired
 	private UsuarioDao usuarioDAO;
-	
+
 	public Integer getUID(){
 		User usuario = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return usuarioDAO.getUID(usuario.getUsername());
 	}
-	
-	public Map<String, String> obtenerEstadosDeUsuario(){
-		Map<String, String> listaDeEstados = new HashMap<String, String>();
-		listaDeEstados.put(Constantes.ESTADO_BLOQUEADO, "Bloqueado");
-		listaDeEstados.put(Constantes.ESTADO_INACTIVO, "Inactivo");
-		listaDeEstados.put(Constantes.ESTADO_ACTIVO, "Activo");
-		return listaDeEstados;
-	}
-	
-	public Map<String, Object> listarJson(PaginacionDTO paginacion){
+
+	public Map<String, Object> listarJson(PaginacionDTO paginacion, Boolean isMultiCompaniaActivado){
 
 		if(paginacion.getiDisplayLength()==null){
 			return null;
@@ -66,20 +59,19 @@ public class UsuarioServiceImpl implements UsuarioService{
 			String[] aaDato = {
 						checkbox,
 						usuario.getNombreCompania(),
-						usuario.getUsuario(),
-						usuario.isActivo() ? Constantes.ESTADO_ACTIVO : Constantes.ESTADO_INACTIVO
+						usuario.getUsername(),
+						usuario.isActivo() ? Constantes.ESTADO_ACTIVO_ETIQUETA : Constantes.ESTADO_INACTIVO_ETIQUETA
 					};
+			if(!isMultiCompaniaActivado){
+				aaDato = (String[]) ArrayUtils.remove(aaDato, 1);
+			}
+
 			listas.add(aaDato);
 		}
 
 		datos.put("aaData", listas);
 		
 		return datos;
-	}
-	
-	public String obtenerNombreParaMostrarDeEstado(String estadoDeUsuario){
-		Map<String, String> listaDeEstados = obtenerEstadosDeUsuario();
-		return listaDeEstados.get(estadoDeUsuario);
 	}
 
 	@Transactional
@@ -88,7 +80,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		Map<String, Object> notifiaccion = null;
 		String texto = "";
 
-		if(usuarioDAO.isUniqueValue("usuario", usuario.getUsuario(), usuario.getId())){
+		if(usuarioDAO.isUniqueValue("username", usuario.getUsername(), usuario.getId())){
 			notifiaccion = Util.crearNotificacionError("Error", "El nombre de usuario ya esta registrado en el sistema.");
 			retorno.put("notificacion", notifiaccion);
 			retorno.put("estado", false);
@@ -97,9 +89,12 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 		if(usuario.getId() != null){
 			Usuario actual = usuarioDAO.get(usuario.getId());
-			actual.setUsuario(usuario.getUsuario());
-			actual.setClave(usuario.getClave());
+			actual.setUsername(usuario.getUsername());
+			actual.setPassword(usuario.getPassword());
 			actual.setActivo(usuario.isActivo());
+			actual.setCompania(usuario.getCompania());
+			actual.setExpirarUsuario(usuario.isExpirarUsuario());
+			actual.setFechaExpiracionUsuario(usuario.getFechaExpiracionUsuario());
 			usuario = actual;
 		}
 

@@ -10,7 +10,7 @@ $("#btnCloseSmallModal").click(function(){
 });
 
 function abrirConfiguracionDeUsuarioEnModal(){
-	$.get(baseURL + "configuracionUsiaro", function(respuesta) {
+	$.get(baseURL + "configuracionUsuario", function(respuesta) {
 		$("#smallModalTitulo").html("Configracion de Usuario");
 		$("#smallModalContenido").html(respuesta);
 	})

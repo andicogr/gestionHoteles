@@ -5,7 +5,7 @@ import com.agonzales.gestionhotel.util.IDAO;
 
 public interface UsuarioDao extends IDAO<Usuario>{
 	
-	Usuario existeUsuario(String username, String clave);
+	Usuario existeUsuario(String username, String password);
 	
 	Usuario buscaUsuario(String username);
 	

@@ -73,8 +73,8 @@
 							Usuario <span class="required">*</span>
                         </label>
                         <div class="col-md-3 col-sm-3 col-xs-12">
-                        	<input type="text" id="usuario" name="usuario" class="form-control col-md-7 col-xs-12" 
-                        		value="${usuario.usuario}">
+                        	<input type="text" id="username" name="username" class="form-control col-md-7 col-xs-12" 
+                        		value="${usuario.username}">
                         </div>
 					</div>
 					<div class="item form-group">
@@ -82,26 +82,77 @@
 							Clave <span class="required">*</span>
                         </label>
                         <div class="col-md-3 col-sm-3 col-xs-3">
-							<input type="password" id="clave" name="clave" class="form-control col-md-7 col-xs-12"
-								value="${usuario.clave}">
+							<input type="password" id="password" name="password" class="form-control col-md-7 col-xs-12"
+								value="${usuario.password}">
                         </div>
 					</div>
 					<div class="item form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="clave">
-							Estado
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="activo">
+							Activo
                         </label>
                         <div class="col-md-3 col-sm-3 col-xs-3">
-							<select name="estado" class="form-control">
-								<c:forEach var="e" items="${estadosDeUsuario}">
-									<option 
-										<c:if test="${usuario.estado == e.key }">
-											selected="selected"
-										</c:if> 
-									value="${e.key}">
-										${e.value}
-									</option>
-								</c:forEach>
-							</select>
+                        	<div class="checkbox">
+                            	<label>
+                              		<input type="checkbox" id="activo" name="activo" class="flat"
+                              			<c:if test="${usuario.activo == true}">
+                              				checked="checked" 
+                              			</c:if>
+                              			<c:if test="${empty usuario}">
+                              				checked="checked" 
+                              			</c:if>
+                              		>
+                            	</label>
+                        	</div>
+                        </div>
+					</div>
+					<div class="item form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12">
+							Bloqueado
+                        </label>
+                        <div class="col-md-3 col-sm-3 col-xs-3">
+                        	<div class="checkbox">
+                            	<label>
+                              		<input type="checkbox" class="flat" 
+                              			<c:if test="${usuario.bloqueado == true}">
+                              				checked="checked" 
+                              			</c:if>
+                              		disabled="disabled">
+                            	</label>
+                        	</div>
+                        </div>
+					</div>
+					<div class="item form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12">
+							¿Expirar Usuario?
+                        </label>
+                        <div class="col-md-1 col-sm-1 col-xs-1">
+                        	<div class="checkbox">
+                            	<label>
+                              		<input type="checkbox" class="flat" 
+                              			<c:if test="${usuario.expirarUsuario == true}">
+                              				checked="checked"
+                              			</c:if>
+                              		name="expirarUsuario" id="expirarUsuario">
+                            	</label>
+                        	</div>
+                        </div>
+                        <div id="divFechaExpiracionUsuario">
+	                        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="activo">
+								Fecha de Expiracion
+	                        </label>
+	                        <div class="col-md-3 col-sm-3 col-xs-3">
+	                           <div class="control-group">
+	                            <div class="controls">
+	                              <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+	                                <input type="text" class="form-control has-feedback-left" id="fechaExpiracionUsuario" 
+	                                name="fechaExpiracionUsuario" placeholder="--/--/----" aria-describedby="inputSuccess2Status2"
+	                                value="${usuario.getFechaExpiracionUsuarioConFormato()}">
+	                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+	                                <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+	                              </div>
+	                            </div>
+	                          </div>
+	                        </div>
                         </div>
 					</div>
 
@@ -118,34 +169,29 @@
                           		<div class="panel-body">
                           			<div class="row">
                           				<div class="col-md-12 col-sm-12 col-xs-12">
+                          				
+                              	
+                              <c:if test="${empty usuario.roles}">
+                              Nada
+                              </c:if>
+                              <c:if test="${not empty usuario.roles}">
+                              Con Registros
+                              </c:if>
                             <table class="table table-bordered">
                               <thead>
                                 <tr>
-                                  <th>#</th>
                                   <th>Nombre Rol</th>
-                                  <th>Last Name</th>
-                                  <th>Username</th>
+                                  <th>Estado</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <th scope="row">1</th>
-                                  <td>Mark</td>
-                                  <td>Otto</td>
-                                  <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">2</th>
-                                  <td>Jacob</td>
-                                  <td>Thornton</td>
-                                  <td>@fat</td>
-                                </tr>
-                                <tr>
-                                  <th scope="row">3</th>
-                                  <td>Larry</td>
-                                  <td>the Bird</td>
-                                  <td>@twitter</td>
-                                </tr>
+                              <c:forEach items="${usuario.roles}" var="usuarioRol">
+	                              <tr>
+	                                <td>${usuarioRol.obtenerNombreRol()}</td>
+	                                <td>${usuarioRol.obtenerEstadoUsuarioRol()}</td>
+	                              </tr>
+                              </c:forEach>
+
                               </tbody>
                             </table>
                             </div>
@@ -166,4 +212,3 @@
 <script src="resources/vendors/validate/jquery.validate.js"></script>
 <script src="resources/vendors/validate/localization/messages_es_PE.js"></script>
 <script src="resources/scripts/mantenimiento/usuario/verUsuario.js"></script>    
-<script src="resources/build/js/custom2.js"></script>

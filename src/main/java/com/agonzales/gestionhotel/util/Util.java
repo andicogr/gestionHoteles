@@ -95,6 +95,13 @@ public class Util {
 		return query;
 	}
 	
+	public static String obtenerNombreEstado(boolean activo){
+		if(activo){
+			return Constantes.ESTADO_ACTIVO_ETIQUETA;
+		}
+		return Constantes.ESTADO_INACTIVO_ETIQUETA;
+	}
+	
 	public static String query(List<Map<String, Object>> lista) {
 		String query = "";
 		for (Map<String, Object> map : lista) {

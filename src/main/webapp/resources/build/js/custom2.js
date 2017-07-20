@@ -1,7 +1,5 @@
 $(function(){
 
-	
-
 	    $('.collapse-link').on('click', function() {
 	        var $BOX_PANEL = $(this).closest('.x_panel'),
 	            $ICON = $(this).find('i'),
@@ -25,9 +23,7 @@ $(function(){
 
 	        $BOX_PANEL.remove();
 	    });
-	    
-	    
-	    
+
 	    //init_daterangepicker();
 	    //init_daterangepicker_right();
 	    //init_daterangepicker_single_call();

@@ -46,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 			}
 
 			return new User(
-					username, usuario.getClave(), usuario.isActivo(),
+					username, usuario.getPassword(), usuario.isActivo(),
 					!usuario.isUsuarioExpirado(), usuario.isRolesActivos(), !usuario.isBloqueado(),
 					getAuthorities(usuario.getRolesActivos()));
 

@@ -10,11 +10,7 @@ public interface UsuarioService {
 
 	public Integer getUID();
 	
-	public Map<String, String> obtenerEstadosDeUsuario();
-	
-	public Map<String, Object> listarJson(PaginacionDTO paginacion);
-	
-	public String obtenerNombreParaMostrarDeEstado(String estadoDeUsuario);
+	public Map<String, Object> listarJson(PaginacionDTO paginacion, Boolean isMultiCompaniaActivado);
 
 	public Map<String, Object> guardar(Usuario compania);
 

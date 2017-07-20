@@ -4,10 +4,14 @@ public class Constantes {
 	
 	public final static String UID = "uid";
 	public final static String USUARIO_SESION = "usuarioSesion";
+	public final static String FORMATO_FECHA_DDMMYYYY = "dd/MM/yyyy";
 	
 	public final static String ESTADO_ACTIVO = "activo";
+	public final static String ESTADO_ACTIVO_ETIQUETA = "Activo";
 	public final static String ESTADO_INACTIVO = "inactivo";
+	public final static String ESTADO_INACTIVO_ETIQUETA = "Inactivo";
 	public final static String ESTADO_BLOQUEADO= "bloqueado";
+	public final static String ESTADO_BLOQUEADO_ETIQUETA= "Bloqueado";
 	public final static String ESTADO_TODOS = "todos";
 	
 	public final static String MENSAJE_REGISTRO_CORRECTO = "Los datos se registraron correctamente.";

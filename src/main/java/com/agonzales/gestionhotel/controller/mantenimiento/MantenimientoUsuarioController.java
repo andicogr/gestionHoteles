@@ -2,7 +2,9 @@ package com.agonzales.gestionhotel.controller.mantenimiento;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.agonzales.gestionhotel.domain.Usuario;
+import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.CompaniaService;
 import com.agonzales.gestionhotel.service.UsuarioService;
@@ -31,17 +34,19 @@ public class MantenimientoUsuarioController {
 	private CompaniaService companiaService;
 
 	@RequestMapping(value="/listar")
-	public String usuarioListar(){
+	public String usuarioListar(HttpSession session, Model model){
 		logger.info("[MantenimientoUsuarioController] - method: usuarioListar");
+		Boolean isMultiCompaniaActivado = (Boolean) session.getAttribute("isMultiCompaniaActivado");
+		model.addAttribute("isMultiCompaniaActivado", isMultiCompaniaActivado);
 		return "mantenimiento/usuario/listarUsuarios";
 	}
 
 	@RequestMapping(value="/listaJson")
 	@ResponseBody
-	public  Map<String, Object> usuarioListaJson(PaginacionDTO paginacion){
+	public  Map<String, Object> usuarioListaJson(HttpSession session, PaginacionDTO paginacion){
 		logger.info("[MantenimientoUsuarioController] - method: usuarioListaJson");
-		
-		Map<String, Object> datos = usuarioService.listarJson(paginacion);
+		Boolean isMultiCompaniaActivado = (Boolean) session.getAttribute("isMultiCompaniaActivado");
+		Map<String, Object> datos = usuarioService.listarJson(paginacion, isMultiCompaniaActivado);
 
 		return datos;
 	}
@@ -49,20 +54,19 @@ public class MantenimientoUsuarioController {
 	@RequestMapping(value="/ver")
 	public String usuarioVer(Model model, Integer id){
 		logger.info("[MantenimientoUsuarioController] - method: usuarioVer - id: " + id);
-		model.addAttribute("estadosDeUsuario", usuarioService.obtenerEstadosDeUsuario());
 		//TODO la lista de companias debe cargarse en cache para estar diponible siempre
 		model.addAttribute("listaDeCompanias", companiaService.listarTodos());
 		if(id != null){
 			Usuario usuario = usuarioService.get(id);
 			model.addAttribute("usuario", usuario);
-			model.addAttribute("nombreMostrar", usuario.getUsuario());
+			model.addAttribute("nombreMostrar", usuario.getUsername());
 		}
 		return "mantenimiento/usuario/verUsuario";
 	}
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> usuarioGuardar(HttpServletRequest request, Model model, Usuario usuario){
+	public Map<String, Object> usuarioGuardar(Model model, Usuario usuario){
 		logger.info("[MantenimientoUsuarioController] - method: usuarioGuardar");
 		Map<String, Object> retorno = usuarioService.guardar(usuario);
 		return retorno;

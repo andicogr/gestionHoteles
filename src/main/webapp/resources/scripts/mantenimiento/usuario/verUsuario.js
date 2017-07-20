@@ -1,3 +1,28 @@
+$('#fechaExpiracionUsuario').daterangepicker({
+  singleDatePicker: true,
+  singleClasses: "picker_2",
+  locale: {
+		"format": 'DD/MM/YYYY',
+		"daysOfWeek": ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
+        "monthNames": [
+           "Enero",
+           "Febrero",
+           "Marzo",
+           "Abril",
+           "Mayo",
+           "Junio",
+           "Julio",
+           "Agosto",
+           "Septiembre",
+           "Octubre",
+           "Noviembre",
+           "Diciembre"
+       ],
+	  }
+}, function(start, end, label) {
+  console.log(start.toISOString(), end.toISOString(), label);
+});
+
 capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
@@ -66,12 +91,21 @@ $("#btnEliminarRegistro").click(function(){
 	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal("mantenimiento/usuario/eliminar?ids="+ [$("#id").val()], 
 	    		"mantenimiento/usuario/listar");
 	}
-});	
+});
 
 $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());
 });	
 
+$('#divFechaExpiracionUsuario').hide();
+
+$('#expirarUsuario').change(function () {
+	if ($(this).is(':checked')) {
+		$('#divFechaExpiracionUsuario').show();
+	}else{
+		$('#divFechaExpiracionUsuario').hide();
+	}
+ });
 
 
 init_validator();
