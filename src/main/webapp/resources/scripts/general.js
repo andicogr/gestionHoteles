@@ -1,3 +1,5 @@
+//Eliminar archivo general.js se debe divir las responsabilidades agrupando los metodos en varios archivos
+
 baseURL = $("#baseURL").val();
 
 function abrirMenuEnDivContenidoPrincipal(idMenu, urlContenido){
@@ -12,6 +14,7 @@ function abrirMenuEnDivContenidoPrincipal(idMenu, urlContenido){
 	});
 }
 
+//cargarDivContenidoPrincipal(urlContenido)
 function cargarUrlEnDivContenidoPrincipal(url){
 	$("#contenidoPrincipal").html("Cargando . . .");
 	$.get(baseURL + url, function(respuesta) {
@@ -21,10 +24,12 @@ function cargarUrlEnDivContenidoPrincipal(url){
 	});
 }
 
+//mensajeDeAlerta
 function mensajeDeAlertaPersonalizado(mensaje){
 	alert(mensaje);
 }
 
+//mensajeDeConfirmacion
 function mensajeDeConfirmacionPersonalizado(mensaje){
 	return confirm(mensaje);
 }
@@ -34,6 +39,7 @@ function capturarDatosInicialesDelFormulario(){
 	origForm = $form.serialize();
 }
 
+//seRealizaronCambiosEnElFormulario
 function cambiaronLosDatosDelFormularioInicial(){
 	return ($form.serialize() !== origForm);
 }
@@ -66,8 +72,10 @@ function mostrarNotificacionNingunCambioFormulario(){
 	});*/
 }
 
+//al user Y,SI,CON significa que hace mas de una cosa, se deberia cambiar 
+//o eliminar este metodo y usar el codigo en cada lugar donde se llama a este metodo
 function cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario(url){
-	
+	//descartarCambios
 	var cargar = true;
 	if(cambiaronLosDatosDelFormularioInicial()){
 		if(!mensajeDeConfirmacionPersonalizado("Desea descartar los cambios?")){
@@ -80,6 +88,7 @@ function cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario(url){
 	}
 }
 
+//eliminarRegistros
 function eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar, urlContenido){
     $.post(baseURL + urlEliminar,function(retorno) {
 
@@ -180,6 +189,7 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 
 }
 
+//seleccionarTodosLosCehckBoxDeDataTable
 function seleccionarAllCheckBoxDeDataTable(){
 	if($("#checkBoxAll").is(":checked")){
 		$(":checkbox[name='checkBoxRow']").prop('checked', true);
@@ -212,6 +222,7 @@ function eliminarRegistrosSeleccionadosDeDataTable(dataTableId, urlEliminar, url
 	}
 }
 
+//aplicarReglasDeValidacionFormulario
 function aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion){
 	$form.validate({
 		onkeyup: function (element) {
