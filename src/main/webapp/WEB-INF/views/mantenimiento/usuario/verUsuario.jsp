@@ -35,8 +35,22 @@
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty usuario}">
-							<button class="btn btn-danger" id="btnEliminarRegistro">Eliminar</button>
 							<button class="btn btn-default" id="btnImprimirRegistro">Imprimir</button>
+		                    <div class="btn-group botonOpcionesMantenimiento">
+		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+		                    		Opciones 
+		                    		<span class="caret"></span>
+		                    	</button>
+		                    	<ul role="menu" class="dropdown-menu">
+		                      		<li>
+		                      			<a href="#">Desbloquear Usuario</a>
+		                      		</li>
+		                      		<li class="divider"></li>
+		                      		<li>
+		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+		                      		</li>
+		                    	</ul>
+		                    </div>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">
@@ -50,7 +64,12 @@
             		<c:if test="${not empty usuario}">
             			<input type="hidden" id="id" name="id" value="${usuario.id}">
             		</c:if>
-					<div class="item form-group">
+            		
+					<div class="item form-group" 
+						<c:if test="${isMultiCompaniaActivado == false}">
+						 	style="display: none"
+						</c:if>
+					>
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="compania.id">
 							Compa&ntilde;ia <span class="required">*</span>
                         </label>
@@ -68,6 +87,7 @@
 							</select>
                         </div>
 					</div>
+					
 					<div class="item form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="usuario">
 							Usuario <span class="required">*</span>

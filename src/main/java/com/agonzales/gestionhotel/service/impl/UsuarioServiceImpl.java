@@ -65,12 +65,11 @@ public class UsuarioServiceImpl implements UsuarioService{
 			if(!isMultiCompaniaActivado){
 				aaDato = (String[]) ArrayUtils.remove(aaDato, 1);
 			}
-
 			listas.add(aaDato);
 		}
 
 		datos.put("aaData", listas);
-		
+
 		return datos;
 	}
 
@@ -143,9 +142,23 @@ public class UsuarioServiceImpl implements UsuarioService{
 		retorno.put("estado", estado);
 		return retorno;
 	}
-	
+
 	public List<Usuario> listarTodos(){
 		return usuarioDAO.getTodos();
+	}
+
+	public void registrarIntentoDeLogeoFallido(String username){
+		Usuario usuario = usuarioDAO.buscaUsuario(username);
+		usuario.incrementarNumeroDeIntentosFallidos();
+		usuarioDAO.guardar(usuario, getUID());
+	}
+
+	public Boolean isPasswordIncorrecto(String username, String password){
+		Usuario usuario = usuarioDAO.buscaUsuario(username);
+		if(usuario.getPassword().equals(password)){
+			return false;
+		}
+		return true;
 	}
 
 }

@@ -1,7 +1,6 @@
 *.class
 *.properties
 *.smap
-*.xml
 *.jar
 *.MF
 *.war
@@ -9,3 +8,5 @@
 *.dfp
 *_jsp*
 target/
+src/test/
+.settings/

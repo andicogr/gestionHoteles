@@ -14,23 +14,20 @@ function abrirMenuEnDivContenidoPrincipal(idMenu, urlContenido){
 	});
 }
 
-//cargarDivContenidoPrincipal(urlContenido)
-function cargarUrlEnDivContenidoPrincipal(url){
+function cargarDivContenidoPrincipal(urlContenido){
 	$("#contenidoPrincipal").html("Cargando . . .");
-	$.get(baseURL + url, function(respuesta) {
+	$.get(baseURL + urlContenido, function(respuesta) {
 		$("#contenidoPrincipal").html(respuesta);
 	}).fail(function() {
 		$("#contenidoPrincipal").html("No se ha podido visualizar esta pagina");
 	});
 }
 
-//mensajeDeAlerta
 function mensajeDeAlertaPersonalizado(mensaje){
 	alert(mensaje);
 }
 
-//mensajeDeConfirmacion
-function mensajeDeConfirmacionPersonalizado(mensaje){
+function mensajeDeConfirmacion(mensaje){
 	return confirm(mensaje);
 }
 
@@ -39,8 +36,7 @@ function capturarDatosInicialesDelFormulario(){
 	origForm = $form.serialize();
 }
 
-//seRealizaronCambiosEnElFormulario
-function cambiaronLosDatosDelFormularioInicial(){
+function seRealizaronCambiosEnElFormulario(){
 	return ($form.serialize() !== origForm);
 }
 
@@ -75,21 +71,20 @@ function mostrarNotificacionNingunCambioFormulario(){
 //al user Y,SI,CON significa que hace mas de una cosa, se deberia cambiar 
 //o eliminar este metodo y usar el codigo en cada lugar donde se llama a este metodo
 function cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario(url){
-	//descartarCambios
-	var cargar = true;
-	if(cambiaronLosDatosDelFormularioInicial()){
-		if(!mensajeDeConfirmacionPersonalizado("Desea descartar los cambios?")){
-			cargar = false;
+
+	var descartarCambios = true;
+	if(seRealizaronCambiosEnElFormulario()){
+		if(!mensajeDeConfirmacion("Desea descartar los cambios?")){
+			descartarCambios = false;
 		}
 	}
 
-	if(cargar){
-		cargarUrlEnDivContenidoPrincipal(url);
+	if(descartarCambios){
+		cargarDivContenidoPrincipal(url);
 	}
 }
 
-//eliminarRegistros
-function eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar, urlContenido){
+function eliminarRegistros(urlEliminar, urlContenido){
     $.post(baseURL + urlEliminar,function(retorno) {
 
 		if(retorno['notificacion'] != null){
@@ -97,7 +92,7 @@ function eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar, urlConteni
 		}
 
 		if(eval(retorno['estado']) == true){
-			cargarUrlEnDivContenidoPrincipal(urlContenido)
+			cargarDivContenidoPrincipal(urlContenido)
 		}
 
     }).fail(function() {
@@ -138,7 +133,7 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 	    	$('#' + dataTableId + ' tr td:not(:first-child)').click(function () {
 
 	    	    var id = $(this).closest('tr').find('td:eq(0) input').val();
-	    	    cargarUrlEnDivContenidoPrincipal(urlVerRegistro + id)
+	    	    cargarDivContenidoPrincipal(urlVerRegistro + id)
 
 	    	});
 	    	
@@ -189,8 +184,7 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 
 }
 
-//seleccionarTodosLosCehckBoxDeDataTable
-function seleccionarAllCheckBoxDeDataTable(){
+function seleccionarTodosLosCehckBoxDeDataTable(){
 	if($("#checkBoxAll").is(":checked")){
 		$(":checkbox[name='checkBoxRow']").prop('checked', true);
 		$("#botoneraCentro").show();
@@ -215,15 +209,15 @@ function eliminarRegistrosSeleccionadosDeDataTable(dataTableId, urlEliminar, url
 	if($('#' + dataTableId + ' :checked').length > 1){
 		mensaje = "Esta seguro que quiere eliminar estos registros?";
 	}
-	if(mensajeDeConfirmacionPersonalizado(mensaje)){
+	if(mensajeDeConfirmacion(mensaje)){
 		var selectedIds = obtenerCheckBoxSeleccionadosDeDataTable();
 
-	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal(urlEliminar + selectedIds, urlContenido);
+	    eliminarRegistros(urlEliminar + selectedIds, urlContenido);
 	}
 }
 
-//aplicarReglasDeValidacionFormulario
-function aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion){
+
+function aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion){
 	$form.validate({
 		onkeyup: function (element) {
 	         this.element(element);

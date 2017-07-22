@@ -6,10 +6,10 @@
 var isMultiCompaniaActivado = eval($("#isMultiCompaniaActivado").val());
 
 var aoColumns = [ 
-                 {},
-                 { sClass: "center"},
-                 { sClass: "center"},
-                 { sClass: "center"},
+                 { "width": "1px" },
+                 { sClass: "center" },
+                 { sClass: "center" },
+                 { sClass: "center" },
              ];
 
 if(!isMultiCompaniaActivado){
@@ -21,17 +21,14 @@ cargarConfiguracionDataTable("dataTableLista", "mantenimiento/usuario/listaJson"
 //$("#paginacionDiv").append($(".dataTables_paginate"));
 
 $("#btnCrearRegistro").click(function() {
-	cargarUrlEnDivContenidoPrincipal("mantenimiento/usuario/ver");
+	cargarDivContenidoPrincipal("mantenimiento/usuario/ver");
 });
 
-$("#btnEliminarRegistro").click(function(){
+function btnEliminarRegistro(){
 	eliminarRegistrosSeleccionadosDeDataTable("dataTableLista", "mantenimiento/usuario/eliminar?ids=", "mantenimiento/usuario/listar");
-});
+}
 
 $("#btnImprimirRegistro").click(function(){
     var selectedIds = obtenerCheckBoxSeleccionadosDeDataTable();
     console.log(selectedIds);
 });
-
-
-

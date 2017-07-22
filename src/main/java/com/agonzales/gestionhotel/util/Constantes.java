@@ -2,6 +2,9 @@ package com.agonzales.gestionhotel.util;
 
 public class Constantes {
 	
+	public final static Integer SUPER_UID = 1;
+	public final static Integer MAIN_COMPANIA_ID = 1;
+	public final static Integer INTENTOS_FALLIDOS_MAXIMOS = 3;
 	public final static String UID = "uid";
 	public final static String USUARIO_SESION = "usuarioSesion";
 	public final static String FORMATO_FECHA_DDMMYYYY = "dd/MM/yyyy";

@@ -22,8 +22,7 @@ public class LoginController {
 	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
-	private CompaniaService companiaService;
-
+	private CompaniaService companiService;
 
 	@RequestMapping("/login")
 	public String login(Model model) {
@@ -42,7 +41,7 @@ public class LoginController {
 		log.info("[LoginController] - [loginFailure]");
 		return "redirect:/login";
 	}
-	
+
 	@RequestMapping(value = "/logout/success")
  	public String logoutSuccess(Model model) {
 		log.info("[LoginController] - [logoutSuccess]");
@@ -50,19 +49,18 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/configuracionUsuario", method = RequestMethod.GET)
-	public String configuracionUsiaro(Model model) {
+	public String configuracionUsiaro(HttpSession session, Model model) {
 		log.info("[LoginController] - [configuracionUsiaro]");
-		List<Compania> listaCompanias = companiaService.listarTodos();
-		model.addAttribute("listaCompanias", listaCompanias);
+		model.addAttribute("listaCompanias", session.getAttribute("listaCompanias"));
 		return "configuracionUsuario";
 	}
 
 	@RequestMapping(value = "/")
  	public String principal(HttpSession session) {
 		log.info("[LoginController] - [principal]");
-		session.setAttribute("isMultiCompaniaActivado", companiaService.isMultiCompaniaActivado());
+		session.setAttribute("isMultiCompaniaActivado", companiService.isMultiCompaniaActivado());
+		session.setAttribute("listaCompanias", companiService.listarTodos());
 		return "principal";
 	}
-
 
 }

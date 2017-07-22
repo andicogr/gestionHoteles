@@ -35,8 +35,22 @@
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty compania}">
-							<button class="btn btn-danger" id="btnEliminarRegistro">Eliminar</button>
 							<button class="btn btn-default" id="btnImprimirRegistro">Imprimir</button>
+		                    <div class="btn-group botonOpcionesMantenimiento">
+		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+		                    		Opciones 
+		                    		<span class="caret"></span>
+		                    	</button>
+		                    	<ul role="menu" class="dropdown-menu">
+		                      		<li>
+		                      			<a href="#">Desbloquear Usuario</a>
+		                      		</li>
+		                      		<li class="divider"></li>
+		                      		<li>
+		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+		                      		</li>
+		                    	</ul>
+		                    </div>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">

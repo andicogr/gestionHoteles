@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Entidad;
 
 @Entity
@@ -189,10 +190,16 @@ public class Compania implements Entidad, Serializable {
 	}
 	
 	public boolean existeLogo(){
-		if(!getLogo().isEmpty()){
-			return true;
+		if(getLogo().isEmpty()){
+			return false;
 		}
-		return false;
+		return true;
+	}
+	
+	public void limpiarArchivoDeCompania(){
+		if(!existeLogo()){
+			setArchivo(null);
+		}
 	}
 
 }

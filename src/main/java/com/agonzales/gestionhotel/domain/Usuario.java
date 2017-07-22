@@ -49,6 +49,9 @@ public class Usuario extends EntidadBase implements Entidad{
 	
 	@Column(name="fecha_expirancion_usuario")
 	private Date fechaExpiracionUsuario;
+	
+	@Column(name="numero_intentos_fallidos")
+	private Integer numeroIntentosFallidos;
 
 	public Integer getId() {
 		return id;
@@ -114,6 +117,14 @@ public class Usuario extends EntidadBase implements Entidad{
 		this.fechaExpiracionUsuario = fechaExpiracionUsuario;
 	}
 
+	public Integer getNumeroIntentosFallidos() {
+		return numeroIntentosFallidos;
+	}
+
+	public void setNumeroIntentosFallidos(Integer numeroIntentosFallidos) {
+		this.numeroIntentosFallidos = numeroIntentosFallidos;
+	}
+
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
@@ -164,6 +175,17 @@ public class Usuario extends EntidadBase implements Entidad{
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constantes.FORMATO_FECHA_DDMMYYYY);
 		String fechaFormateada = simpleDateFormat.format(getFechaExpiracionUsuarioValidandoNull());
 		return fechaFormateada;
+	}
+	
+	public void incrementarNumeroDeIntentosFallidos(){
+		setNumeroIntentosFallidos(getNumeroIntentosFallidos() + 1);
+		bloquearUsuarioPorNumeroDeIntentosFallidos();
+	}
+	
+	public void bloquearUsuarioPorNumeroDeIntentosFallidos(){
+		if(getNumeroIntentosFallidos() == Constantes.INTENTOS_FALLIDOS_MAXIMOS){
+			setBloqueado(true);
+		}
 	}
 
 }

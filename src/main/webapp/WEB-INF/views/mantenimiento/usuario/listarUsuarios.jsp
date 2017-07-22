@@ -26,14 +26,28 @@
 							</div>
 							<div class="col-md-6 col-sm-6 col-xs-6 text-center">
 								<div id="botoneraCentro" style="display: none">
-									<button class="btn btn-danger" data-toggle="confirmation" id="btnEliminarRegistro">Eliminar</button>
 									<button class="btn btn-default" data-toggle="confirmation" id="btnImprimirRegistro">Imprimir</button>
+				                    <div class="btn-group botonOpcionesMantenimiento">
+				                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+				                    		Opciones 
+				                    		<span class="caret"></span>
+				                    	</button>
+				                    	<ul role="menu" class="dropdown-menu">
+				                      		<li>
+				                      			<a href="#">Desbloquear Usuario</a>
+				                      		</li>
+				                      		<li class="divider"></li>
+				                      		<li>
+				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+				                      		</li>
+				                    	</ul>
+				                    </div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="col-sm-4 text-right" id="paginacionDiv">
-					
+
 					</div>
 				</div>
 			</div>
@@ -41,7 +55,7 @@
 				<table id="dataTableLista" class="table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th><input type="checkbox" id="checkBoxAll" onclick="seleccionarAllCheckBoxDeDataTable();" class="flat"/></th>
+							<th><input type="checkbox" id="checkBoxAll" onclick="seleccionarTodosLosCehckBoxDeDataTable();" class="flat"/></th>
 							<c:if test="${isMultiCompaniaActivado == true}">
 								<th>Compa&ntilde;ia</th>
 							</c:if>

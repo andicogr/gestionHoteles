@@ -43,12 +43,12 @@ var mensajesValidacion = {
 		}
 };
 
-aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion);
+aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
 
 $("#botonRegistrar").click(function() {
 
-	if(cambiaronLosDatosDelFormularioInicial()){
+	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
@@ -66,7 +66,7 @@ $("#botonRegistrar").click(function() {
 					}
 						
 					if(eval(retorno['estado']) == true){
-						cargarUrlEnDivContenidoPrincipal("mantenimiento/usuario/ver?id=" + retorno['id'])
+						cargarDivContenidoPrincipal("mantenimiento/usuario/ver?id=" + retorno['id'])
 					}
 				}
 			})
@@ -86,12 +86,12 @@ $("#botonAtras").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/usuario/listar");
 });
 
-$("#btnEliminarRegistro").click(function(){
-	if(mensajeDeConfirmacionPersonalizado("Esta seguro que  quiere eliminar este registro?")){
-	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal("mantenimiento/usuario/eliminar?ids="+ [$("#id").val()], 
+function btnEliminarRegistro(){
+	if(mensajeDeConfirmacion("Esta seguro que  quiere eliminar este registro?")){
+	    eliminarRegistros("mantenimiento/usuario/eliminar?ids="+ [$("#id").val()], 
 	    		"mantenimiento/usuario/listar");
 	}
-});
+}
 
 $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());

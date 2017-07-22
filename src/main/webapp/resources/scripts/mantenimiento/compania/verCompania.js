@@ -55,12 +55,12 @@ var mensajesValidacion = {
 	  	}
 };
 
-aplicarValidacionesFormulario(reglasValidacion, mensajesValidacion);
+aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
 
 $("#botonRegistrar").click(function() {
 
-	if(cambiaronLosDatosDelFormularioInicial()){
+	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
@@ -78,7 +78,7 @@ $("#botonRegistrar").click(function() {
 					}
 						
 					if(eval(retorno['estado']) == true){
-						cargarUrlEnDivContenidoPrincipal("mantenimiento/compania/ver?id=" + retorno['id'])
+						cargarDivContenidoPrincipal("mantenimiento/compania/ver?id=" + retorno['id'])
 					}
 				}
 			})
@@ -96,14 +96,14 @@ $("#btnCrearRegistro").click(function() {
 
 $("#botonAtras").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/compania/listar");
-});
+});	
 
-$("#btnEliminarRegistro").click(function(){
-	if(mensajeDeConfirmacionPersonalizado("Esta seguro que  quiere eliminar este registro?")){
-	    eliminarPorUrlYCargarUrlEnDivContenidoPrincipal("mantenimiento/compania/eliminar?ids="+ [$("#id").val()], 
+function btnEliminarRegistro(){
+	if(mensajeDeConfirmacion("Esta seguro que  quiere eliminar este registro?")){
+	    eliminarRegistros("mantenimiento/compania/eliminar?ids="+ [$("#id").val()], 
 	    		"mantenimiento/compania/listar");
 	}
-});	
+}
 
 $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());

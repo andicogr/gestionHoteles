@@ -20,5 +20,8 @@ public interface UsuarioService {
 
 	public List<Usuario> listarTodos();
 	
+	public void registrarIntentoDeLogeoFallido(String username);
+	
+	public Boolean isPasswordIncorrecto(String username, String password);
 
 }

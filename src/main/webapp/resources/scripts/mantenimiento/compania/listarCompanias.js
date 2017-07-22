@@ -1,6 +1,6 @@
 
 var aoColumns = [ 
-                 {},
+                 { "width": "1px" },
                  { sClass: "center"},
                  { sClass: "center"},
                  { sClass: "center"},
@@ -12,12 +12,12 @@ cargarConfiguracionDataTable("dataTableLista", "mantenimiento/compania/listaJson
 //$("#paginacionDiv").append($(".dataTables_paginate"));
 
 $("#btnCrearRegistro").click(function() {
-	cargarUrlEnDivContenidoPrincipal("mantenimiento/compania/ver");
+	cargarDivContenidoPrincipal("mantenimiento/compania/ver");
 });
 
-$("#btnEliminarRegistro").click(function(){
+function btnEliminarRegistro(){
 	eliminarRegistrosSeleccionadosDeDataTable("dataTableLista", "mantenimiento/compania/eliminar?ids=", "mantenimiento/compania/listar");
-});
+}
 
 $("#btnImprimirRegistro").click(function(){
     var selectedIds = obtenerCheckBoxSeleccionadosDeDataTable();

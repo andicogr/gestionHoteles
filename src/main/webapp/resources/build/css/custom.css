@@ -4331,3 +4331,7 @@ div.profile_img div button.eliminarImg {
     margin: 5px 0 5px 0;
 }
 
+div.botonOpcionesMantenimiento {
+	margin-bottom: 5px;
+	margin-right: 5px;	
+}

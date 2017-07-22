@@ -30,6 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UsuarioDao usuarioDAO;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	/**
 	 * Returns a populated {@link UserDetails} object. The username is first
@@ -43,6 +46,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 			if(usuario == null){
 				return null;
+			}
+
+			if(usuarioService.isPasswordIncorrecto(username, usuario.getPassword())){
+				usuarioService.registrarIntentoDeLogeoFallido(username);
 			}
 
 			return new User(
