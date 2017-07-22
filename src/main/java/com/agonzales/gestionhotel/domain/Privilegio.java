@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.agonzales.gestionhotel.util.Entidad;
 import com.agonzales.gestionhotel.util.EntidadBase;
+import com.agonzales.gestionhotel.util.Util;
 
 @Entity
 @Table(name="privilegio")
@@ -25,12 +26,12 @@ public class Privilegio extends EntidadBase implements Entidad{
 	private Integer id;
 
 	@Column(length=50, nullable=true)
-	private String privilegio;
+	private String nombre;
 	
 	@Column(length=250)
 	private String descripcion;
 	
-	private String estado;
+	private boolean activo;
 
 	public Integer getId() {
 		return id;
@@ -40,12 +41,12 @@ public class Privilegio extends EntidadBase implements Entidad{
 		this.id = id;
 	}
 
-	public String getPrivilegio() {
-		return privilegio;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setPrivilegio(String privilegio) {
-		this.privilegio = privilegio;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public String getDescripcion() {
@@ -56,18 +57,22 @@ public class Privilegio extends EntidadBase implements Entidad{
 		this.descripcion = descripcion;
 	}
 
-	public String getEstado() {
-		return estado;
+	public boolean isActivo() {
+		return activo;
 	}
 
-	public void setEstado(String estado) {
-		this.estado = estado;
+	public void setActivo(boolean activo) {
+		this.activo = activo;
 	}
 
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String obtenerEstado(){
+		return Util.obtenerNombreEstado(isActivo());
 	}
 
 }

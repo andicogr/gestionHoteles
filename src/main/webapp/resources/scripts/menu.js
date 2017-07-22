@@ -11,5 +11,9 @@ $(function(){
 	abrirMenuEnDivContenidoPrincipal("companiaMenuListar", "mantenimiento/compania/listar");
 	
 	abrirMenuEnDivContenidoPrincipal("usuarioMenuListar", "mantenimiento/usuario/listar");
+	
+	abrirMenuEnDivContenidoPrincipal("rolMenuListar", "mantenimiento/rol/listar");
+	
+	abrirMenuEnDivContenidoPrincipal("privilegioMenuListar", "mantenimiento/privilegio/listar");
 
 });

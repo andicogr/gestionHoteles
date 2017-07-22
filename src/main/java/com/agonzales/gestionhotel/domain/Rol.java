@@ -13,8 +13,12 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.agonzales.gestionhotel.util.Entidad;
 import com.agonzales.gestionhotel.util.EntidadAuditoria;
+import com.agonzales.gestionhotel.util.Util;
 
 @Entity
 @Table(name="rol")
@@ -35,7 +39,10 @@ public class Rol extends EntidadAuditoria implements Entidad{
 	private String descripcion;
 
 	@ManyToMany
-	@JoinTable(name="rol_privilegio", joinColumns = {@JoinColumn(name = "rol_id")}, inverseJoinColumns = {@JoinColumn(name = "privilegio_id")})
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JoinTable(name="rol_privilegio", 
+		joinColumns = {@JoinColumn(name = "rol_id")}, 
+		inverseJoinColumns = {@JoinColumn(name = "privilegio_id")})
 	private List<Privilegio> privilegios;
 
 	private boolean activo;
@@ -84,6 +91,10 @@ public class Rol extends EntidadAuditoria implements Entidad{
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String obtenerEstado(){
+		return Util.obtenerNombreEstado(isActivo());
 	}
 
 }

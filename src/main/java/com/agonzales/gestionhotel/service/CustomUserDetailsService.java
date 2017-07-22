@@ -78,7 +78,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         	collection.addAll(rol.getPrivilegios());  
         }
         for (Privilegio item : collection) {
-        	privilegios.add(item.getPrivilegio());
+        	privilegios.add(item.getNombre());
         }
         return privilegios;
     }

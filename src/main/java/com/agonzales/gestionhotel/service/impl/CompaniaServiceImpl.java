@@ -78,10 +78,11 @@ public class CompaniaServiceImpl implements CompaniaService{
 	public Map<String, Object> guardar(Compania compania){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String texto = "";
+		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
 		Integer archivoEliminarId = null;
 
 		compania.limpiarArchivoDeCompania();
+
 		if(companiaDAO.isUniqueValue("razonSocial", compania.getRazonSocial(), compania.getId())){
 			notifiaccion = Util.crearNotificacionError("Error", "La Razon Social ya esta registrada en el sistema.");
 			retorno.put("notificacion", notifiaccion);
@@ -97,6 +98,8 @@ public class CompaniaServiceImpl implements CompaniaService{
 		}
 
 		if(compania.getId() != null){
+			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
+			
 			Compania actual = companiaDAO.get(compania.getId());
 			actual.setCorreoContacto(compania.getCorreoContacto());
 			actual.setDireccion(compania.getDireccion());
@@ -118,12 +121,7 @@ public class CompaniaServiceImpl implements CompaniaService{
 			compania = actual;
 		}
 
-		if(compania.getId() == null){
-			texto = Constantes.MENSAJE_REGISTRO_CORRECTO;
-		}else{
-			texto = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-		}
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", texto);
+		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
 
 		companiaDAO.guardar(compania, usuarioService.getUID());
 
@@ -146,17 +144,26 @@ public class CompaniaServiceImpl implements CompaniaService{
 	public Map<String, Object> eliminar(Integer[] ids){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		boolean estado = false;
-		String texto = Constantes.MENSAJE_REGISTRO_ELIMINADO;
+		
+		if(isCompaniaPrincipal(ids)){
+			notifiaccion = Util.crearNotificacion("error", "Error", 
+					"No se puede eliminar la compañia principal del sistema.", 5000);
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		boolean estadoEliminacion = false;
+		String textoNotificacion = Constantes.MENSAJE_REGISTRO_ELIMINADO;
 		if(ids.length > 1){
-			texto = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
+			textoNotificacion = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
 		}
 		for(Integer id : ids){
 			Compania compania = companiaDAO.get(id);
-			estado = companiaDAO.eliminar(compania);
+			estadoEliminacion = companiaDAO.eliminar(compania);
 		}
-		if(estado){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", texto);
+		if(estadoEliminacion){
+			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
 		}else{
 			notifiaccion = Util.crearNotificacion("error", "Error", 
 					"Ocurrio un error mientras se eliminaba el registro, "
@@ -164,10 +171,10 @@ public class CompaniaServiceImpl implements CompaniaService{
 		}
 
 		retorno.put("notificacion", notifiaccion);
-		retorno.put("estado", estado);
+		retorno.put("estado", estadoEliminacion);
 		return retorno;
 	}
-	
+
 	public List<Compania> listarTodos(){
 		return companiaDAO.getTodos();
 	}
@@ -176,6 +183,15 @@ public class CompaniaServiceImpl implements CompaniaService{
 		List<Compania> listaCompanias = companiaDAO.getTodos();
 		if(listaCompanias.size() > 1){
 			return true;
+		}
+		return false;
+	}
+
+	public boolean isCompaniaPrincipal(Integer[] ids){
+		for(Integer id : ids){
+			if(id == Constantes.MAIN_COMPANIA_ID){
+				return true;
+			}
 		}
 		return false;
 	}

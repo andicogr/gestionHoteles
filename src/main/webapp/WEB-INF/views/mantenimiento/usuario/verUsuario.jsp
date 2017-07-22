@@ -161,18 +161,18 @@
 								Fecha de Expiracion
 	                        </label>
 	                        <div class="col-md-3 col-sm-3 col-xs-3">
-	                           <div class="control-group">
-	                            <div class="controls">
-	                              <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-	                                <input type="text" class="form-control has-feedback-left" id="fechaExpiracionUsuario" 
-	                                name="fechaExpiracionUsuario" placeholder="--/--/----" aria-describedby="inputSuccess2Status2"
-	                                value="${usuario.getFechaExpiracionUsuarioConFormato()}">
-	                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-	                                <span id="inputSuccess2Status2" class="sr-only">(success)</span>
-	                              </div>
-	                            </div>
-	                          </div>
-	                        </div>
+	                        	<div class="control-group">
+	                            	<div class="controls">
+	                              		<div class="col-md-11 xdisplay_inputx form-group has-feedback">
+	                                		<input type="text" class="form-control has-feedback-left" id="fechaExpiracionUsuario" 
+	                                		name="fechaExpiracionUsuario" placeholder="--/--/----" aria-describedby="inputSuccess2Status2"
+	                                		value="${usuario.getFechaExpiracionUsuarioConFormato()}">
+	                                		<span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+	                                		<span id="inputSuccess2Status2" class="sr-only">(success)</span>
+	                              		</div>
+	                            	</div>
+	                          	</div>
+	                    	</div>
                         </div>
 					</div>
 
@@ -181,42 +181,43 @@
 					<c:if test="${not empty usuario}">
 	                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
 	                    	<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-	                        	<li role="presentation" class="active"><a href="#tab_content1" id="tab-roles" role="tab" data-toggle="tab" aria-expanded="true">Roles</a>
+	                        	<li role="presentation" class="active">
+	                        		<a href="#tab_content1" id="tab-roles" role="tab" data-toggle="tab" aria-expanded="true">
+	                        			Roles
+	                        		</a>
 	                        	</li>
 	                      	</ul>
 	                      	<div id="myTabContent" class="tab-content">
 	                        	<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="tab-roles">
-                          		<div class="panel-body">
-                          			<div class="row">
-                          				<div class="col-md-12 col-sm-12 col-xs-12">
-                          				
-                              	
-                              <c:if test="${empty usuario.roles}">
-                              Nada
-                              </c:if>
-                              <c:if test="${not empty usuario.roles}">
-                              Con Registros
-                              </c:if>
-                            <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>Nombre Rol</th>
-                                  <th>Estado</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                              <c:forEach items="${usuario.roles}" var="usuarioRol">
-	                              <tr>
-	                                <td>${usuarioRol.obtenerNombreRol()}</td>
-	                                <td>${usuarioRol.obtenerEstadoUsuarioRol()}</td>
-	                              </tr>
-                              </c:forEach>
-
-                              </tbody>
-                            </table>
-                            </div>
-                            </div>
-                          </div>
+	                          		<div class="panel-body">
+	                          			<div class="row">
+	                          				<div class="col-md-12 col-sm-12 col-xs-12">
+												<c:if test="${empty usuario.roles}">
+					                            	Nada
+					                            </c:if>
+					                            <c:if test="${not empty usuario.roles}">
+					                            	Con Registros
+					                            </c:if>
+					                            <table class="table table-bordered">
+					                              	<thead>
+					                                	<tr>
+					                                  		<th>Nombre Rol</th>
+					                                  		<th>Estado</th>
+					                                	</tr>
+					                              	</thead>
+					                              	<tbody>
+					                              		<c:forEach items="${usuario.roles}" var="usuarioRol">
+						                             		<tr>
+						                                		<td>${usuarioRol.obtenerNombreRol()}</td>
+						                                		<td>${usuarioRol.obtenerEstadoUsuarioRol()}</td>
+						                              		</tr>
+					                              		</c:forEach>
+					
+					                              	</tbody>
+					                            </table>
+	                            			</div>
+	                            		</div>
+	                          		</div>
 	                        	</div>
 	                      	</div>
 	                    </div>
@@ -231,4 +232,4 @@
 <!-- Parsley -->
 <script src="resources/vendors/validate/jquery.validate.js"></script>
 <script src="resources/vendors/validate/localization/messages_es_PE.js"></script>
-<script src="resources/scripts/mantenimiento/usuario/verUsuario.js"></script>    
+<script src="resources/scripts/mantenimiento/rol/verRol.js"></script>    

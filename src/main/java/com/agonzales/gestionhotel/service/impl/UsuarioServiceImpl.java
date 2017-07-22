@@ -60,7 +60,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 						checkbox,
 						usuario.getNombreCompania(),
 						usuario.getUsername(),
-						usuario.isActivo() ? Constantes.ESTADO_ACTIVO_ETIQUETA : Constantes.ESTADO_INACTIVO_ETIQUETA
+						Util.obtenerNombreEstado(usuario.isActivo())
 					};
 			if(!isMultiCompaniaActivado){
 				aaDato = (String[]) ArrayUtils.remove(aaDato, 1);
@@ -77,7 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Map<String, Object> guardar(Usuario usuario){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String texto = "";
+		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
 
 		if(usuarioDAO.isUniqueValue("username", usuario.getUsername(), usuario.getId())){
 			notifiaccion = Util.crearNotificacionError("Error", "El nombre de usuario ya esta registrado en el sistema.");
@@ -87,6 +87,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 		}
 
 		if(usuario.getId() != null){
+			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
+			
 			Usuario actual = usuarioDAO.get(usuario.getId());
 			actual.setUsername(usuario.getUsername());
 			actual.setPassword(usuario.getPassword());
@@ -97,12 +99,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 			usuario = actual;
 		}
 
-		if(usuario.getId() == null){
-			texto = Constantes.MENSAJE_REGISTRO_CORRECTO;
-		}else{
-			texto = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-		}
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", texto);
+		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
 
 		usuarioDAO.guardar(usuario, getUID());
 
@@ -121,17 +118,26 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Map<String, Object> eliminar(Integer[] ids){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		boolean estado = false;
-		String texto = Constantes.MENSAJE_REGISTRO_ELIMINADO;
+		
+		if(isUsuarioPrincipal(ids)){
+			notifiaccion = Util.crearNotificacion("error", "Error", 
+					"No se puede eliminar el usuario principal del sistema.", 5000);
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		boolean estadoEliminacion = false;
+		String textoNotificacion = Constantes.MENSAJE_REGISTRO_ELIMINADO;
 		if(ids.length > 1){
-			texto = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
+			textoNotificacion = Constantes.MENSAJE_REGISTROS_ELIMINADOS;
 		}
 		for(Integer id : ids){
 			Usuario usuario = usuarioDAO.get(id);
-			estado = usuarioDAO.eliminar(usuario);
+			estadoEliminacion = usuarioDAO.eliminar(usuario);
 		}
-		if(estado){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", texto);
+		if(estadoEliminacion){
+			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
 		}else{
 			notifiaccion = Util.crearNotificacion("error", "Error", 
 					"Ocurrio un error mientras se eliminaba el registro, "
@@ -139,7 +145,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		}
 
 		retorno.put("notificacion", notifiaccion);
-		retorno.put("estado", estado);
+		retorno.put("estado", estadoEliminacion);
 		return retorno;
 	}
 
@@ -159,6 +165,15 @@ public class UsuarioServiceImpl implements UsuarioService{
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean isUsuarioPrincipal(Integer[] ids){
+		for(Integer id : ids){
+			if(id == Constantes.SUPER_UID){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

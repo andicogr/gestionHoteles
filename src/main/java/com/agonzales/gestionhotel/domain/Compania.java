@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Entidad;
 
 @Entity

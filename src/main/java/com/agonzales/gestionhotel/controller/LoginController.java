@@ -1,8 +1,5 @@
 package com.agonzales.gestionhotel.controller;
 
-import java.util.List;
-
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -13,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.agonzales.gestionhotel.domain.Compania;
 import com.agonzales.gestionhotel.service.CompaniaService;
 
 @Controller
@@ -51,7 +47,7 @@ public class LoginController {
 	@RequestMapping(value = "/configuracionUsuario", method = RequestMethod.GET)
 	public String configuracionUsiaro(HttpSession session, Model model) {
 		log.info("[LoginController] - [configuracionUsiaro]");
-		model.addAttribute("listaCompanias", session.getAttribute("listaCompanias"));
+		model.addAttribute("listaCompanias", session.getAttribute("listaDeCompanias"));
 		return "configuracionUsuario";
 	}
 
@@ -59,7 +55,7 @@ public class LoginController {
  	public String principal(HttpSession session) {
 		log.info("[LoginController] - [principal]");
 		session.setAttribute("isMultiCompaniaActivado", companiService.isMultiCompaniaActivado());
-		session.setAttribute("listaCompanias", companiService.listarTodos());
+		session.setAttribute("listaDeCompanias", companiService.listarTodos());
 		return "principal";
 	}
 

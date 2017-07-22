@@ -2,8 +2,6 @@ package com.agonzales.gestionhotel.controller.mantenimiento;
 
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.agonzales.gestionhotel.domain.Usuario;
-import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.CompaniaService;
 import com.agonzales.gestionhotel.service.UsuarioService;
