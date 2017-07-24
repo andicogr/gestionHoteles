@@ -112,7 +112,7 @@ public class CompaniaServiceImpl implements CompaniaService{
 				if(actual.existeArchivo()){
 					archivoEliminarId = actual.getArchivo().getId();
 				}
-				if(compania.getArchivo().estaVacio()){
+				if(compania.isArchivoCompaniaVacio()){
 					actual.setArchivo(null);
 				}else{
 					actual.setArchivo(compania.getArchivo());

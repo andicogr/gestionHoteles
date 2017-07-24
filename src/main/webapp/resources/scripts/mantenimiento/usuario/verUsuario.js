@@ -87,10 +87,21 @@ $("#botonAtras").click(function() {
 });
 
 function btnEliminarRegistro(){
-	if(mensajeDeConfirmacion("Esta seguro que  quiere eliminar este registro?")){
-	    eliminarRegistros("mantenimiento/usuario/eliminar?ids="+ [$("#id").val()], 
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este registro?")){
+	    eliminarRegistros("mantenimiento/usuario/eliminar?ids=" + [$("#id").val()], 
 	    		"mantenimiento/usuario/listar");
 	}
+}
+
+function btnEliminarUsuarioRol(idUsuarioRol, idUsuario){
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
+	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
+	    		"mantenimiento/usuario/ver?id=" + idUsuario);
+	}
+}
+
+function abrirFormularioAgregarUsuarioRol(idUsuario){
+	cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?idUsuario=" + idUsuario);
 }
 
 $("#btnImprimirRegistro").click(function(){
@@ -105,7 +116,9 @@ $('#expirarUsuario').change(function () {
 	}else{
 		$('#divFechaExpiracionUsuario').hide();
 	}
- });
+});
 
-
-init_validator();
+$('#tablaListaUsuarioRol tr td:not(:last-child)').click(function () {
+    var idUsuarioRol = $(this).closest('tr').find('td:eq(0) input').val();
+    cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?id=" + idUsuarioRol + "&idUsuario=" + $("#id").val());
+});

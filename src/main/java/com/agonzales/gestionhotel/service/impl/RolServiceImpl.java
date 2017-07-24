@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.RolDao;
 import com.agonzales.gestionhotel.domain.Rol;
+import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.RolService;
 import com.agonzales.gestionhotel.service.UsuarioService;
@@ -107,6 +108,15 @@ public class RolServiceImpl implements RolService{
 	public Map<String, Object> eliminar(Integer[] ids){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
+		
+		if(isRolPrincipal(ids)){
+			notifiaccion = Util.crearNotificacion("error", "Error", 
+					"No se puede eliminar el rol principal del sistema.", 5000);
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
 		boolean estadoEliminacion = false;
 		String textoNotificacion = Constantes.MENSAJE_REGISTRO_ELIMINADO;
 		if(ids.length > 1){
@@ -131,6 +141,42 @@ public class RolServiceImpl implements RolService{
 	
 	public List<Rol> listarTodos(){
 		return rolDao.getTodos();
+	}
+	
+	public List<Rol> listarRolesActivos(){
+		return rolDao.listarRolesActivos();
+	}
+	
+	public boolean isRolPrincipal(Integer[] ids){
+		for(Integer id : ids){
+			if(id == Constantes.SUPER_ROL_ID){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public List<Rol> listarRolesActivosSinRepetirPorUsuario(Integer idUsuario){
+		List<Rol> listaRolesActivosSinRepeteir = new ArrayList<Rol>();
+		List<Rol> listaRolesActivos = rolDao.listarRolesActivos();
+		List<UsuarioRol> listaUsuarioRolesPorUsuario = usuarioService.obtenerUsuarioRolesPorUsuario(idUsuario);
+		
+		for(Rol rol : listaRolesActivos){
+			
+			boolean isRolRegistrado = false;
+			
+			for(UsuarioRol usuarioRol: listaUsuarioRolesPorUsuario){
+				if(usuarioRol.getRolId() == rol.getId()){
+					isRolRegistrado = true;
+				}
+			}
+
+			if(!isRolRegistrado){
+				listaRolesActivosSinRepeteir.add(rol);
+			}
+		}
+		
+		return listaRolesActivosSinRepeteir;
 	}
 
 }

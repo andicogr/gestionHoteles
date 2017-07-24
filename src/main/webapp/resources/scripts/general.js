@@ -32,7 +32,7 @@ function mensajeDeConfirmacion(mensaje){
 }
 
 function capturarDatosInicialesDelFormulario(){
-	$form = $('form');
+	$form = $('#formmularioMantenimiento');
 	origForm = $form.serialize();
 }
 

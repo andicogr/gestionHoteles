@@ -17,5 +17,9 @@ public interface RolService {
 	public Map<String, Object> eliminar(Integer[] ids);
 
 	public List<Rol> listarTodos();
+	
+	public List<Rol> listarRolesActivos();
+	
+	public List<Rol> listarRolesActivosSinRepetirPorUsuario(Integer idUsuario);
 
 }

@@ -94,14 +94,22 @@ public class UsuarioRol extends EntidadAuditoria implements Entidad{
 		return false;
 	}
 	
-	public String obtenerNombreRol(){
+	public String getNombreRol(){
 		if(getRol() != null){
 			return getRol().getNombre();
 		}
 		return "";
 	}
 	
-	public String obtenerEstadoUsuarioRol(){
+	public String getEstadoUsuarioRol(){
 		return Util.obtenerNombreEstado(isActivo());
+	}
+	
+	public Integer getUsuarioId(){
+		return getUsuario().getId();
+	}
+	
+	public Integer getRolId(){
+		return getRol().getId();
 	}
 }

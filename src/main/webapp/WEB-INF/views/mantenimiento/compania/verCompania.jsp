@@ -60,7 +60,7 @@
 			</div>
 
             <div class="x_content">
-            	<form id="enviarFormulario" class="form-horizontal form-label-left">
+            	<form id="formmularioMantenimiento" class="form-horizontal form-label-left">
             		<c:if test="${not empty compania}">
             			<input type="hidden" id="id" name="id" value="${compania.id}">
             		</c:if>

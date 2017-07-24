@@ -60,11 +60,11 @@
 			</div>
 
             <div class="x_content">
-            	<form id="enviarFormulario" class="form-horizontal form-label-left">
+            	<form id="formmularioMantenimiento" class="form-horizontal form-label-left">
             		<c:if test="${not empty usuario}">
             			<input type="hidden" id="id" name="id" value="${usuario.id}">
             		</c:if>
-            		
+
 					<div class="item form-group" 
 						<c:if test="${isMultiCompaniaActivado == false}">
 						 	style="display: none"
@@ -192,24 +192,33 @@
 	                          		<div class="panel-body">
 	                          			<div class="row">
 	                          				<div class="col-md-12 col-sm-12 col-xs-12">
-												<c:if test="${empty usuario.roles}">
-					                            	Nada
-					                            </c:if>
-					                            <c:if test="${not empty usuario.roles}">
-					                            	Con Registros
-					                            </c:if>
-					                            <table class="table table-bordered">
+												<button type="button" class="btn btn-primary" 
+													onclick="abrirFormularioAgregarUsuarioRol(${usuario.id})">
+													Agregar
+												</button>
+					                            <table id="tablaListaUsuarioRol" class="table table-bordered tableSubDetalle">
 					                              	<thead>
 					                                	<tr>
 					                                  		<th>Nombre Rol</th>
 					                                  		<th>Estado</th>
+					                                  		<th width="1 px"></th>
 					                                	</tr>
 					                              	</thead>
 					                              	<tbody>
 					                              		<c:forEach items="${usuario.roles}" var="usuarioRol">
 						                             		<tr>
-						                                		<td>${usuarioRol.obtenerNombreRol()}</td>
-						                                		<td>${usuarioRol.obtenerEstadoUsuarioRol()}</td>
+						                                		<td>
+						                                			${usuarioRol.getNombreRol()}
+						                                			<input type="hidden" value="${usuarioRol.id}">
+						                                		</td>
+						                                		<td>${usuarioRol.getEstadoUsuarioRol()}</td>
+						                                		<td>
+						                                			<a class="close-link eliminar-subRegistro"
+						                                				href="#" onclick="btnEliminarUsuarioRol(${usuarioRol.id}, ${usuario.id})"
+						                                			>
+						                                				<i class="fa fa-trash"></i>
+						                                			</a>
+						                                		</td>
 						                              		</tr>
 					                              		</c:forEach>
 					
@@ -232,4 +241,4 @@
 <!-- Parsley -->
 <script src="resources/vendors/validate/jquery.validate.js"></script>
 <script src="resources/vendors/validate/localization/messages_es_PE.js"></script>
-<script src="resources/scripts/mantenimiento/rol/verRol.js"></script>    
+<script src="resources/scripts/mantenimiento/usuario/verUsuario.js"></script>    

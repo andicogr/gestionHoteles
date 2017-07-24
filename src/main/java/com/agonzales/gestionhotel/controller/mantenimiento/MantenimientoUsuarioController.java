@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.agonzales.gestionhotel.domain.Usuario;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
-import com.agonzales.gestionhotel.service.CompaniaService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 
 @Controller
@@ -27,8 +26,6 @@ public class MantenimientoUsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	@Autowired
-	private CompaniaService companiaService;
 
 	@RequestMapping(value="/listar")
 	public String usuarioListar(HttpSession session, Model model){
@@ -49,10 +46,9 @@ public class MantenimientoUsuarioController {
 	}
 
 	@RequestMapping(value="/ver")
-	public String usuarioVer(Model model, Integer id){
+	public String usuarioVer(HttpSession session, Model model, Integer id){
 		logger.info("[MantenimientoUsuarioController] - method: usuarioVer - id: " + id);
-		//TODO la lista de companias debe cargarse en cache para estar diponible siempre
-		model.addAttribute("listaDeCompanias", companiaService.listarTodos());
+		model.addAttribute("listaDeCompanias", session.getAttribute("listaDeCompanias"));
 		if(id != null){
 			Usuario usuario = usuarioService.get(id);
 			model.addAttribute("usuario", usuario);
@@ -76,4 +72,5 @@ public class MantenimientoUsuarioController {
 		Map<String, Object> retorno = usuarioService.eliminar(ids);
 		return retorno;
 	}
+
 }

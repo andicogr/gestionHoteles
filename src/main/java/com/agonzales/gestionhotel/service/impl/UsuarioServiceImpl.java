@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.UsuarioDao;
+import com.agonzales.gestionhotel.dao.UsuarioRolDao;
 import com.agonzales.gestionhotel.domain.Usuario;
+import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
@@ -24,22 +26,29 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	@Autowired
 	private UsuarioDao usuarioDAO;
+	
+	@Autowired
+	private UsuarioRolDao usuarioRolDao;
 
 	public Integer getUID(){
 		User usuario = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return usuarioDAO.getUID(usuario.getUsername());
 	}
 
-	public Map<String, Object> listarJson(PaginacionDTO paginacion, Boolean isMultiCompaniaActivado){
+	public Map<String, Object> listarJson(PaginacionDTO paginacion, boolean isMultiCompaniaActivado){
 
 		if(paginacion.getiDisplayLength()==null){
 			return null;
 		}
 
 		Map<String, Object> columnas = new HashMap<String, Object>();
-		
+
 		columnas.put("1", "a.compania.razonSocial");
-		columnas.put("2", "a.usuario");
+		columnas.put("2", "a.username");
+		
+		if(!isMultiCompaniaActivado){
+			columnas = Util.reordenarColumnasPorConfiguracionMultiCompania(columnas);
+		}
 
 		List<Usuario> listaJson = usuarioDAO.listarJson(paginacion, columnas);
 		Number total = usuarioDAO.totalListaJson();
@@ -174,6 +183,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 			}
 		}
 		return false;
+	}
+	
+	public List<UsuarioRol> obtenerUsuarioRolesPorUsuario(Integer idUsuario){
+		return usuarioRolDao.obtenerUsuarioRolesPorUsuario(idUsuario);
 	}
 
 }

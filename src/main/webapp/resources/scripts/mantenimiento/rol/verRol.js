@@ -64,8 +64,23 @@ function btnEliminarRegistro(){
 
 $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());
-});	
+});
 
+function abrirFormularioAgregarPrivilegio(idUsuario){
+	cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?idUsuario=" + idUsuario);
+}
 
+function btnEliminaRolPrivilegio(idPrivilegio, idRol){
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
+	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
+	    		"mantenimiento/usuario/ver?id=" + idUsuario);
+	}
+}
 
-init_validator();
+function btnEliminarRolCompania(idUsuarioRol, idUsuario){
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
+	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
+	    		"mantenimiento/usuario/ver?id=" + idUsuario);
+	}
+}
+

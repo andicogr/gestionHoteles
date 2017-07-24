@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,6 +97,7 @@ public class Util {
 	}
 	
 	public static String obtenerNombreEstado(boolean activo){
+		logger.info("[Util] - Method: obtenerNombreEstado");
 		if(activo){
 			return Constantes.ESTADO_ACTIVO_ETIQUETA;
 		}
@@ -388,5 +390,22 @@ public class Util {
 		return otorgarNombreImagen(request, mImagen, mImagen.getOriginalFilename(), perfijoImg);
 	}
 
+	public static Map<String, Object> reordenarColumnasPorConfiguracionMultiCompania(Map<String, Object> columnas){
+		Map<String, Object> columnasSinCompania = new HashMap<String, Object>();
 
+		Iterator<Map.Entry<String, Object>> iterador = columnas.entrySet().iterator();
+		
+		boolean primerRegistro = true;
+		while (iterador.hasNext()){
+			Map.Entry<String, Object> map = iterador.next();
+			if(!primerRegistro){
+				Integer numeroColumn = Integer.parseInt(map.getKey()) - 1;
+				columnasSinCompania.put(numeroColumn.toString(), map.getValue());
+			}
+			primerRegistro = false;
+		}
+
+		return columnasSinCompania;
+	}
+	
 }

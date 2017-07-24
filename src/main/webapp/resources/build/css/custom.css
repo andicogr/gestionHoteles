@@ -4248,6 +4248,10 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 	cursor: pointer;
 }
 
+.tableSubDetalle {
+	cursor: pointer;
+}
+
 .select-checkbox{
 	text-align: center; 
     vertical-align: middle;
@@ -4334,4 +4338,9 @@ div.profile_img div button.eliminarImg {
 div.botonOpcionesMantenimiento {
 	margin-bottom: 5px;
 	margin-right: 5px;	
+}
+
+a.eliminar-subRegistro {
+	cursor: pointer; 
+	font-size: 17px;
 }

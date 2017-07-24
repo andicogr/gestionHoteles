@@ -200,5 +200,12 @@ public class Compania implements Entidad, Serializable {
 			setArchivo(null);
 		}
 	}
+	
+	public boolean isArchivoCompaniaVacio(){
+		if(getArchivo() != null){
+			return getArchivo().estaVacio();
+		}
+		return true;
+	}
 
 }

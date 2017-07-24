@@ -60,7 +60,7 @@
 			</div>
 
             <div class="x_content">
-            	<form id="enviarFormulario" class="form-horizontal form-label-left">
+            	<form id="formmularioMantenimiento" class="form-horizontal form-label-left">
             		<c:if test="${not empty rol}">
             			<input type="hidden" id="id" name="id" value="${rol.id}">
             		</c:if>
@@ -102,30 +102,75 @@
 	                        			Privilegios
 	                        		</a>
 	                        	</li>
+	                        	<li role="presentation" class="">
+	                        		<a href="#tab_content2" id="tab-companias" role="tab" data-toggle="tab" aria-expanded="true">
+	                        			Compa&ntilde;ias
+	                        		</a>
+	                        	</li>
 	                      	</ul>
 	                      	<div id="myTabContent" class="tab-content">
 	                        	<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="tab-roles">
 	                          		<div class="panel-body">
 	                          			<div class="row">
 	                          				<div class="col-md-12 col-sm-12 col-xs-12">
-												<c:if test="${empty rol.privilegios}">
-					                            	Nada
-					                            </c:if>
-					                            <c:if test="${not empty rol.privilegios}">
-					                            	Con Registros
-					                            </c:if>
-					                            <table class="table table-bordered">
+												<button type="button" class="btn btn-primary" 
+													onclick="abrirFormularioAgregarPrivilegioPorRol(${rol.id})">
+													Agregar
+												</button>
+					                            <table id="tablaListaRolPrivilegio" class="table table-bordered">
 					                              	<thead>
 					                                	<tr>
 					                                  		<th>Nombre Privilegio</th>
-					                                  		<th>Estado</th>
+					                                  		<th width="1 px"></th>
 					                                	</tr>
 					                              	</thead>
 					                              	<tbody>
 					                              		<c:forEach items="${rol.privilegios}" var="privilegio">
 						                             		<tr>
 						                                		<td>${privilegio.nombre}</td>
-						                                		<td>${privilegio.obtenerEstado()}</td>
+						                                		<td>
+						                                			<a class="close-link eliminar-subRegistro"
+						                                				href="#" onclick="btnEliminarUsuarioRol()"
+						                                			>
+						                                				<i class="fa fa-trash"></i>
+						                                			</a>
+						                                		</td>
+						                              		</tr>
+					                              		</c:forEach>
+					
+					                              	</tbody>
+					                            </table>
+	                            			</div>
+	                            		</div>
+	                          		</div>
+	                        	</div>
+
+	                        	<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="tab-companias">
+	                          		<div class="panel-body">
+	                          			<div class="row">
+	                          				<div class="col-md-12 col-sm-12 col-xs-12">
+												<button type="button" class="btn btn-primary" 
+													onclick="abrirFormularioAgregarCompaniaPorRol(${rol.id})">
+													Agregar
+												</button>
+					                            <table id="tablaListaRolCompania" class="table table-bordered">
+					                              	<thead>
+					                                	<tr>
+					                                  		<th>Compa&ntilde;ia</th>
+					                                  		<th width="1 px"></th>
+					                                	</tr>
+					                              	</thead>
+					                              	<tbody>
+					                              		<c:forEach items="${rol.privilegios}" var="privilegio">
+						                             		<tr>
+						                                		<td>${privilegio.nombre}</td>
+						                                		<td>
+						                                			<a class="close-link eliminar-subRegistro"
+						                                				href="#" onclick="btnEliminarUsuarioRol()"
+						                                			>
+						                                				<i class="fa fa-trash"></i>
+						                                			</a>
+						                                		</td>
 						                              		</tr>
 					                              		</c:forEach>
 					

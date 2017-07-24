@@ -7,9 +7,9 @@
                         </label>
 
 							<select name="compania.id" class="form-control">
-								<c:forEach var="c" items="${listaCompanias}">
-									<option value="${c.id}">
-										${c.razonSocial}
+								<c:forEach var="usuarioRol" items="${listaDeUsuarioRolesActivos}">
+									<option value="${usuarioRol.id}">
+										${usuarioRol.getNombreRol()}
 									</option>
 								</c:forEach>
 							</select>
@@ -20,9 +20,9 @@
                         </label>
 
 							<select name="compania.id" class="form-control">
-								<c:forEach var="c" items="${listaCompanias}">
-									<option value="${c.id}">
-										${c.razonSocial}
+								<c:forEach var="compania" items="${listaDeCompanias}">
+									<option value="${compania.id}">
+										${compania.razonSocial}
 									</option>
 								</c:forEach>
 							</select>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.agonzales.gestionhotel.service.CompaniaService;
+import com.agonzales.gestionhotel.service.UsuarioService;
 
 @Controller
 public class LoginController {
@@ -19,6 +20,9 @@ public class LoginController {
 	
 	@Autowired
 	private CompaniaService companiService;
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@RequestMapping("/login")
 	public String login(Model model) {
@@ -47,7 +51,8 @@ public class LoginController {
 	@RequestMapping(value = "/configuracionUsuario", method = RequestMethod.GET)
 	public String configuracionUsiaro(HttpSession session, Model model) {
 		log.info("[LoginController] - [configuracionUsiaro]");
-		model.addAttribute("listaCompanias", session.getAttribute("listaDeCompanias"));
+		model.addAttribute("listaDeUsuarioRolesActivos", usuarioService.obtenerUsuarioRolesPorUsuario(usuarioService.getUID()));
+		model.addAttribute("listaDeCompanias", session.getAttribute("listaDeCompanias"));
 		return "configuracionUsuario";
 	}
 

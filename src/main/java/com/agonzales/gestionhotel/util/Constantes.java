@@ -3,6 +3,8 @@ package com.agonzales.gestionhotel.util;
 public class Constantes {
 	
 	public final static Integer SUPER_UID = 1;
+	public final static Integer SUPER_ROL_ID = 1;
+	public final static Integer SUPER_USUARIO_ROL_ID = 1;
 	public final static Integer MAIN_COMPANIA_ID = 1;
 	public final static Integer INTENTOS_FALLIDOS_MAXIMOS = 3;
 	public final static String UID = "uid";
