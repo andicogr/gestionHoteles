@@ -4344,3 +4344,7 @@ a.eliminar-subRegistro {
 	cursor: pointer; 
 	font-size: 17px;
 }
+
+div.rowTopBotonera {
+	min-height: 39px;
+}

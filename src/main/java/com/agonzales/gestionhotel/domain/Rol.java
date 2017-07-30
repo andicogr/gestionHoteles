@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,7 @@ public class Rol extends EntidadAuditoria implements Entidad{
 	@Column(length=250)
 	private String descripcion;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name="rol_privilegio", 
 		joinColumns = {@JoinColumn(name = "rol_id")}, 

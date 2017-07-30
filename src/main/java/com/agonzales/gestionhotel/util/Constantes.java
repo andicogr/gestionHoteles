@@ -23,7 +23,7 @@ public class Constantes {
 	public final static String MENSAJE_ACTUALIZACION_CORRECTA = "Los datos se actualizaron correctamente.";
 	public final static String MENSAJE_REGISTRO_ELIMINADO = "El registro se elimino correctamente";
 	public final static String MENSAJE_REGISTROS_ELIMINADOS = "Los registros se eliminaron correctamente";
-	
+	public final static String MENSAJE_PRIVILEGIOS_ACTUALIZADOS_CORRECTAMENTE = "Los privilegios se actualizaron correctamente.";	
 	
 	public final static String PROPERTIES_IMAGENES_PATH = "imagenes.path";
 	public final static String PREFIJO_IMG_LOGO = "imgLogo-";

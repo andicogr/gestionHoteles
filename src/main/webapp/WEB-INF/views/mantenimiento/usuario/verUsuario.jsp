@@ -1,5 +1,5 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<link href="resources/vendors/bootstrap-imageupload/dist/css/bootstrap-imageupload.min.css" rel="stylesheet">
 
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">
@@ -13,13 +13,19 @@
 	</div>
 </div>
 
+<sec:authorize access="hasRole('SUB_MENU_USUARIO_EDITAR_ROLES')">
+	<input id="subMenuUsuarioEditarRoles" type="text" class="hide" value="true"/>
+</sec:authorize>
+<sec:authorize access="!hasRole('SUB_MENU_USUARIO_EDITAR_ROLES')">
+	<input id="subMenuUsuarioEditarRoles" type="text" class="hide" value="false"/>
+</sec:authorize>
 
 <div class="row">
 
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<div class="row">
+				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
 						<button id="botonRegistrar" type="button" class="btn btn-success">
 							<c:if test="${empty usuario}">
@@ -29,28 +35,36 @@
 								Actualizar
 							</c:if>
 						</button>
-						<c:if test="${not empty usuario}">
-							<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
-						</c:if>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_CREAR')">
+							<c:if test="${not empty usuario}">
+								<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
+							</c:if>
+						</sec:authorize>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty usuario}">
-							<button class="btn btn-default" id="btnImprimirRegistro">Imprimir</button>
-		                    <div class="btn-group botonOpcionesMantenimiento">
-		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-		                    		Opciones 
-		                    		<span class="caret"></span>
-		                    	</button>
-		                    	<ul role="menu" class="dropdown-menu">
-		                      		<li>
-		                      			<a href="#">Desbloquear Usuario</a>
-		                      		</li>
-		                      		<li class="divider"></li>
-		                      		<li>
-		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-		                      		</li>
-		                    	</ul>
-		                    </div>
+							<button class="btn btn-default" data-toggle="confirmation" id="btnImprimirRegistro">Imprimir</button>
+							<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_DESBLOQUEAR', 'SUB_MENU_USUARIO_ELIMINAR')">
+			                    <div class="btn-group botonOpcionesMantenimiento">
+			                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+			                    		Opciones 
+			                    		<span class="caret"></span>
+			                    	</button>
+			                    	<ul role="menu" class="dropdown-menu">
+			                    		<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_DESBLOQUEAR')">
+				                      		<li>
+				                      			<a href="#">Desbloquear Usuario</a>
+				                      		</li>
+				                      	</sec:authorize>
+				                      	<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_ELIMINAR')">
+				                      		<li class="divider"></li>
+				                      		<li>
+				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+				                      		</li>
+				                      	</sec:authorize>
+			                    	</ul>
+			                    </div>
+							</sec:authorize>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">
@@ -179,57 +193,65 @@
 					<br>
 
 					<c:if test="${not empty usuario}">
-	                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
-	                    	<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-	                        	<li role="presentation" class="active">
-	                        		<a href="#tab_content1" id="tab-roles" role="tab" data-toggle="tab" aria-expanded="true">
-	                        			Roles
-	                        		</a>
-	                        	</li>
-	                      	</ul>
-	                      	<div id="myTabContent" class="tab-content">
-	                        	<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="tab-roles">
-	                          		<div class="panel-body">
-	                          			<div class="row">
-	                          				<div class="col-md-12 col-sm-12 col-xs-12">
-												<button type="button" class="btn btn-primary" 
-													onclick="abrirFormularioAgregarUsuarioRol(${usuario.id})">
-													Agregar
-												</button>
-					                            <table id="tablaListaUsuarioRol" class="table table-bordered tableSubDetalle">
-					                              	<thead>
-					                                	<tr>
-					                                  		<th>Nombre Rol</th>
-					                                  		<th>Estado</th>
-					                                  		<th width="1 px"></th>
-					                                	</tr>
-					                              	</thead>
-					                              	<tbody>
-					                              		<c:forEach items="${usuario.roles}" var="usuarioRol">
-						                             		<tr>
-						                                		<td>
-						                                			${usuarioRol.getNombreRol()}
-						                                			<input type="hidden" value="${usuarioRol.id}">
-						                                		</td>
-						                                		<td>${usuarioRol.getEstadoUsuarioRol()}</td>
-						                                		<td>
-						                                			<a class="close-link eliminar-subRegistro"
-						                                				href="#" onclick="btnEliminarUsuarioRol(${usuarioRol.id}, ${usuario.id})"
-						                                			>
-						                                				<i class="fa fa-trash"></i>
-						                                			</a>
-						                                		</td>
-						                              		</tr>
-					                              		</c:forEach>
-					
-					                              	</tbody>
-					                            </table>
-	                            			</div>
-	                            		</div>
-	                          		</div>
-	                        	</div>
-	                      	</div>
-	                    </div>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_VER_ROLES')">
+		                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+		                    	<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_VER_ROLES')">
+			                    	<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+			                        	<li role="presentation" class="active">
+			                        		<a href="#tab_content1" id="tab-roles" role="tab" data-toggle="tab" aria-expanded="true">
+			                        			Roles
+			                        		</a>
+			                        	</li>
+			                      	</ul>
+			                      	<div id="myTabContent" class="tab-content">
+			                        	<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="tab-roles">
+			                          		<div class="panel-body">
+			                          			<div class="row">
+			                          				<div class="col-md-12 col-sm-12 col-xs-12">
+			                          					<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_AGREGAR_ROLES')">
+															<button type="button" class="btn btn-primary" 
+																onclick="abrirFormularioAgregarUsuarioRol(${usuario.id})">
+																Agregar
+															</button>
+														</sec:authorize>
+							                            <table id="tablaListaUsuarioRol" class="table table-bordered tableSubDetalle">
+							                              	<thead>
+							                                	<tr>
+							                                  		<th>Nombre Rol</th>
+							                                  		<th>Estado</th>
+							                                  		<th width="1 px"></th>
+							                                	</tr>
+							                              	</thead>
+							                              	<tbody>
+							                              		<c:forEach items="${usuario.roles}" var="usuarioRol">
+								                             		<tr>
+								                                		<td>
+								                                			${usuarioRol.getNombreRol()}
+								                                			<input type="hidden" value="${usuarioRol.id}">
+								                                		</td>
+								                                		<td>${usuarioRol.getEstadoUsuarioRol()}</td>
+								                                		<td>
+								                                			<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_ELIMINAR_ROLES')">
+									                                			<a class="close-link eliminar-subRegistro"
+									                                				href="#" onclick="btnEliminarUsuarioRol(${usuarioRol.id}, ${usuario.id})"
+									                                			>
+									                                				<i class="fa fa-trash"></i>
+									                                			</a>
+									                                		</sec:authorize>
+								                                		</td>
+								                              		</tr>
+							                              		</c:forEach>
+							
+							                              	</tbody>
+							                            </table>
+			                            			</div>
+			                            		</div>
+			                          		</div>
+			                        	</div>
+			                      	</div>
+		                      	</sec:authorize>
+		                    </div>
+						</sec:authorize>
 					</c:if>
 				</form>
 			</div>

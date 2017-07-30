@@ -84,3 +84,17 @@ function btnEliminarRolCompania(idUsuarioRol, idUsuario){
 	}
 }
 
+
+$('#btnActualizarPrivilegios').on('click', function () {
+    var checkedIds = tree.getCheckedAndIndeterminateNodes();
+	$.get('mantenimiento/rol/actualizarPrivilegios?idRol=' + $("#id").val() + "&idPrvivilegios=" + checkedIds, function(retorno){
+		if(retorno['notificacion'] != null){
+			new PNotify(retorno['notificacion']);
+		}
+		if(eval(retorno['estado']) == true){
+			cargarDivContenidoPrincipal("mantenimiento/rol/ver?id=" + retorno['id'])
+		}
+	});
+
+});
+

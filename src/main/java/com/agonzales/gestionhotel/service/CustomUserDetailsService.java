@@ -69,16 +69,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return authList;
 	}
 
-	//TODO buscar diferencia entre lista y collections
     private List<String> getPrivilegios(List<Rol> roles) {
-    	  
+
         List<String> privilegios = new ArrayList<String>();
         List<Privilegio> collection = new ArrayList<Privilegio>();
         for (Rol rol : roles) {
         	collection.addAll(rol.getPrivilegios());  
         }
         for (Privilegio item : collection) {
-        	privilegios.add(item.getNombre());
+        	privilegios.add(item.getNombrePrivilegio());
         }
         return privilegios;
     }

@@ -19,7 +19,7 @@
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<div class="row">
+				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
 						<button id="botonRegistrar" type="button" class="btn btn-success">
 							<c:if test="${empty compania}">

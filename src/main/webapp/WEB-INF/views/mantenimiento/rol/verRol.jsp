@@ -1,5 +1,5 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<link href="resources/vendors/bootstrap-imageupload/dist/css/bootstrap-imageupload.min.css" rel="stylesheet">
+<link href="resources/vendors/gijgo/gijgo.css" rel="stylesheet" type="text/css" />
 
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">
@@ -19,7 +19,7 @@
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<div class="row">
+				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
 						<button id="botonRegistrar" type="button" class="btn btn-success">
 							<c:if test="${empty rol}">
@@ -62,6 +62,11 @@
             <div class="x_content">
             	<form id="formmularioMantenimiento" class="form-horizontal form-label-left">
             		<c:if test="${not empty rol}">
+            			<c:set var="existeRol" value="true"/> 
+            			<input type="hidden" id="id" name="id" value="${rol.id}">
+            		</c:if>
+            		<c:if test="${empty rol}">
+            			<c:set var="existeRol" value="false"/> 
             			<input type="hidden" id="id" name="id" value="${rol.id}">
             		</c:if>
 
@@ -113,33 +118,11 @@
 	                          		<div class="panel-body">
 	                          			<div class="row">
 	                          				<div class="col-md-12 col-sm-12 col-xs-12">
-												<button type="button" class="btn btn-primary" 
-													onclick="abrirFormularioAgregarPrivilegioPorRol(${rol.id})">
-													Agregar
-												</button>
-					                            <table id="tablaListaRolPrivilegio" class="table table-bordered">
-					                              	<thead>
-					                                	<tr>
-					                                  		<th>Nombre Privilegio</th>
-					                                  		<th width="1 px"></th>
-					                                	</tr>
-					                              	</thead>
-					                              	<tbody>
-					                              		<c:forEach items="${rol.privilegios}" var="privilegio">
-						                             		<tr>
-						                                		<td>${privilegio.nombre}</td>
-						                                		<td>
-						                                			<a class="close-link eliminar-subRegistro"
-						                                				href="#" onclick="btnEliminarUsuarioRol()"
-						                                			>
-						                                				<i class="fa fa-trash"></i>
-						                                			</a>
-						                                		</td>
-						                              		</tr>
-					                              		</c:forEach>
-					
-					                              	</tbody>
-					                            </table>
+										            <button type="button" id="btnActualizarPrivilegios" class="btn btn-primary">
+										            	Actualizar Privilegios
+										            </button>
+										            <div id="treeListaPrivilegios">
+										            </div>
 	                            			</div>
 	                            		</div>
 	                          		</div>
@@ -193,5 +176,18 @@
 <!-- Parsley -->
 <script src="resources/vendors/validate/jquery.validate.js"></script>
 <script src="resources/vendors/validate/localization/messages_es_PE.js"></script>
-<script src="resources/scripts/mantenimiento/rol/verRol.js"></script>    
-<script src="resources/build/js/custom2.js"></script>
+<script src="resources/scripts/mantenimiento/rol/verRol.js"></script>   
+<script src="resources/vendors/gijgo/gijgo.js" type="text/javascript"></script> 
+
+<script type="text/javascript">
+	var existeRol = '<c:out value="${existeRol}"/>';
+	if(eval(existeRol)){
+        var tree = $('#treeListaPrivilegios').tree({
+            primaryKey: 'id',
+            uiLibrary: 'bootstrap',
+			dataSource: baseURL + 'mantenimiento/privilegio/listaPrivilegiosPadre?idRol=' + $("#id").val(),
+            checkboxes: true
+        });
+	}
+
+</script>

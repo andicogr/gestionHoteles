@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 
 <!-- Datatables CSS-->
@@ -6,6 +7,12 @@
 <!-- Datatables CSS-->
 
 <input type="hidden" id="isMultiCompaniaActivado" value="${isMultiCompaniaActivado}">
+<sec:authorize access="hasRole('SUB_MENU_USUARIO_EDITAR')">
+	<input id="subMenuUsuarioEditar" type="text" class="hide" value="true"/>
+</sec:authorize>
+<sec:authorize access="!hasRole('SUB_MENU_USUARIO_EDITAR')">
+	<input id="subMenuUsuarioEditar" type="text" class="hide" value="false"/>
+</sec:authorize>
 
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">
@@ -18,30 +25,38 @@
 	<div class="col-md-12 col-sm-12 col-xs-12">
 		<div class="x_panel">
 			<div class="x_title">
-				<div class="row">
+				<div class="row rowTopBotonera">
 					<div class="col-sm-8" >
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-6" >
-								<button class="btn btn-success" id="btnCrearRegistro">Crear</button>
+								<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_CREAR')">
+									<button class="btn btn-success" id="btnCrearRegistro">Crear</button>
+								</sec:authorize>
 							</div>
 							<div class="col-md-6 col-sm-6 col-xs-6 text-center">
 								<div id="botoneraCentro" style="display: none">
 									<button class="btn btn-default" data-toggle="confirmation" id="btnImprimirRegistro">Imprimir</button>
-				                    <div class="btn-group botonOpcionesMantenimiento">
-				                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-				                    		Opciones 
-				                    		<span class="caret"></span>
-				                    	</button>
-				                    	<ul role="menu" class="dropdown-menu">
-				                      		<li>
-				                      			<a href="#">Desbloquear Usuario</a>
-				                      		</li>
-				                      		<li class="divider"></li>
-				                      		<li>
-				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-				                      		</li>
-				                    	</ul>
-				                    </div>
+									<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_DESBLOQUEAR', 'SUB_MENU_USUARIO_ELIMINAR')">
+					                    <div class="btn-group botonOpcionesMantenimiento">
+					                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+					                    		Opciones 
+					                    		<span class="caret"></span>
+					                    	</button>
+					                    	<ul role="menu" class="dropdown-menu">
+					                    		<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_DESBLOQUEAR')">
+						                      		<li>
+						                      			<a href="#">Desbloquear Usuario</a>
+						                      		</li>
+						                      	</sec:authorize>
+						                      	<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_ELIMINAR')">
+						                      		<li class="divider"></li>
+						                      		<li>
+						                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+						                      		</li>
+						                      	</sec:authorize>
+					                    	</ul>
+					                    </div>
+									</sec:authorize>
 								</div>
 							</div>
 						</div>
@@ -73,13 +88,9 @@
 
 </div>
 
-
-
 <!-- Data Tables JS-->
 <script src="resources/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="resources/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- Data Tables JS-->
 
-
 <script src="resources/scripts/mantenimiento/usuario/listarUsuarios.js"></script>    
-<script src="resources/build/js/custom2.js"></script>

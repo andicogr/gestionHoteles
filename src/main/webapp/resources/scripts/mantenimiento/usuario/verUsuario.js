@@ -119,6 +119,9 @@ $('#expirarUsuario').change(function () {
 });
 
 $('#tablaListaUsuarioRol tr td:not(:last-child)').click(function () {
-    var idUsuarioRol = $(this).closest('tr').find('td:eq(0) input').val();
-    cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?id=" + idUsuarioRol + "&idUsuario=" + $("#id").val());
+	var subMenuUsuarioEditarRoles = eval($("#subMenuUsuarioEditarRoles").val());
+	if(subMenuUsuarioEditarRoles){
+	    var idUsuarioRol = $(this).closest('tr').find('td:eq(0) input').val();
+	    cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?id=" + idUsuarioRol + "&idUsuario=" + $("#id").val());
+	}
 });

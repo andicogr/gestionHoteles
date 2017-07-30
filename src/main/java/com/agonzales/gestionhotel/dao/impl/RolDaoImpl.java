@@ -21,5 +21,18 @@ public class RolDaoImpl extends DAO<Rol> implements RolDao{
 
 		return q.getResultList();
 	}
+	
+	public boolean isPrivilegioAsociadoARol(Integer idPrivilegio, Integer idRol){
+		String sql = "select exists (select * from rol_privilegio where privilegio_id =:idPrivilegio and rol_id =:idRol)";
+		
+		Query q = em.createNativeQuery(sql);
+		
+		q.setParameter("idPrivilegio", idPrivilegio);
+		q.setParameter("idRol", idRol);
+		
+		Boolean existe = (Boolean) q.getSingleResult();
+		
+		return existe;
+	}
 
 }

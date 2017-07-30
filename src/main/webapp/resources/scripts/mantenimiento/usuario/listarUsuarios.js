@@ -4,6 +4,10 @@
 // listaJson para que ya no devuelva esa columna en la estrcutura,
 
 var isMultiCompaniaActivado = eval($("#isMultiCompaniaActivado").val());
+var subMenuUsuarioEditar = eval($("#subMenuUsuarioEditar").val());
+
+console.log("isMultiCompaniaActivado: " + isMultiCompaniaActivado);
+console.log("subMenuUsuarioEditar: " + subMenuUsuarioEditar);
 
 var aoColumns = [ 
                  { "width": "1px" },
@@ -16,9 +20,7 @@ if(!isMultiCompaniaActivado){
 	aoColumns.splice(1, 1);
 }
 
-cargarConfiguracionDataTable("dataTableLista", "mantenimiento/usuario/listaJson", aoColumns, "mantenimiento/usuario/ver?id=");
-
-//$("#paginacionDiv").append($(".dataTables_paginate"));
+cargarConfiguracionDataTable("dataTableLista", "mantenimiento/usuario/listaJson", aoColumns, "mantenimiento/usuario/ver?id=", subMenuUsuarioEditar);
 
 $("#btnCrearRegistro").click(function() {
 	cargarDivContenidoPrincipal("mantenimiento/usuario/ver");

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.RolDao;
+import com.agonzales.gestionhotel.domain.Privilegio;
 import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
@@ -80,7 +81,7 @@ public class RolServiceImpl implements RolService{
 
 		if(rol.getId() != null){
 			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-			
+
 			Rol actual = rolDao.get(rol.getId());
 			actual.setNombre(rol.getNombre());
 			actual.setDescripcion(rol.getDescripcion());
@@ -155,7 +156,7 @@ public class RolServiceImpl implements RolService{
 		}
 		return false;
 	}
-	
+
 	public List<Rol> listarRolesActivosSinRepetirPorUsuario(Integer idUsuario){
 		List<Rol> listaRolesActivosSinRepeteir = new ArrayList<Rol>();
 		List<Rol> listaRolesActivos = rolDao.listarRolesActivos();
@@ -177,6 +178,32 @@ public class RolServiceImpl implements RolService{
 		}
 		
 		return listaRolesActivosSinRepeteir;
+	}
+
+	@Transactional
+	public Map<String, Object> actualizarPrivilegios(Integer idRol, Integer[] idPrvivilegios){
+		Map<String, Object> retorno = new HashMap<String, Object>();
+		Map<String, Object> notifiaccion = null;
+
+		Rol rol = rolDao.get(idRol);
+		List<Privilegio> listaPrivilegios = new ArrayList<Privilegio>();
+		for(Integer idPrivilegio: idPrvivilegios){
+			Privilegio privilegio = new Privilegio();
+			privilegio.setId(idPrivilegio);
+			listaPrivilegios.add(privilegio);
+		}
+
+		rol.setPrivilegios(listaPrivilegios);
+
+		notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_PRIVILEGIOS_ACTUALIZADOS_CORRECTAMENTE);
+
+		rolDao.guardar(rol, usuarioService.getUID());
+
+		retorno.put("notificacion", notifiaccion);
+		retorno.put("id", rol.getId());
+		retorno.put("estado", true);
+
+		return retorno;
 	}
 
 }

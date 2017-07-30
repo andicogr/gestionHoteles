@@ -21,5 +21,7 @@ public interface RolService {
 	public List<Rol> listarRolesActivos();
 	
 	public List<Rol> listarRolesActivosSinRepetirPorUsuario(Integer idUsuario);
+	
+	Map<String, Object> actualizarPrivilegios(Integer idRol, Integer[] idPrvivilegios);
 
 }

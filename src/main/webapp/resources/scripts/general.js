@@ -109,8 +109,9 @@ function eliminarRegistros(urlEliminar, urlContenido){
  * @param urlData - Url para obtener los datos Json del controlar y cargarlos en la tabla
  * @param aoColumns - Colummnas de la tabla 
  * @param urlVerRegistro - Url para abrir el conteindo de la fila al hacer clic en ella, con el parametro id < ?id= >
+ * @param permiteEditar - activa o desactiva la funcionalidad para abrir un formulario al ahcer clic en un registro de la tabla
  */
-function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerRegistro){
+function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerRegistro, permiteEditar){
 	
 	$('#' + dataTableId).DataTable({
 	    columnDefs: [ {
@@ -131,12 +132,12 @@ function cargarConfiguracionDataTable(dataTableId, urlData, aoColumns, urlVerReg
 
 	    "fnDrawCallback": function(){
 	    	$('#' + dataTableId + ' tr td:not(:first-child)').click(function () {
-
-	    	    var id = $(this).closest('tr').find('td:eq(0) input').val();
-	    	    cargarDivContenidoPrincipal(urlVerRegistro + id)
-
+	    		if(permiteEditar){
+		    	    var id = $(this).closest('tr').find('td:eq(0) input').val();
+		    	    cargarDivContenidoPrincipal(urlVerRegistro + id);
+	    		}
 	    	});
-	    	
+
 	    	$( "input[name=checkBoxRow]" ).on( "click", function(){
 	    		if($('#' + dataTableId + ' :checked').length > 0){
 	    	    	$("#botoneraCentro").show();

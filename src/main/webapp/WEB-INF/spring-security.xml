@@ -11,20 +11,17 @@
 		http://www.springframework.org/schema/util 
 		http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-	
 	<http pattern="/resources" security="none" />
-	
-	
-	
+
 	<http auto-config="true"  use-expressions="true">	
 		<intercept-url pattern="/login" access="permitAll"/>
 		<intercept-url pattern="/login2" access="permitAll"/>
 		<intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="permitAll"/>
 		<!--<intercept-url pattern="/" access="hasAnyRole('ROLE_USER') and hasIpAddress('192.168.0.5/25')"/>-->
-		<intercept-url pattern="/" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>
+		<intercept-url pattern="/" access="hasAnyRole('PRIVILEGIO_USER','PRIVILEGIO_ADMIN')"/>
 
-		<intercept-url pattern="/registrarCursoVista" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
+		<!--intercept-url pattern="/registrarCursoVista" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
 		<intercept-url pattern="/verReporteVista" access="hasAnyRole('ROLE_REPORTE','ROLE_ADMIN')"/>
 		<intercept-url pattern="/regresarPrincipalVista" access="isAuthenticated()"/>
 		<intercept-url pattern="/curso/registrarCurso" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
@@ -33,9 +30,9 @@
 		<intercept-url pattern="/curso/responsable/autocomplete" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
 		<intercept-url pattern="/curso/getCodigoDireccion" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
 		<intercept-url pattern="/curso/getCodigoSubDireccion" access="hasAnyRole('ROLE_REGISTRO','ROLE_ADMIN')"/>
-		
+
 		<intercept-url pattern="/curso/generarReporte" access="hasAnyRole('ROLE_REPORTE','ROLE_ADMIN')"/>
-		<intercept-url pattern="/reporte/generarReporteCursos" access="hasAnyRole('ROLE_REPORTE','ROLE_ADMIN')"/>
+		<intercept-url pattern="/reporte/generarReporteCursos" access="hasAnyRole('ROLE_REPORTE','ROLE_ADMIN')"/-->
 
 		<form-login login-page="/login"	authentication-failure-url="/login/failure"	default-target-url="/"/>
 		

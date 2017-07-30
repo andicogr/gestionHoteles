@@ -27,22 +27,22 @@ public class MantenimientoRolController {
 	private RolService rolService;
 
 	@RequestMapping(value="/listar")
-	public String rolListar(HttpSession session, Model model){
-		logger.info("[MantenimientoRolController] - method: rolListar");
+	public String listar(HttpSession session, Model model){
+		logger.info("[MantenimientoRolController] - method: listar");
 		return "mantenimiento/rol/listarRoles";
 	}
 
 	@RequestMapping(value="/listaJson")
 	@ResponseBody
-	public  Map<String, Object> rolListaJson(HttpSession session, PaginacionDTO paginacion){
-		logger.info("[MantenimientoRolController] - method: rolListaJson");
+	public  Map<String, Object> listaJson(HttpSession session, PaginacionDTO paginacion){
+		logger.info("[MantenimientoRolController] - method: listaJson");
 		Map<String, Object> datos = rolService.listarJson(paginacion);
 		return datos;
 	}
 
 	@RequestMapping(value="/ver")
-	public String rolVer(HttpSession session, Model model, Integer id){
-		logger.info("[MantenimientoRolController] - method: rolVer - id: " + id);
+	public String ver(HttpSession session, Model model, Integer id){
+		logger.info("[MantenimientoRolController] - method: ver - id: " + id);
 		if(id != null){
 			Rol rol = rolService.get(id);
 			model.addAttribute("rol", rol);
@@ -53,18 +53,25 @@ public class MantenimientoRolController {
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> rolGuardar(Model model, Rol rol){
-		logger.info("[MantenimientoRolController] - method: rolGuardar");
+	public Map<String, Object> guardar(Model model, Rol rol){
+		logger.info("[MantenimientoRolController] - method: guardar");
 		Map<String, Object> retorno = rolService.guardar(rol);
 		return retorno;
 	}
 
 	@RequestMapping(value="/eliminar")
 	@ResponseBody
-	public Map<String, Object> rolEliminar(Model model, Integer[] ids){
-		logger.info("[MantenimientoRolController] - method: rolEliminar - ids: " + ids);
+	public Map<String, Object> eliminar(Model model, Integer[] ids){
+		logger.info("[MantenimientoRolController] - method: eliminar - ids: " + ids);
 		Map<String, Object> retorno = rolService.eliminar(ids);
 		return retorno;
+	}
+
+	@RequestMapping(value="/actualizarPrivilegios")
+	@ResponseBody
+	public Map<String, Object> actualizarPrivilegios(Integer idRol, Integer[] idPrvivilegios){
+		logger.info("[MantenimientoRolController] - method: actualizarPrivilegios - idRol: " + idRol + " idPrvivilegios: " + idPrvivilegios);
+		return rolService.actualizarPrivilegios(idRol, idPrvivilegios);
 	}
 
 }

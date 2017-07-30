@@ -1,5 +1,6 @@
 package com.agonzales.gestionhotel.controller.mantenimiento;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.agonzales.gestionhotel.domain.Privilegio;
-import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.PrivilegioService;
 
 @Controller
@@ -29,15 +29,15 @@ public class MantenimientoPrivilegioController {
 	@RequestMapping(value="/listar")
 	public String privilegioListar(HttpSession session, Model model){
 		logger.info("[MantenimientoPrivilegioController] - method: privilegioListar");
-		return "mantenimiento/privilegio/listarPrivilegios";
+		//return "mantenimiento/privilegio/listarPrivilegios";
+		return "mantenimiento/privilegio/treePrivilegio";
 	}
-
-	@RequestMapping(value="/listaJson")
-	@ResponseBody
-	public  Map<String, Object> privilegioListaJson(HttpSession session, PaginacionDTO paginacion){
-		logger.info("[MantenimientoPrivilegioController] - method: privilegioListaJson");
-		Map<String, Object> datos = privilegioService.listarJson(paginacion);
-		return datos;
+	
+	@RequestMapping(value="/listaPrivilegiosPadre", method = RequestMethod.GET)
+	public @ResponseBody List<Map<String, Object>> listaPrivilegiosPadre(Integer idRol){
+		logger.info("[MantenimientoPrivilegioController] - method: listaPrivilegiosPadre");
+		List<Map<String, Object>> listaDeArbolDePrivilegios = privilegioService.obtenerListaDePrivilegiosPadres(idRol);
+		return listaDeArbolDePrivilegios;
 	}
 
 	@RequestMapping(value="/ver")
@@ -51,19 +51,4 @@ public class MantenimientoPrivilegioController {
 		return "mantenimiento/privilegio/verPrivilegio";
 	}
 
-	@RequestMapping(value="/guardar", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> privilegiioGuardar(Model model, Privilegio privilegio){
-		logger.info("[MantenimientoPrivilegioController] - method: privilegiioGuardar");
-		Map<String, Object> retorno = privilegioService.guardar(privilegio);
-		return retorno;
-	}
-
-	@RequestMapping(value="/eliminar")
-	@ResponseBody
-	public Map<String, Object> privilegioEliminar(Model model, Integer[] ids){
-		logger.info("[MantenimientoPrivilegioController] - method: privilegioEliminar - ids: " + ids);
-		Map<String, Object> retorno = privilegioService.eliminar(ids);
-		return retorno;
-	}
 }
