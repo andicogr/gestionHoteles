@@ -16,13 +16,13 @@ import com.agonzales.gestionhotel.util.Util;
 
 @Service("UsuarioRolService")
 public class UsuarioRolServiceImpl implements UsuarioRolService{
-	
+
 	@Autowired
 	private UsuarioRolDao usuarioRolDao;
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
 	@Transactional
 	public Map<String, Object> guardar(UsuarioRol usuarioRol){
 		Map<String, Object> retorno = new HashMap<String, Object>();
@@ -31,7 +31,7 @@ public class UsuarioRolServiceImpl implements UsuarioRolService{
 
 		if(usuarioRol.getId() != null){
 			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-			
+
 			UsuarioRol actual = usuarioRolDao.get(usuarioRol.getId());
 			actual.setRol(usuarioRol.getRol());
 			actual.setActivo(usuarioRol.isActivo());

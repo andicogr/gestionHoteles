@@ -98,3 +98,21 @@ $('#btnActualizarPrivilegios').on('click', function () {
 
 });
 
+function btnEliminarAccesoCompaniaRol(idAccesoCompaniaRol, idRol){
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar esta compañia?")){
+	    eliminarRegistros("mantenimiento/accesocompaniarol/eliminar?ids=" + [idAccesoCompaniaRol], 
+	    		"mantenimiento/rol/ver?id=" + idRol);
+	}
+}
+
+function abrirFormularioAgregarAccesoCompaniaRol(idRol){
+	cargarDivContenidoPrincipal("mantenimiento/accesocompaniarol/ver?idRol=" + idRol);
+}
+
+$('#tablaListaRolCompania tr td:not(:last-child)').click(function () {
+
+    var idAccesoCompaniaRol = $(this).closest('tr').find('td:eq(0) input').val();
+    cargarDivContenidoPrincipal("mantenimiento/accesocompaniarol/ver?id=" + idAccesoCompaniaRol + "&idRol=" + $("#id").val());
+
+});
+

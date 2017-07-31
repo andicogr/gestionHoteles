@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.agonzales.gestionhotel.dao.AccesoCompaniaRolDao;
 import com.agonzales.gestionhotel.dao.RolDao;
+import com.agonzales.gestionhotel.domain.AccesoCompaniaRol;
 import com.agonzales.gestionhotel.domain.Privilegio;
 import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.UsuarioRol;
@@ -27,6 +29,9 @@ public class RolServiceImpl implements RolService{
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private AccesoCompaniaRolDao accesoCompaniaRolDao;
 	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
@@ -204,6 +209,10 @@ public class RolServiceImpl implements RolService{
 		retorno.put("estado", true);
 
 		return retorno;
+	}
+	
+	public List<AccesoCompaniaRol> obtenerAccesoCompaniaRolPorRol(Integer idRol){
+		return accesoCompaniaRolDao.obtenerAccesoCompaniaRolPorRol(idRol);
 	}
 
 }

@@ -47,13 +47,20 @@ aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
 
 $("#botonRegistrar").click(function() {
+	enviarFormulario("mantenimiento/usuario/guardar");
+});
 
+$("#botonRegistrar").click(function() {
+	enviarFormulario("mantenimiento/usuario/actualizar");
+});
+
+function enviarFormulario(url){
 	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
 				type: "POST",
-				url: baseURL + "mantenimiento/usuario/guardar",
+				url: baseURL + url,
 				data: new FormData($form[0]),
 				async: false,
 				cache: false,
@@ -76,7 +83,7 @@ $("#botonRegistrar").click(function() {
 	}else{
 		mostrarNotificacionNingunCambioFormulario();
 	}
-});
+}
 
 $("#btnCrearRegistro").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/usuario/ver");
@@ -93,17 +100,6 @@ function btnEliminarRegistro(){
 	}
 }
 
-function btnEliminarUsuarioRol(idUsuarioRol, idUsuario){
-	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
-	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
-	    		"mantenimiento/usuario/ver?id=" + idUsuario);
-	}
-}
-
-function abrirFormularioAgregarUsuarioRol(idUsuario){
-	cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?idUsuario=" + idUsuario);
-}
-
 $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());
 });	
@@ -117,6 +113,17 @@ $('#expirarUsuario').change(function () {
 		$('#divFechaExpiracionUsuario').hide();
 	}
 });
+
+function btnEliminarUsuarioRol(idUsuarioRol, idUsuario){
+	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
+	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
+	    		"mantenimiento/usuario/ver?id=" + idUsuario);
+	}
+}
+
+function abrirFormularioAgregarUsuarioRol(idUsuario){
+	cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?idUsuario=" + idUsuario);
+}
 
 $('#tablaListaUsuarioRol tr td:not(:last-child)').click(function () {
 	var subMenuUsuarioEditarRoles = eval($("#subMenuUsuarioEditarRoles").val());

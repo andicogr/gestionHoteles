@@ -14,6 +14,8 @@ public interface UsuarioService {
 	public Map<String, Object> listarJson(PaginacionDTO paginacion, boolean isMultiCompaniaActivado);
 
 	public Map<String, Object> guardar(Usuario usuario);
+	
+	public Map<String, Object> actualizar(Usuario usuario);
 
 	public Usuario get(Integer id);
 	

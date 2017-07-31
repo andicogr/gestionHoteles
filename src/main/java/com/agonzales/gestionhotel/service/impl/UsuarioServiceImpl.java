@@ -86,7 +86,29 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Map<String, Object> guardar(Usuario usuario){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
+
+		if(usuarioDAO.isUniqueValue("username", usuario.getUsername(), usuario.getId())){
+			notifiaccion = Util.crearNotificacionError("Error", "El nombre de usuario ya esta registrado en el sistema.");
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+
+		usuarioDAO.guardar(usuario, getUID());
+
+		retorno.put("notificacion", notifiaccion);
+		retorno.put("id", usuario.getId());
+		retorno.put("estado", true);
+
+		return retorno;
+	}
+	
+	@Transactional
+	public Map<String, Object> actualizar(Usuario usuario){
+		Map<String, Object> retorno = new HashMap<String, Object>();
+		Map<String, Object> notifiaccion = null;
 
 		if(usuarioDAO.isUniqueValue("username", usuario.getUsername(), usuario.getId())){
 			notifiaccion = Util.crearNotificacionError("Error", "El nombre de usuario ya esta registrado en el sistema.");
@@ -96,8 +118,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		}
 
 		if(usuario.getId() != null){
-			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-			
+
 			Usuario actual = usuarioDAO.get(usuario.getId());
 			actual.setUsername(usuario.getUsername());
 			actual.setPassword(usuario.getPassword());
@@ -105,12 +126,13 @@ public class UsuarioServiceImpl implements UsuarioService{
 			actual.setCompania(usuario.getCompania());
 			actual.setExpirarUsuario(usuario.isExpirarUsuario());
 			actual.setFechaExpiracionUsuario(usuario.getFechaExpiracionUsuario());
-			usuario = actual;
+			
+			usuarioDAO.guardar(actual, getUID());
+			
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+		}else{
+			notifiaccion = Util.crearNotificacionError("Error", Constantes.MENSAJE_ERROR_GUARDAR);
 		}
-
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
-
-		usuarioDAO.guardar(usuario, getUID());
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", usuario.getId());

@@ -31,7 +31,7 @@ public class Constantes {
 	
 	//MENSAJES DE SELECT - INSERT - DELETE - UPDATE
 	public final static String LISTA_VACIA = "No se encontraron resultados para los criterios de busqueda";
-	public final static String GUARDAR_ERROR = "No se pudo guardar la informacion, comuniquese con el administrador del sistema";
+	public final static String MENSAJE_ERROR_GUARDAR = "No se pudo guardar la informacion, comuniquese con el administrador del sistema";
 	public final static String GUARDAR_OK = "Los datos se guardaron correctamente";
 
 }

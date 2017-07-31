@@ -7,12 +7,6 @@
 <!-- Datatables CSS-->
 
 <input type="hidden" id="isMultiCompaniaActivado" value="${isMultiCompaniaActivado}">
-<sec:authorize access="hasRole('SUB_MENU_USUARIO_EDITAR')">
-	<input id="subMenuUsuarioEditar" type="text" class="hide" value="true"/>
-</sec:authorize>
-<sec:authorize access="!hasRole('SUB_MENU_USUARIO_EDITAR')">
-	<input id="subMenuUsuarioEditar" type="text" class="hide" value="false"/>
-</sec:authorize>
 
 <div class="page-title" id="contenidoTitulo">
 	<div class="title_left">

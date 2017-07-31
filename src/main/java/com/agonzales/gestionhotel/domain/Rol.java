@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -46,6 +47,10 @@ public class Rol extends EntidadAuditoria implements Entidad{
 		inverseJoinColumns = {@JoinColumn(name = "privilegio_id")})
 	private List<Privilegio> privilegios;
 
+	@OneToMany(mappedBy="rol")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<AccesoCompaniaRol> companias;
+
 	private boolean activo;
 
 	public Integer getId() {
@@ -78,6 +83,14 @@ public class Rol extends EntidadAuditoria implements Entidad{
 
 	public void setPrivilegios(List<Privilegio> privilegios) {
 		this.privilegios = privilegios;
+	}
+
+	public List<AccesoCompaniaRol> getCompanias() {
+		return companias;
+	}
+
+	public void setCompanias(List<AccesoCompaniaRol> companias) {
+		this.companias = companias;
 	}
 
 	public boolean isActivo() {

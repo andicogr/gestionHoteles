@@ -140,23 +140,27 @@
 					                              	<thead>
 					                                	<tr>
 					                                  		<th>Compa&ntilde;ia</th>
+					                                  		<th>Estado</th>
 					                                  		<th width="1 px"></th>
 					                                	</tr>
 					                              	</thead>
 					                              	<tbody>
-					                              		<c:forEach items="${rol.privilegios}" var="privilegio">
+					                              		<c:forEach items="${rol.companias}" var="accesoCompaniaRol">
 						                             		<tr>
-						                                		<td>${privilegio.nombre}</td>
+						                                		<td>
+						                                			${accesoCompaniaRol.getNombreCompania()}
+						                                			<input type="hidden" value="${accesoCompaniaRol.id}">
+						                                		</td>
+						                                		<td>${accesoCompaniaRol.getEstadoAccesoCompaniaRol()}</td>
 						                                		<td>
 						                                			<a class="close-link eliminar-subRegistro"
-						                                				href="#" onclick="btnEliminarUsuarioRol()"
+						                                				href="#" onclick="btnEliminarAccesoCompaniaRol(${accesoCompaniaRol.id}, ${rol.id})"
 						                                			>
 						                                				<i class="fa fa-trash"></i>
 						                                			</a>
 						                                		</td>
 						                              		</tr>
 					                              		</c:forEach>
-					
 					                              	</tbody>
 					                            </table>
 	                            			</div>

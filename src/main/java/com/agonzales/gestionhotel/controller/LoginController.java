@@ -1,5 +1,7 @@
 package com.agonzales.gestionhotel.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -10,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.agonzales.gestionhotel.domain.UsuarioRol;
+import com.agonzales.gestionhotel.service.AccesoCompaniaRolService;
 import com.agonzales.gestionhotel.service.CompaniaService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 
@@ -23,6 +27,9 @@ public class LoginController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private AccesoCompaniaRolService accesoCompaniaRolService;
 
 	@RequestMapping("/login")
 	public String login(Model model) {
@@ -51,8 +58,9 @@ public class LoginController {
 	@RequestMapping(value = "/configuracionUsuario", method = RequestMethod.GET)
 	public String configuracionUsiaro(HttpSession session, Model model) {
 		log.info("[LoginController] - [configuracionUsiaro]");
-		model.addAttribute("listaDeUsuarioRolesActivos", usuarioService.obtenerUsuarioRolesPorUsuario(usuarioService.getUID()));
-		model.addAttribute("listaDeCompanias", session.getAttribute("listaDeCompanias"));
+		List<UsuarioRol> listaDeUsuarioRolesActivos = usuarioService.obtenerUsuarioRolesPorUsuario(usuarioService.getUID());
+		model.addAttribute("listaDeUsuarioRolesActivos", listaDeUsuarioRolesActivos);
+		model.addAttribute("listaDeCompanias", accesoCompaniaRolService.listaDeAccesoCompaniaRolActivasPorRol(listaDeUsuarioRolesActivos.get(0).getRolId()));
 		return "configuracionUsuario";
 	}
 

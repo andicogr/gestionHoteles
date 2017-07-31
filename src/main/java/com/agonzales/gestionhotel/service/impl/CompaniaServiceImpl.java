@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.CompaniaDao;
+import com.agonzales.gestionhotel.domain.AccesoCompaniaRol;
 import com.agonzales.gestionhotel.domain.Compania;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.ArchivoService;
 import com.agonzales.gestionhotel.service.CompaniaService;
+import com.agonzales.gestionhotel.service.RolService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Util;
@@ -30,6 +32,9 @@ public class CompaniaServiceImpl implements CompaniaService{
 	
 	@Autowired
 	private ArchivoService archivoService;
+	
+	@Autowired
+	private RolService rolService;
 	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
@@ -194,6 +199,29 @@ public class CompaniaServiceImpl implements CompaniaService{
 			}
 		}
 		return false;
+	}
+
+	public List<Compania> listarCompaniasActivasSinRepetirPorRol(Integer idRol){
+		List<Compania> listaCompaniasActivasSinRepeteir = new ArrayList<Compania>();
+		List<Compania> listaCompaniasActivas = companiaDAO.listarCompaniasActivas();
+		List<AccesoCompaniaRol> listaAccesoCompaniaRolPorUsuario = rolService.obtenerAccesoCompaniaRolPorRol(idRol);
+		
+		for(Compania compania : listaCompaniasActivas){
+			
+			boolean isRolRegistrado = false;
+			
+			for(AccesoCompaniaRol accesoCompaniaRol: listaAccesoCompaniaRolPorUsuario){
+				if(accesoCompaniaRol.getCompaniaId() == compania.getId()){
+					isRolRegistrado = true;
+				}
+			}
+
+			if(!isRolRegistrado){
+				listaCompaniasActivasSinRepeteir.add(compania);
+			}
+		}
+		
+		return listaCompaniasActivasSinRepeteir;
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import com.agonzales.gestionhotel.util.Entidad;
 import com.agonzales.gestionhotel.util.EntidadBase;
+import com.agonzales.gestionhotel.util.Util;
 
 @Entity
 @Table(name="acceso_compania_rol")
@@ -53,6 +54,35 @@ public class AccesoCompaniaRol extends EntidadBase implements Entidad{
 
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+	
+	public Integer getRolId(){
+		if(getRol() != null){
+			return getRol().getId();
+		}else{
+			return null;
+		}
+	}
+	
+	public Integer getCompaniaId(){
+		if(getCompania() != null){
+			return getCompania().getId();
+		}
+		
+		return null;
+	}
+	
+	public String getNombreCompania(){
+		if(getCompania() != null){
+			return getCompania().getRazonSocial();
+		}else{
+			return "";
+		}
+		
+	}
+	
+	public String getEstadoAccesoCompaniaRol(){
+		return Util.obtenerNombreEstado(isActivo());
 	}
 
 	@Override

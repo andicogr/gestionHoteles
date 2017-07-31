@@ -28,8 +28,8 @@ public class MantenimientoUsuarioController {
 	
 
 	@RequestMapping(value="/listar")
-	public String usuarioListar(HttpSession session, Model model){
-		logger.info("[MantenimientoUsuarioController] - method: usuarioListar");
+	public String listar(HttpSession session, Model model){
+		logger.info("[MantenimientoUsuarioController] - method: listar");
 		Boolean isMultiCompaniaActivado = (Boolean) session.getAttribute("isMultiCompaniaActivado");
 		model.addAttribute("isMultiCompaniaActivado", isMultiCompaniaActivado);
 		return "mantenimiento/usuario/listarUsuarios";
@@ -37,8 +37,8 @@ public class MantenimientoUsuarioController {
 
 	@RequestMapping(value="/listaJson")
 	@ResponseBody
-	public  Map<String, Object> usuarioListaJson(HttpSession session, PaginacionDTO paginacion){
-		logger.info("[MantenimientoUsuarioController] - method: usuarioListaJson");
+	public  Map<String, Object> listaJson(HttpSession session, PaginacionDTO paginacion){
+		logger.info("[MantenimientoUsuarioController] - method: listaJson");
 		Boolean isMultiCompaniaActivado = (Boolean) session.getAttribute("isMultiCompaniaActivado");
 		Map<String, Object> datos = usuarioService.listarJson(paginacion, isMultiCompaniaActivado);
 
@@ -46,8 +46,8 @@ public class MantenimientoUsuarioController {
 	}
 
 	@RequestMapping(value="/ver")
-	public String usuarioVer(HttpSession session, Model model, Integer id){
-		logger.info("[MantenimientoUsuarioController] - method: usuarioVer - id: " + id);
+	public String ver(HttpSession session, Model model, Integer id){
+		logger.info("[MantenimientoUsuarioController] - method: ver - id: " + id);
 		model.addAttribute("listaDeCompanias", session.getAttribute("listaDeCompanias"));
 		if(id != null){
 			Usuario usuario = usuarioService.get(id);
@@ -59,16 +59,24 @@ public class MantenimientoUsuarioController {
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> usuarioGuardar(Model model, Usuario usuario){
-		logger.info("[MantenimientoUsuarioController] - method: usuarioGuardar");
+	public Map<String, Object> guardar(Model model, Usuario usuario){
+		logger.info("[MantenimientoUsuarioController] - method: guardar");
 		Map<String, Object> retorno = usuarioService.guardar(usuario);
+		return retorno;
+	}
+	
+	@RequestMapping(value="/actualizar", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> actualizar(Model model, Usuario usuario){
+		logger.info("[MantenimientoUsuarioController] - method: actualizar");
+		Map<String, Object> retorno = usuarioService.actualizar(usuario);
 		return retorno;
 	}
 
 	@RequestMapping(value="/eliminar")
 	@ResponseBody
-	public Map<String, Object> usuarioEliminar(Model model, Integer[] ids){
-		logger.info("[MantenimientoUsuarioController] - method: usuarioEliminar - ids: " + ids);
+	public Map<String, Object> eliminar(Model model, Integer[] ids){
+		logger.info("[MantenimientoUsuarioController] - method: eliminar - ids: " + ids);
 		Map<String, Object> retorno = usuarioService.eliminar(ids);
 		return retorno;
 	}

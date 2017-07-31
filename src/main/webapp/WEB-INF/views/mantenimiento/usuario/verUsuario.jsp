@@ -27,14 +27,20 @@
 			<div class="x_title">
 				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
-						<button id="botonRegistrar" type="button" class="btn btn-success">
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_CREAR')">
 							<c:if test="${empty usuario}">
-								Registrar
+								<button id="botonRegistrar" type="button" class="btn btn-success">
+									Registrar
+								</button>
 							</c:if>
+						</sec:authorize>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_EDITAR')">
 							<c:if test="${not empty usuario}">
-								Actualizar
+								<button id="botonActualizar" type="button" class="btn btn-success">
+									Actualizar
+								</button>
 							</c:if>
-						</button>
+						</sec:authorize>
 						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_CREAR')">
 							<c:if test="${not empty usuario}">
 								<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
@@ -241,7 +247,6 @@
 								                                		</td>
 								                              		</tr>
 							                              		</c:forEach>
-							
 							                              	</tbody>
 							                            </table>
 			                            			</div>

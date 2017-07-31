@@ -19,5 +19,7 @@ public interface CompaniaService {
 	public List<Compania> listarTodos();
 	
 	public boolean isMultiCompaniaActivado();
+	
+	public List<Compania> listarCompaniasActivasSinRepetirPorRol(Integer idRol);
 
 }
