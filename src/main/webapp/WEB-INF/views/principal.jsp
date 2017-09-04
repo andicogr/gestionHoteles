@@ -12,7 +12,7 @@
     <title>Gentelella Alela! | </title>
 
     <!-- Bootstrap -->
-    <link href="resources/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<c:url value = "resources/vendors/bootstrap/dist/css/bootstrap.min.css"/>" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="resources/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->

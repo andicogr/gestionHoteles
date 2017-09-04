@@ -15,7 +15,7 @@ public class PrivilegioDaoImpl extends DAO<Privilegio> implements PrivilegioDao{
 	
 	@SuppressWarnings("unchecked")
 	public List<Privilegio> obtenerListaDePrivilegiosPadresActivos(){
-		String sql = "from Privilegio where privilegioPadre is null order by orden asc";
+		String sql = "from Privilegio where privilegioPadre is null and activo = true order by orden asc";
 
 		Query q = em.createQuery(sql);
 		

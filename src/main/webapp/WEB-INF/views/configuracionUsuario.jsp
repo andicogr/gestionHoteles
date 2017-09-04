@@ -1,49 +1,75 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>            	
 
 
+<div class="modal-dialog modal-sm">
+	<div class="modal-content">
+		<form id="formularioConfiguracionUsuario" method="post" action="<c:url value = "/"/>">
+			<div class="modal-header">
+				<button type="button" id="btnCloseSmallModal" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+	      		</button>
+	      		<h4 class="modal-title" id="smallModalTitulo">
+	      			Configracion de Usuario
+				</h4>
+			</div>
 
-<form id="enviarFormulario">
+			<div class="modal-body" id="smallModalContenido">
 
-	<label for="compania.id">
-		Rol:
-	</label>
+				<label for="idRol">
+					Rol:
+				</label>
+				<input type="hidden" id="companiaPorDefectoId" value="${usuarioSession.getCompaniaPorDefectoId()}"/>
+				<select name="idRol" id="idRol" class="form-control" onchange="cambiarRol()">
+					<c:forEach var="rol" items="${listaRolesActivos}">
+						
+						<option value="${rol.id}" <c:if test="${usuarioSession.getRolPorDefectoId() == rol.id}">selected="selected"</c:if> >
+							${rol.nombre}
+						</option>
+					</c:forEach>
+				</select>
 
-	<select name="compania.id" class="form-control">
-		<c:forEach var="usuarioRol" items="${listaDeUsuarioRolesActivos}">
-			<option value="${usuarioRol.id}">
-				${usuarioRol.getNombreRol()}
-			</option>
-		</c:forEach>
-	</select>
+				<c:if test="${multiCompania eq true}">
+					<label for="idCompania">
+						Compa&ntilde;ia:
+					</label>
 
-	<label for="compania.id">
-		Compa&ntilde;ia:
-	</label>
+					<select name="idCompania" id="idCompania" class="form-control">
+					</select>
 
-	<select name="compania.id" class="form-control">
-		<c:forEach var="compania" items="${listaDeCompanias}">
-			<option value="${compania.id}">
-				${compania.razonSocial}
-			</option>
-		</c:forEach>
-	</select>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="porDefecto" class="flat"
+								<c:if test="${usuarioSession.getFlagPorDefecto() eq true}">
+                              		checked="checked" 
+                              	</c:if>
+							> Por Defecto
+						</label>
+					</div>
+				</c:if>
 
-	<label for="compania.id">
-		Idioma:
-	</label>
-	
-	<select name="compania.id" class="form-control">
-		<c:forEach var="c" items="${listaCompanias}">
-			<option value="${c.id}">
-				${c.razonSocial}
-			</option>
-		</c:forEach>
-	</select>
+			</div>
 
-	<div class="checkbox">
-		<label>
-			<input type="checkbox" class="flat"> Por Defecto
-		</label>
+			<div class="modal-footer">
+	      		<button type="button" id="btnCloseSmallModal" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	      		<button type="submit" class="btn btn-primary">Guardar</button>
+	    	</div>
+		</form>
 	</div>
+</div>
 
-</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="resources/scripts/configuracionUsuario.js"></script>

@@ -5,7 +5,9 @@ public class Constantes {
 	public final static Integer SUPER_UID = 1;
 	public final static Integer SUPER_ROL_ID = 1;
 	public final static Integer SUPER_USUARIO_ROL_ID = 1;
-	public final static Integer MAIN_COMPANIA_ID = 1;
+	public final static Integer MI_EMPRESA_ID = 2;
+	public final static Integer TODAS_EMPRESAS_ID = 1;
+
 	public final static Integer INTENTOS_FALLIDOS_MAXIMOS = 3;
 	public final static String UID = "uid";
 	public final static String USUARIO_SESION = "usuarioSesion";
@@ -33,5 +35,12 @@ public class Constantes {
 	public final static String LISTA_VACIA = "No se encontraron resultados para los criterios de busqueda";
 	public final static String MENSAJE_ERROR_GUARDAR = "No se pudo guardar la informacion, comuniquese con el administrador del sistema";
 	public final static String GUARDAR_OK = "Los datos se guardaron correctamente";
+	
+	//VARIABLES DE SESION
+	public final static String MULTICOMPANIA_ACTIVADO = "multiCompaniaActivado";
+	public final static String LISTA_COMPANIAS_ACTIVAS = "listaCompaniasActivas";
+	public final static String USUARIO_SESSION_ID = "idUsuario";
+	public final static String COMPANIA_SESSION_ID = "companiaActual";
+	public final static String ROL_SESSION_ID = "rolActual";
 
 }

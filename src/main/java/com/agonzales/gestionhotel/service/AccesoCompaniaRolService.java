@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.agonzales.gestionhotel.domain.AccesoCompaniaRol;
+import com.agonzales.gestionhotel.domain.Compania;
 
 public interface AccesoCompaniaRolService {
 	
-	public List<AccesoCompaniaRol> listaDeAccesoCompaniaRolActivasPorRol(Integer idRol);
+	public List<Compania> listaCompaniasActivasPorRolParaConfiguracionUsuario(Integer idRol);
+	
+	public List<Compania> listaCompaniasActivasPorRol(Integer idRol);
 	
 	public Map<String, Object> guardar(AccesoCompaniaRol usuarioRol);
 	

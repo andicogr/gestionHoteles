@@ -2,6 +2,16 @@
 
 baseURL = $("#baseURL").val();
 
+function deshabilitarKeyPress(){
+	$('#formmularioMantenimiento').on('keyup keypress', function(e) {
+		  var keyCode = e.keyCode || e.which;
+		  if (keyCode === 13) { 
+		    e.preventDefault();
+		    return false;
+		  }
+		});
+}
+
 function abrirMenuEnDivContenidoPrincipal(idMenu, urlContenido){
 	$("#" + idMenu).click(function() {
 		$("#contenidoPrincipal").html("Cargando . . .");

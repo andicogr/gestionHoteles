@@ -207,5 +207,17 @@ public class Compania implements Entidad, Serializable {
 		}
 		return true;
 	}
+	
+	public Compania(){}
+	
+	public Compania(Integer id, String razonSocial, String ruc){
+		this.id = id;
+		this.razonSocial = razonSocial;
+		this.ruc = ruc;
+	}
+	
+	public Compania(Integer id){
+		this.id = id;
+	}
 
 }

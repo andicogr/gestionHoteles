@@ -63,12 +63,26 @@ public class MantenimientoCompaniaController {
 
 	@RequestMapping(value="/guardar", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> companiaGuardar(HttpServletRequest request, Model model, Compania compania){
+	public Map<String, Object> guardar(HttpServletRequest request, Model model, Compania compania){
 		logger.info("[MantenimientoController] - method: companiaGuardar");
 		if(compania.isGuardarImagen() && compania.existeLogo()){
 			Archivo archivo = archivoService.guardarArchivoYOtorgarNormbreConPrefijo(request, compania.getLogo(), Constantes.PREFIJO_IMG_LOGO);
 			compania.setArchivo(archivo);
 		}
+
+		Map<String, Object> retorno = companiaService.guardar(compania);
+		return retorno;
+	}
+	
+	@RequestMapping(value="/actualizar", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> actualizar(HttpServletRequest request, Model model, Compania compania){
+		logger.info("[MantenimientoController] - method: companiaGuardar");
+		if(compania.isGuardarImagen() && compania.existeLogo()){
+			Archivo archivo = archivoService.guardarArchivoYOtorgarNormbreConPrefijo(request, compania.getLogo(), Constantes.PREFIJO_IMG_LOGO);
+			compania.setArchivo(archivo);
+		}
+
 		Map<String, Object> retorno = companiaService.guardar(compania);
 		return retorno;
 	}

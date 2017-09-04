@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,19 +24,21 @@ import com.agonzales.gestionhotel.util.Util;
 
 @Service("CompaniaService")
 public class CompaniaServiceImpl implements CompaniaService{
+	
+	private static final Logger log = LoggerFactory.getLogger(CompaniaServiceImpl.class);
 
 	@Autowired
 	private CompaniaDao companiaDAO;
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
-	
+
 	@Autowired
 	private ArchivoService archivoService;
-	
+
 	@Autowired
 	private RolService rolService;
-	
+
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
 		if(paginacion.getiDisplayLength()==null){
@@ -83,7 +86,42 @@ public class CompaniaServiceImpl implements CompaniaService{
 	public Map<String, Object> guardar(Compania compania){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
+
+		compania.limpiarArchivoDeCompania();
+
+		if(companiaDAO.isUniqueValue("razonSocial", compania.getRazonSocial(), compania.getId())){
+			notifiaccion = Util.crearNotificacionError("Error", "La Razon Social ya esta registrada en el sistema.");
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		if(companiaDAO.isUniqueValue("ruc", compania.getRuc(), compania.getId())){
+			notifiaccion = Util.crearNotificacionError("Error", "El RUC ya esta registrado en el sistema.");
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		try {
+			companiaDAO.guardar(compania, usuarioService.getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+		} catch (Exception e) {
+			log.error("[CompaniaServiceImpl] - method: guardar - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
+
+		retorno.put("notificacion", notifiaccion);
+		retorno.put("id", compania.getId());
+		retorno.put("estado", true);
+
+		return retorno;
+	}
+
+	@Transactional
+	public Map<String, Object> actualizar(Compania compania){
+		Map<String, Object> retorno = new HashMap<String, Object>();
+		Map<String, Object> notifiaccion = null;
 		Integer archivoEliminarId = null;
 
 		compania.limpiarArchivoDeCompania();
@@ -103,8 +141,7 @@ public class CompaniaServiceImpl implements CompaniaService{
 		}
 
 		if(compania.getId() != null){
-			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
-			
+
 			Compania actual = companiaDAO.get(compania.getId());
 			actual.setCorreoContacto(compania.getCorreoContacto());
 			actual.setDireccion(compania.getDireccion());
@@ -123,12 +160,17 @@ public class CompaniaServiceImpl implements CompaniaService{
 					actual.setArchivo(compania.getArchivo());
 				}
 			}
-			compania = actual;
+
+			try {
+				companiaDAO.guardar(actual, usuarioService.getUID());
+				notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			} catch (Exception e) {
+				log.error("[CompaniaServiceImpl] - method: actualizar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
+		}else{
+			notifiaccion = Util.notificacionErrorDelSistema();
 		}
-
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
-
-		companiaDAO.guardar(compania, usuarioService.getUID());
 
 		if(archivoEliminarId != null){
 			archivoService.eliminar(new Integer[] {archivoEliminarId});
@@ -165,14 +207,18 @@ public class CompaniaServiceImpl implements CompaniaService{
 		}
 		for(Integer id : ids){
 			Compania compania = companiaDAO.get(id);
-			estadoEliminacion = companiaDAO.eliminar(compania);
-		}
-		if(estadoEliminacion){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
-		}else{
-			notifiaccion = Util.crearNotificacion("error", "Error", 
-					"Ocurrio un error mientras se eliminaba el registro, "
-					+ "por favor comuniquese con el administrador del sistema.", 5000);
+			
+			try {
+				estadoEliminacion = companiaDAO.eliminar(compania);
+				if(estadoEliminacion){
+					notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
+				}else{
+					notifiaccion = Util.notificacionErrorDelSistema();
+				}
+			} catch (Exception e) {
+				log.error("[CompaniaServiceImpl] - method: eliminar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -183,18 +229,10 @@ public class CompaniaServiceImpl implements CompaniaService{
 	public List<Compania> listarTodos(){
 		return companiaDAO.getTodos();
 	}
-	
-	public boolean isMultiCompaniaActivado(){
-		List<Compania> listaCompanias = companiaDAO.getTodos();
-		if(listaCompanias.size() > 1){
-			return true;
-		}
-		return false;
-	}
 
-	public boolean isCompaniaPrincipal(Integer[] ids){
+	private boolean isCompaniaPrincipal(Integer[] ids){
 		for(Integer id : ids){
-			if(id == Constantes.MAIN_COMPANIA_ID){
+			if(id == Constantes.MI_EMPRESA_ID || id == Constantes.TODAS_EMPRESAS_ID){
 				return true;
 			}
 		}
@@ -203,7 +241,7 @@ public class CompaniaServiceImpl implements CompaniaService{
 
 	public List<Compania> listarCompaniasActivasSinRepetirPorRol(Integer idRol){
 		List<Compania> listaCompaniasActivasSinRepeteir = new ArrayList<Compania>();
-		List<Compania> listaCompaniasActivas = companiaDAO.listarCompaniasActivas();
+		List<Compania> listaCompaniasActivas = this.listarCompaniasActivas();
 		List<AccesoCompaniaRol> listaAccesoCompaniaRolPorUsuario = rolService.obtenerAccesoCompaniaRolPorRol(idRol);
 		
 		for(Compania compania : listaCompaniasActivas){
@@ -222,6 +260,10 @@ public class CompaniaServiceImpl implements CompaniaService{
 		}
 		
 		return listaCompaniasActivasSinRepeteir;
+	}
+
+	public List<Compania> listarCompaniasActivas(){
+		return companiaDAO.listarCompaniasActivas();
 	}
 
 }

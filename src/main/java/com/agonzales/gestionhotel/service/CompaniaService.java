@@ -11,6 +11,8 @@ public interface CompaniaService {
 	public Map<String, Object> listarJson(PaginacionDTO paginacion);
 
 	public Map<String, Object> guardar(Compania compania);
+	
+	public Map<String, Object> actualizar(Compania compania);
 
 	public Compania get(Integer id);
 	
@@ -18,8 +20,8 @@ public interface CompaniaService {
 
 	public List<Compania> listarTodos();
 	
-	public boolean isMultiCompaniaActivado();
-	
 	public List<Compania> listarCompaniasActivasSinRepetirPorRol(Integer idRol);
+	
+	public List<Compania> listarCompaniasActivas();
 
 }

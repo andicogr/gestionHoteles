@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 
 <div class="page-title" id="contenidoTitulo">
@@ -19,30 +20,38 @@
 			<div class="x_title">
 				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
-						<c:if test="${empty accesoCompaniaRol}">
-							<button id="botonRegistrar" type="button" class="btn btn-success">
-								Registrar
-							</button>
-						</c:if>
-						<c:if test="${not empty accesoCompaniaRol}">
-							<button id="botonActualizar" type="button" class="btn btn-success">
-								Actualizar
-							</button>
-						</c:if>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_ROL_AGREGAR_COMPANIAS')">	
+							<c:if test="${empty accesoCompaniaRol}">
+								<button id="botonRegistrar" type="button" class="btn btn-success">
+									Registrar
+								</button>
+							</c:if>
+						</sec:authorize>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_ROL_ACTUALIZAR_COMPANIAS')">	
+							<c:if test="${not empty accesoCompaniaRol}">
+								<button id="botonActualizar" type="button" class="btn btn-success">
+									Actualizar
+								</button>
+							</c:if>
+						</sec:authorize>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty accesoCompaniaRol}">
-		                    <div class="btn-group botonOpcionesMantenimiento">
-		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-		                    		Opciones 
-		                    		<span class="caret"></span>
-		                    	</button>
-		                    	<ul role="menu" class="dropdown-menu">
-		                      		<li>
-		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-		                      		</li>
-		                    	</ul>
-		                    </div>
+							<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_ROL_ELIMINAR_COMPANIAS')">	
+			                    <div class="btn-group botonOpcionesMantenimiento">
+			                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+			                    		Opciones 
+			                    		<span class="caret"></span>
+			                    	</button>
+			                    	<ul role="menu" class="dropdown-menu">
+			                    		<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_ROL_ELIMINAR_COMPANIAS')">	
+				                      		<li>
+				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+				                      		</li>
+				                      	</sec:authorize>
+			                    	</ul>
+			                    </div>
+							</sec:authorize>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">
@@ -66,7 +75,7 @@
                         <div class="col-md-6 col-sm-6 col-xs-12">
 							<select name="compania.id" class="form-control">
 								<option value=""> --- Seleccionar ---</option>
-								<c:forEach var="rol" items="${listaCompaniasActivas}">
+								<c:forEach var="compania" items="${listaCompaniasActivas}">
 									<option value="${compania.id}"
 										<c:if test="${compania.id == accesoCompaniaRol.compania.id}">
 											selected="selected"

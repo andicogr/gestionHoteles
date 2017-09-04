@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <link href="resources/vendors/bootstrap-imageupload/dist/css/bootstrap-imageupload.min.css" rel="stylesheet">
 
@@ -21,36 +22,44 @@
 			<div class="x_title">
 				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
-						<button id="botonRegistrar" type="button" class="btn btn-success">
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_COMPANIA_CREAR')">
 							<c:if test="${empty compania}">
-								Registrar
+								<button id="botonRegistrar" type="button" class="btn btn-success">
+									Registrar
+								</button>
 							</c:if>
+						</sec:authorize>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_COMPANIA_EDITAR')">
 							<c:if test="${not empty compania}">
-								Actualizar
+								<button id="botonActualizar" type="button" class="btn btn-success">
+									Actualizar
+								</button>
 							</c:if>
-						</button>
-						<c:if test="${not empty compania}">
-							<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
-						</c:if>
+						</sec:authorize>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_COMPANIA_CREAR')">
+							<c:if test="${not empty compania}">
+								<button class="btn btn-default" id="btnCrearRegistro">Crear</button>
+							</c:if>
+						</sec:authorize>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty compania}">
 							<button class="btn btn-default" id="btnImprimirRegistro">Imprimir</button>
-		                    <div class="btn-group botonOpcionesMantenimiento">
-		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-		                    		Opciones 
-		                    		<span class="caret"></span>
-		                    	</button>
-		                    	<ul role="menu" class="dropdown-menu">
-		                      		<li>
-		                      			<a href="#">Desbloquear Usuario</a>
-		                      		</li>
-		                      		<li class="divider"></li>
-		                      		<li>
-		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-		                      		</li>
-		                    	</ul>
-		                    </div>
+							<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_COMPANIA_ELIMINAR')">
+			                    <div class="btn-group botonOpcionesMantenimiento">
+			                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+			                    		Opciones 
+			                    		<span class="caret"></span>
+			                    	</button>
+			                    	<ul role="menu" class="dropdown-menu">
+				                      	<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_COMPANIA_ELIMINAR')">
+				                      		<li>
+				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+				                      		</li>
+				                      	</sec:authorize>
+			                    	</ul>
+			                    </div>
+							</sec:authorize>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">

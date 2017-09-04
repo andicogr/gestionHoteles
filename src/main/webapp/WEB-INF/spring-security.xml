@@ -18,6 +18,8 @@
 		<intercept-url pattern="/login2" access="permitAll"/>
 		<intercept-url pattern="/logout" access="permitAll"/>
 		<intercept-url pattern="/denied" access="permitAll"/>
+		<intercept-url pattern="/configuracionUsuario/ver" access="permitAll"/>
+		<intercept-url pattern="/configuracionUsuario/obtenerCompaniasPorRol" access="permitAll"/>
 		<!--<intercept-url pattern="/" access="hasAnyRole('ROLE_USER') and hasIpAddress('192.168.0.5/25')"/>-->
 		<intercept-url pattern="/" access="hasAnyRole('PRIVILEGIO_USER','PRIVILEGIO_ADMIN')"/>
 

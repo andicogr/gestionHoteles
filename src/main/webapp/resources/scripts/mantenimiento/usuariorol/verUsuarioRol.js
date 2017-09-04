@@ -1,4 +1,4 @@
-
+deshabilitarKeyPress();
 capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
@@ -13,15 +13,21 @@ var mensajesValidacion = {
 
 aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
-
 $("#botonRegistrar").click(function() {
+	enviarFormulario("mantenimiento/usuariorol/guardar");
+});
 
+$("#botonActualizar").click(function() {
+	enviarFormulario("mantenimiento/usuariorol/actualizar");
+});
+
+function enviarFormulario(url){
 	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
 				type: "POST",
-				url: baseURL + "mantenimiento/usuariorol/guardar",
+				url: baseURL + url,
 				data: new FormData($form[0]),
 				async: false,
 				cache: false,
@@ -43,7 +49,7 @@ $("#botonRegistrar").click(function() {
 	}else{
 		mostrarNotificacionNingunCambioFormulario();
 	}
-});
+}
 
 $("#botonAtras").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/usuario/ver?id=" + $("#idUsuario").val());

@@ -1,3 +1,5 @@
+deshabilitarKeyPress();
+
 $('#fechaExpiracionUsuario').daterangepicker({
   singleDatePicker: true,
   singleClasses: "picker_2",
@@ -20,7 +22,7 @@ $('#fechaExpiracionUsuario').daterangepicker({
        ],
 	  }
 }, function(start, end, label) {
-  console.log(start.toISOString(), end.toISOString(), label);
+	console.log(start.toISOString(), end.toISOString(), label);
 });
 
 capturarDatosInicialesDelFormulario();
@@ -50,7 +52,7 @@ $("#botonRegistrar").click(function() {
 	enviarFormulario("mantenimiento/usuario/guardar");
 });
 
-$("#botonRegistrar").click(function() {
+$("#botonActualizar").click(function() {
 	enviarFormulario("mantenimiento/usuario/actualizar");
 });
 
@@ -126,9 +128,6 @@ function abrirFormularioAgregarUsuarioRol(idUsuario){
 }
 
 $('#tablaListaUsuarioRol tr td:not(:last-child)').click(function () {
-	var subMenuUsuarioEditarRoles = eval($("#subMenuUsuarioEditarRoles").val());
-	if(subMenuUsuarioEditarRoles){
-	    var idUsuarioRol = $(this).closest('tr').find('td:eq(0) input').val();
-	    cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?id=" + idUsuarioRol + "&idUsuario=" + $("#id").val());
-	}
+    var idUsuarioRol = $(this).closest('tr').find('td:eq(0) input').val();
+    cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?id=" + idUsuarioRol + "&idUsuario=" + $("#id").val());
 });

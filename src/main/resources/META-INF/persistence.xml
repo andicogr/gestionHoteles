@@ -14,6 +14,7 @@
 		<class>com.agonzales.gestionhotel.domain.Rol</class>
 		<class>com.agonzales.gestionhotel.domain.UsuarioRol</class>
 		<class>com.agonzales.gestionhotel.domain.AccesoCompaniaRol</class>
+		<class>com.agonzales.gestionhotel.domain.AjustesConfiguracion</class>
 		
 		
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>

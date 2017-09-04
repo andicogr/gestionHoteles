@@ -1,12 +1,6 @@
 package com.agonzales.gestionhotel.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.UsuarioDao;
-import com.agonzales.gestionhotel.domain.Privilegio;
-import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.Usuario;
 
 
@@ -52,10 +44,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 				usuarioService.registrarIntentoDeLogeoFallido(username);
 			}
 
+			//TODO obtener solo los privilegios de un rol no de todos
 			return new User(
 					username, usuario.getPassword(), usuario.isActivo(),
 					!usuario.isUsuarioExpirado(), usuario.isRolesActivos(), !usuario.isBloqueado(),
-					getAuthorities(usuario.getRolesActivos()));
+					usuarioService.getAuthorities(usuario.getRolUsuario()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,31 +56,5 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 	}
 
-	public Collection<? extends GrantedAuthority> getAuthorities(
-			List<Rol> roles) {
-		List<GrantedAuthority> authList = getGrantedAuthorities(getPrivilegios(roles));
-		return authList;
-	}
 
-    private List<String> getPrivilegios(List<Rol> roles) {
-
-        List<String> privilegios = new ArrayList<String>();
-        List<Privilegio> collection = new ArrayList<Privilegio>();
-        for (Rol rol : roles) {
-        	collection.addAll(rol.getPrivilegios());  
-        }
-        for (Privilegio item : collection) {
-        	privilegios.add(item.getNombrePrivilegio());
-        }
-        return privilegios;
-    }
-
-	public static List<GrantedAuthority> getGrantedAuthorities(
-			List<String> privilegios) {
-		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		for (String privilegio : privilegios) {
-			authorities.add(new SimpleGrantedAuthority(privilegio));
-		}
-		return authorities;
-	}
 }

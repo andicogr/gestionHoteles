@@ -1,8 +1,6 @@
 package com.agonzales.gestionhotel.util;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -33,11 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class Util {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Util.class);
-	
-	
 	public static Map<String, Object> crearNotificacion(String type, String title, String text, Integer delay){
-		logger.info("[Util] - Method: crearNotificacion");
 		Map<String, Object> notifiaccion = new HashMap<String, Object>();
 		notifiaccion.put("styling", "bootstrap3");
 		notifiaccion.put("type", type);
@@ -49,27 +43,26 @@ public class Util {
 	}
 
 	public static Map<String, Object> crearNotificacion(String type, String title, String text){
-		logger.info("[Util] - Method: crearNotificacion");
 		return crearNotificacion(type, title, text, 3000);
 	}
 	
 	public static Map<String, Object> crearNotificacionError(String title, String text){
-		logger.info("[Util] - Method: crearNotificacionError");
 		return crearNotificacion("error", title, text);
 	}
 	
 	public static Map<String, Object> crearNotificacionInfo(String title, String text){
-		logger.info("[Util] - Method: crearNotificacionInfo");
 		return crearNotificacion("info", title, text);
 	}
 	
 	public static Map<String, Object> crearNotificacionSuccess(String title, String text){
-		logger.info("[Util] - Method: crearNotificacionSuccess");
 		return crearNotificacion("success", title, text);
 	}
 
+	public static Map<String, Object> notificacionErrorDelSistema(){
+		return crearNotificacion("error", "Error del Sistema", "Ocurrio un error inesperado, por favor comuniquese con el administrador del sistema.", 5000);
+	}
+
 	public static String OrderByPagination(Map<String, Object> valor, Integer columna, String orden){
-		logger.info("[Util] - Method: OrderByPagination");
 		String query="";
 		for (Map.Entry<String, Object> entry : valor.entrySet()) {
 			if (entry.getKey().equals(columna.toString())){
@@ -86,7 +79,6 @@ public class Util {
 	}
 	
 	public static String querySelect(Map<String, Object> columnas){
-		logger.info("[Util] - Method: querySelect");
 		String query = "Select ";
 
 		for (Map.Entry<String, Object> entry : columnas.entrySet()) {
@@ -97,7 +89,6 @@ public class Util {
 	}
 	
 	public static String obtenerNombreEstado(boolean activo){
-		logger.info("[Util] - Method: obtenerNombreEstado");
 		if(activo){
 			return Constantes.ESTADO_ACTIVO_ETIQUETA;
 		}
@@ -309,7 +300,6 @@ public class Util {
 	
 	
 	public static String subeArchivo(MultipartFile archivoSubir, HttpServletRequest request, String prefijo) {
-		logger.info("[Util] - method: subeArchivo");
 		String resultado = "error";
 		String archivo = archivoSubir.getOriginalFilename();
 		Integer indexExtencion =  archivo.lastIndexOf(".");
@@ -347,29 +337,23 @@ public class Util {
 	 * @return 0 = no existe la imagen, 1 = se elimno la imagen, 2 = no se elimino la imagen 
 	 */
 	public static Integer eliminarArchivo(String nombreArchivo) {
-		logger.info("[Util] - method: eliminarArchivo - nombreArchivo: " + nombreArchivo);
 		Integer resultado = 0;
 		String archivosDir = Config.getPropiedad(Constantes.PROPERTIES_IMAGENES_PATH);
 
 		File archivo = new File(archivosDir + File.separator + nombreArchivo);
 		if (archivo.exists()) {
-			logger.info("Existe la imagen "+ nombreArchivo);
 			if (archivo.delete()) {
-				logger.info("Se elimino la imagen "+ nombreArchivo);
 				resultado = 1;
 			} else {
 				resultado = 2;
-				logger.debug("No se elimino la imagen");
 			}
 		} else {
 			resultado = 0;
-			logger.debug("No existe la imagen");
 		}
 		return resultado;
 	}
 
 	public static String otorgarNombreImagen(HttpServletRequest request,MultipartFile mImagen, String nombreOriginalImagen, String perfijoImg){
-		logger.info("[Util] - method: otorgarNombreImagen");
 		String nombreImagen = "";
 		if(mImagen.getSize() > 0){
 			String[] inicialesTitulo = nombreOriginalImagen.split(" ");
@@ -386,7 +370,6 @@ public class Util {
 	}
 	
 	public static String otorgarNombreImagen(HttpServletRequest request,MultipartFile mImagen, String perfijoImg){
-		logger.info("[Util] - method: otorgarNombreImagen");
 		return otorgarNombreImagen(request, mImagen, mImagen.getOriginalFilename(), perfijoImg);
 	}
 

@@ -3,7 +3,7 @@
 //aca para no pintar la primera columna, tambien pasar el valor si es MultiCompania en el metoido del Servicio
 // listaJson para que ya no devuelva esa columna en la estrcutura,
 
-var isMultiCompaniaActivado = eval($("#isMultiCompaniaActivado").val());
+var multiCompania = eval($("#multiCompania").val());
 
 var aoColumns = [ 
                  { "width": "1px" },
@@ -12,7 +12,7 @@ var aoColumns = [
                  { sClass: "center" },
              ];
 
-if(!isMultiCompaniaActivado){
+if(!multiCompania){
 	aoColumns.splice(1, 1);
 }
 

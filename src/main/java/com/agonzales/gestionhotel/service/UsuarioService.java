@@ -1,17 +1,20 @@
 package com.agonzales.gestionhotel.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.Usuario;
-import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 
 public interface UsuarioService {
 
 	public Integer getUID();
 	
-	public Map<String, Object> listarJson(PaginacionDTO paginacion, boolean isMultiCompaniaActivado);
+	public Map<String, Object> listarJson(PaginacionDTO paginacion);
 
 	public Map<String, Object> guardar(Usuario usuario);
 	
@@ -27,6 +30,8 @@ public interface UsuarioService {
 	
 	public Boolean isPasswordIncorrecto(String username, String password);
 	
-	public List<UsuarioRol> obtenerUsuarioRolesPorUsuario(Integer idUsuario);
+	public Collection<? extends GrantedAuthority> getAuthorities(List<Rol> roles);
+	
+	public Collection<? extends GrantedAuthority> getAuthorities(Rol rol);
 
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 
 <div class="page-title" id="contenidoTitulo">
@@ -19,28 +20,38 @@
 			<div class="x_title">
 				<div class="row rowTopBotonera">
 					<div class="col-md-4 col-sm-4 col-xs-4" >
-						<button id="botonRegistrar" type="button" class="btn btn-success">
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_AGREGAR_ROLES')">
 							<c:if test="${empty usuarioRol}">
-								Registrar
+								<button id="botonRegistrar" type="button" class="btn btn-success">
+									Registrar
+								</button>
 							</c:if>
+						</sec:authorize>
+						<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_USUARIO_EDITAR_ROLES')">
 							<c:if test="${not empty usuarioRol}">
-								Actualizar
+								<button id="botonActualizar" type="button" class="btn btn-success">
+									Actualizar
+								</button>
 							</c:if>
-						</button>
+						</sec:authorize>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-center">
 						<c:if test="${not empty usuarioRol}">
-		                    <div class="btn-group botonOpcionesMantenimiento">
-		                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-		                    		Opciones 
-		                    		<span class="caret"></span>
-		                    	</button>
-		                    	<ul role="menu" class="dropdown-menu">
-		                      		<li>
-		                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-		                      		</li>
-		                    	</ul>
-		                    </div>
+							<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_ELIMINAR_ROLES')">	
+			                    <div class="btn-group botonOpcionesMantenimiento">
+			                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+			                    		Opciones 
+			                    		<span class="caret"></span>
+			                    	</button>
+			                    	<ul role="menu" class="dropdown-menu">
+			                    		<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_USUARIO_ELIMINAR_ROLES')">	
+				                      		<li>
+				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+				                      		</li>
+				                      	</sec:authorize>
+			                    	</ul>
+			                    </div>
+			                </sec:authorize>
 						</c:if>
 					</div>
 					<div class="col-md-4 col-sm-4 col-xs-4 text-right">

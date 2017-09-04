@@ -111,4 +111,14 @@ public class Rol extends EntidadAuditoria implements Entidad{
 		return Util.obtenerNombreEstado(isActivo());
 	}
 
+	public Rol(){}
+	
+	public Rol(Integer id, String nombre){
+		this.id = id;
+		this.nombre = nombre;
+	}
+	
+	public Rol(Integer id){
+		this.id = id;
+	}
 }

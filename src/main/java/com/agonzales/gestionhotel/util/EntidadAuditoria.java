@@ -13,13 +13,13 @@ public class EntidadAuditoria implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="uid_creacion")
+	@Column(name="uid_creacion", updatable=false)
 	private Integer usuarioCreacion;
 
 	@Column(name="uid_actualizacion")
 	private Integer usuarioActualizacion;
 	
-	@Column(name="fecha_creacion")
+	@Column(name="fecha_creacion", updatable=false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaCreacion;
 	

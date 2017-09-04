@@ -1,3 +1,5 @@
+deshabilitarKeyPress();
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -57,15 +59,21 @@ var mensajesValidacion = {
 
 aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
-
 $("#botonRegistrar").click(function() {
+	enviarFormulario("mantenimiento/compania/guardar");
+});
 
+$("#botonActualizar").click(function() {
+	enviarFormulario("mantenimiento/compania/actualizar");
+});
+
+function enviarFormulario(url){
 	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
 				type: "POST",
-				url: baseURL + "mantenimiento/compania/guardar",
+				url: baseURL + url,
 				data: new FormData($form[0]),
 				async: false,
 				cache: false,
@@ -84,11 +92,10 @@ $("#botonRegistrar").click(function() {
 			})
 		}
 
-
 	}else{
 		mostrarNotificacionNingunCambioFormulario();
 	}
-});
+}
 
 $("#btnCrearRegistro").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/compania/ver");

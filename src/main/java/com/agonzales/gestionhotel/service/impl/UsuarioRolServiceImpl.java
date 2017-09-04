@@ -1,13 +1,17 @@
 package com.agonzales.gestionhotel.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.UsuarioRolDao;
+import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.service.UsuarioRolService;
 import com.agonzales.gestionhotel.service.UsuarioService;
@@ -16,6 +20,8 @@ import com.agonzales.gestionhotel.util.Util;
 
 @Service("UsuarioRolService")
 public class UsuarioRolServiceImpl implements UsuarioRolService{
+	
+	private static final Logger log = LoggerFactory.getLogger(UsuarioRolServiceImpl.class);
 
 	@Autowired
 	private UsuarioRolDao usuarioRolDao;
@@ -27,20 +33,44 @@ public class UsuarioRolServiceImpl implements UsuarioRolService{
 	public Map<String, Object> guardar(UsuarioRol usuarioRol){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
+
+		try {
+			usuarioRolDao.guardar(usuarioRol, usuarioService.getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+		} catch (Exception e) {
+			log.error("[UsuarioRolServiceImpl] - method: guardar - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
+
+		retorno.put("notificacion", notifiaccion);
+		retorno.put("id", usuarioRol.getId());
+		retorno.put("idUsuario", usuarioRol.getUsuarioId());
+		retorno.put("estado", true);
+
+		return retorno;
+	}
+	
+	@Transactional
+	public Map<String, Object> actualizar(UsuarioRol usuarioRol){
+		Map<String, Object> retorno = new HashMap<String, Object>();
+		Map<String, Object> notifiaccion = null;
 
 		if(usuarioRol.getId() != null){
-			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
 
 			UsuarioRol actual = usuarioRolDao.get(usuarioRol.getId());
 			actual.setRol(usuarioRol.getRol());
 			actual.setActivo(usuarioRol.isActivo());
-			usuarioRol = actual;
+
+			try {
+				usuarioRolDao.guardar(actual, usuarioService.getUID());
+				notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			} catch (Exception e) {
+				log.error("[UsuarioRolServiceImpl] - method: actualizar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
+		}else{
+			notifiaccion = Util.notificacionErrorDelSistema();
 		}
-
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
-
-		usuarioRolDao.guardar(usuarioRol, usuarioService.getUID());
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", usuarioRol.getId());
@@ -74,14 +104,18 @@ public class UsuarioRolServiceImpl implements UsuarioRolService{
 		}
 		for(Integer id : ids){
 			UsuarioRol usuarioRol = usuarioRolDao.get(id);
-			estadoEliminacion = usuarioRolDao.eliminar(usuarioRol);
-		}
-		if(estadoEliminacion){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
-		}else{
-			notifiaccion = Util.crearNotificacion("error", "Error", 
-					"Ocurrio un error mientras se eliminaba el registro, "
-					+ "por favor comuniquese con el administrador del sistema.", 5000);
+
+			try {
+				estadoEliminacion = usuarioRolDao.eliminar(usuarioRol);
+				if(estadoEliminacion){
+					notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
+				}else{
+					notifiaccion = Util.notificacionErrorDelSistema();
+				}
+			} catch (Exception e) {
+				log.error("[UsuarioRolServiceImpl] - method: eliminar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -96,6 +130,14 @@ public class UsuarioRolServiceImpl implements UsuarioRolService{
 			}
 		}
 		return false;
+	}
+	
+	public List<Rol> obtenerRolesActivosPorUsuario(Integer idUsuario){
+		return usuarioRolDao.obtenerRolesActivosPorUsuario(idUsuario);
+	}
+
+	public List<Rol> obtenerRolesPorUsuario(Integer idUsuario){
+		return usuarioRolDao.obtenerRolesPorUsuario(idUsuario);
 	}
 
 }

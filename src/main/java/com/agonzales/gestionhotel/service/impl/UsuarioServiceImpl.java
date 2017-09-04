@@ -1,42 +1,49 @@
 package com.agonzales.gestionhotel.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.UsuarioDao;
-import com.agonzales.gestionhotel.dao.UsuarioRolDao;
+import com.agonzales.gestionhotel.domain.Privilegio;
+import com.agonzales.gestionhotel.domain.Rol;
 import com.agonzales.gestionhotel.domain.Usuario;
-import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Util;
+import com.agonzales.gestionhotel.util.VariablesSession;
 
 @Service("UsuarioService")
 public class UsuarioServiceImpl implements UsuarioService{
 	
-	@Autowired
-	private UsuarioDao usuarioDAO;
+	private static final Logger log = LoggerFactory.getLogger(UsuarioServiceImpl.class);
 	
 	@Autowired
-	private UsuarioRolDao usuarioRolDao;
+	private UsuarioDao usuarioDAO;
 
 	public Integer getUID(){
 		User usuario = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return usuarioDAO.getUID(usuario.getUsername());
 	}
 
-	public Map<String, Object> listarJson(PaginacionDTO paginacion, boolean isMultiCompaniaActivado){
+	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
+		boolean multiCompania = (Boolean) VariablesSession.getAttribute(Constantes.MULTICOMPANIA_ACTIVADO);
+		
 		if(paginacion.getiDisplayLength()==null){
 			return null;
 		}
@@ -46,7 +53,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		columnas.put("1", "a.compania.razonSocial");
 		columnas.put("2", "a.username");
 		
-		if(!isMultiCompaniaActivado){
+		if(!multiCompania){
 			columnas = Util.reordenarColumnasPorConfiguracionMultiCompania(columnas);
 		}
 
@@ -71,7 +78,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 						usuario.getUsername(),
 						Util.obtenerNombreEstado(usuario.isActivo())
 					};
-			if(!isMultiCompaniaActivado){
+			if(!multiCompania){
 				aaDato = (String[]) ArrayUtils.remove(aaDato, 1);
 			}
 			listas.add(aaDato);
@@ -94,9 +101,13 @@ public class UsuarioServiceImpl implements UsuarioService{
 			return retorno;
 		}
 
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
-
-		usuarioDAO.guardar(usuario, getUID());
+		try {
+			usuarioDAO.guardar(usuario, getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+		} catch (Exception e) {
+			log.error("[UsuarioServiceImpl] - method: guardar - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", usuario.getId());
@@ -104,7 +115,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 		return retorno;
 	}
-	
+
 	@Transactional
 	public Map<String, Object> actualizar(Usuario usuario){
 		Map<String, Object> retorno = new HashMap<String, Object>();
@@ -126,12 +137,19 @@ public class UsuarioServiceImpl implements UsuarioService{
 			actual.setCompania(usuario.getCompania());
 			actual.setExpirarUsuario(usuario.isExpirarUsuario());
 			actual.setFechaExpiracionUsuario(usuario.getFechaExpiracionUsuario());
-			
-			usuarioDAO.guardar(actual, getUID());
-			
-			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			actual.setRolPorDefecto(usuario.getRolPorDefecto());
+			actual.setCompaniaPorDefecto(usuario.getCompaniaPorDefecto());
+
+			try {
+				usuarioDAO.guardar(usuario, getUID());
+				notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			} catch (Exception e) {
+				log.error("[UsuarioServiceImpl] - method: actualizar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
+
 		}else{
-			notifiaccion = Util.crearNotificacionError("Error", Constantes.MENSAJE_ERROR_GUARDAR);
+			notifiaccion = Util.notificacionErrorDelSistema();
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -165,14 +183,20 @@ public class UsuarioServiceImpl implements UsuarioService{
 		}
 		for(Integer id : ids){
 			Usuario usuario = usuarioDAO.get(id);
-			estadoEliminacion = usuarioDAO.eliminar(usuario);
-		}
-		if(estadoEliminacion){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
-		}else{
-			notifiaccion = Util.crearNotificacion("error", "Error", 
-					"Ocurrio un error mientras se eliminaba el registro, "
-					+ "por favor comuniquese con el administrador del sistema.", 5000);
+			
+			try {
+				estadoEliminacion = usuarioDAO.eliminar(usuario);
+
+				if(estadoEliminacion){
+					notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
+				}else{
+					notifiaccion = Util.notificacionErrorDelSistema();
+				}
+
+			} catch (Exception e) {
+				log.error("[UsuarioServiceImpl] - method: eliminar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -207,8 +231,40 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return false;
 	}
 	
-	public List<UsuarioRol> obtenerUsuarioRolesPorUsuario(Integer idUsuario){
-		return usuarioRolDao.obtenerUsuarioRolesPorUsuario(idUsuario);
+	public Collection<? extends GrantedAuthority> getAuthorities(List<Rol> roles) {
+		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+		for(Rol rol: roles){
+			authList.addAll(getGrantedAuthorities(getPrivilegios(rol)));
+		}
+				
+		return authList;
+	}
+	
+	public Collection<? extends GrantedAuthority> getAuthorities(Rol rol) {
+		List<GrantedAuthority> authList = getGrantedAuthorities(getPrivilegios(rol));
+		return authList;
+	}
+
+    private List<String> getPrivilegios(Rol rol) {
+        List<String> privilegios = new ArrayList<String>();
+        List<Privilegio> collection = new ArrayList<Privilegio>();
+        if(rol != null){
+            collection.addAll(rol.getPrivilegios());  
+            
+            for (Privilegio item : collection) {
+            	privilegios.add(item.getNombrePrivilegio());
+            }
+        }
+
+        return privilegios;
+    }
+
+	public static List<GrantedAuthority> getGrantedAuthorities(List<String> privilegios) {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		for (String privilegio : privilegios) {
+			authorities.add(new SimpleGrantedAuthority(privilegio));
+		}
+		return authorities;
 	}
 
 }

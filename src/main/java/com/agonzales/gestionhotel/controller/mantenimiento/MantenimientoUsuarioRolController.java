@@ -53,6 +53,14 @@ public class MantenimientoUsuarioRolController {
 		Map<String, Object> retorno = usuarioRolService.guardar(usuarioRol);
 		return retorno;
 	}
+	
+	@RequestMapping(value="/actualizar", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> actualizar(Model model, UsuarioRol usuarioRol){
+		logger.info("[MantenimientoUsuarioController] - method: guardar");
+		Map<String, Object> retorno = usuarioRolService.guardar(usuarioRol);
+		return retorno;
+	}
 
 	@RequestMapping(value="/eliminar")
 	@ResponseBody

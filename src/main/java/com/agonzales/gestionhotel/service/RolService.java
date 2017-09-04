@@ -12,6 +12,8 @@ public interface RolService {
 	public Map<String, Object> listarJson(PaginacionDTO paginacion);
 
 	public Map<String, Object> guardar(Rol rol);
+	
+	public Map<String, Object> actualizar(Rol rol);
 
 	public Rol get(Integer id);
 	

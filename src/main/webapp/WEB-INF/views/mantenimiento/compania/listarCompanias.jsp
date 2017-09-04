@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 
 <!-- Datatables CSS-->
@@ -23,26 +24,28 @@
 					<div class="col-sm-8" >
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-6" >
-								<button class="btn btn-success" id="btnCrearRegistro">Crear</button>
+								<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN','SUB_MENU_COMPANIA_CREAR')">
+									<button class="btn btn-success" id="btnCrearRegistro">Crear</button>
+								</sec:authorize>
 							</div>
 							<div class="col-md-6 col-sm-6 col-xs-6 text-center">
 								<div id="botoneraCentro" style="display: none">
 									<button class="btn btn-default" data-toggle="confirmation" id="btnImprimirRegistro">Imprimir</button>
-				                    <div class="btn-group botonOpcionesMantenimiento">
-				                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
-				                    		Opciones 
-				                    		<span class="caret"></span>
-				                    	</button>
-				                    	<ul role="menu" class="dropdown-menu">
-				                      		<li>
-				                      			<a href="#">Desbloquear Usuario</a>
-				                      		</li>
-				                      		<li class="divider"></li>
-				                      		<li>
-				                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
-				                      		</li>
-				                    	</ul>
-				                    </div>
+									<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_COMPANIA_ELIMINAR')">
+					                    <div class="btn-group botonOpcionesMantenimiento">
+					                    	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle " type="button" aria-expanded="false">
+					                    		Opciones 
+					                    		<span class="caret"></span>
+					                    	</button>
+					                    	<ul role="menu" class="dropdown-menu">
+						                      	<sec:authorize access="hasAnyRole('PRIVILEGIO_ADMIN', 'SUB_MENU_COMPANIA_ELIMINAR')">
+						                      		<li>
+						                      			<a href="javascript:;" onclick="btnEliminarRegistro()">Eliminar</a>
+						                      		</li>
+						                      	</sec:authorize>
+					                    	</ul>
+					                    </div>
+									</sec:authorize>
 								</div>
 							</div>
 						</div>

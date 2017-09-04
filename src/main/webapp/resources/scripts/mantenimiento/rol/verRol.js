@@ -1,4 +1,4 @@
-
+deshabilitarKeyPress();
 capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
@@ -14,15 +14,21 @@ var mensajesValidacion = {
 
 aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
-
 $("#botonRegistrar").click(function() {
+	enviarFormulario("mantenimiento/rol/guardar");
+});
 
+$("#botonActualizar").click(function() {
+	enviarFormulario("mantenimiento/rol/actualizar");
+});
+
+function enviarFormulario(url){
 	if(seRealizaronCambiosEnElFormulario()){
 
 		if($form.valid()){
 			$.ajax({
 				type: "POST",
-				url: baseURL + "mantenimiento/rol/guardar",
+				url: baseURL + url,
 				data: new FormData($form[0]),
 				async: false,
 				cache: false,
@@ -41,11 +47,10 @@ $("#botonRegistrar").click(function() {
 			})
 		}
 
-
 	}else{
 		mostrarNotificacionNingunCambioFormulario();
 	}
-});
+}
 
 $("#btnCrearRegistro").click(function() {
 	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/rol/ver");
@@ -66,25 +71,6 @@ $("#btnImprimirRegistro").click(function(){
 	console.log($("#id").val());
 });
 
-function abrirFormularioAgregarPrivilegio(idUsuario){
-	cargarDivContenidoPrincipal("mantenimiento/usuariorol/ver?idUsuario=" + idUsuario);
-}
-
-function btnEliminaRolPrivilegio(idPrivilegio, idRol){
-	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
-	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
-	    		"mantenimiento/usuario/ver?id=" + idUsuario);
-	}
-}
-
-function btnEliminarRolCompania(idUsuarioRol, idUsuario){
-	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este rol?")){
-	    eliminarRegistros("mantenimiento/usuariorol/eliminar?ids=" + [idUsuarioRol], 
-	    		"mantenimiento/usuario/ver?id=" + idUsuario);
-	}
-}
-
-
 $('#btnActualizarPrivilegios').on('click', function () {
     var checkedIds = tree.getCheckedAndIndeterminateNodes();
 	$.get('mantenimiento/rol/actualizarPrivilegios?idRol=' + $("#id").val() + "&idPrvivilegios=" + checkedIds, function(retorno){
@@ -92,7 +78,7 @@ $('#btnActualizarPrivilegios').on('click', function () {
 			new PNotify(retorno['notificacion']);
 		}
 		if(eval(retorno['estado']) == true){
-			cargarDivContenidoPrincipal("mantenimiento/rol/ver?id=" + retorno['id'])
+			cargarDivContenidoPrincipal("mantenimiento/rol/ver?id=" + retorno['id'] + "&tab=privilegios")
 		}
 	});
 
@@ -101,7 +87,7 @@ $('#btnActualizarPrivilegios').on('click', function () {
 function btnEliminarAccesoCompaniaRol(idAccesoCompaniaRol, idRol){
 	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar esta compañia?")){
 	    eliminarRegistros("mantenimiento/accesocompaniarol/eliminar?ids=" + [idAccesoCompaniaRol], 
-	    		"mantenimiento/rol/ver?id=" + idRol);
+	    		"mantenimiento/rol/ver?id=" + idRol + "&tab=companias");
 	}
 }
 

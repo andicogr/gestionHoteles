@@ -10,9 +10,8 @@ $("#btnCloseSmallModal").click(function(){
 });
 
 function abrirConfiguracionDeUsuarioEnModal(){
-	$.get(baseURL + "configuracionUsuario", function(respuesta) {
-		$("#smallModalTitulo").html("Configracion de Usuario");
-		$("#smallModalContenido").html(respuesta);
-	})
+	$.get(baseURL + "configuracionUsuario/ver", function(respuesta) {
+		$("#smallModal").html(respuesta);
+	});
 	$("#smallModal").modal('show');
 }

@@ -2,6 +2,8 @@ package com.agonzales.gestionhotel.service.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import com.agonzales.gestionhotel.util.Util;
 @Service("ArchivoService")
 public class ArchivoServiceImpl implements ArchivoService{
 	
+	private static final Logger log = LoggerFactory.getLogger(ArchivoServiceImpl.class);
+	
 	@Autowired
 	private ArchivoDao archivoDAO;
 
@@ -25,7 +29,11 @@ public class ArchivoServiceImpl implements ArchivoService{
 	@Transactional
 	public Archivo guardar(Archivo archivo){
 
-		archivo = archivoDAO.guardar(archivo, usuarioService.getUID());
+		try {
+			archivo = archivoDAO.guardar(archivo, usuarioService.getUID());
+		} catch (Exception e) {
+			log.error("[ArchivoServiceImpl] - method: guardar - error: " + e.getMessage());
+		}
 
 		return archivo;
 	}
@@ -39,7 +47,12 @@ public class ArchivoServiceImpl implements ArchivoService{
 		for(Integer id : ids){
 			Archivo archivo = archivoDAO.get(id);
 			Util.eliminarArchivo(archivo.getNombre());
-			archivoDAO.eliminar(archivo);
+			try {
+				archivoDAO.eliminar(archivo);
+			} catch (Exception e) {
+				log.error("[ArchivoServiceImpl] - method: eliminar - error: " + e.getMessage());
+			}
+			
 		}
 	}
 
@@ -48,7 +61,7 @@ public class ArchivoServiceImpl implements ArchivoService{
 		Archivo archivo =  new Archivo();
 		String nombreImagen = Util.otorgarNombreImagen(request, file, prefijoArchivo);
 		archivo.setNombre(nombreImagen);
-		guardar(archivo);			
+		guardar(archivo);
 		return archivo;
 	}
 }

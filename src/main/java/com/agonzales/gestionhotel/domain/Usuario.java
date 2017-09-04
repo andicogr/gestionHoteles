@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -52,6 +54,14 @@ public class Usuario extends EntidadBase implements Entidad{
 	
 	@Column(name="numero_intentos_fallidos")
 	private Integer numeroIntentosFallidos;
+
+	@ManyToOne
+	@JoinColumn(name="rol_id_por_defecto")
+	private Rol rolPorDefecto;
+
+	@ManyToOne
+	@JoinColumn(name="compania_id_por_defecto")
+	private Compania companiaPorDefecto;
 
 	public Integer getId() {
 		return id;
@@ -125,6 +135,22 @@ public class Usuario extends EntidadBase implements Entidad{
 		this.numeroIntentosFallidos = numeroIntentosFallidos;
 	}
 
+	public Rol getRolPorDefecto() {
+		return rolPorDefecto;
+	}
+
+	public void setRolPorDefecto(Rol rolPorDefecto) {
+		this.rolPorDefecto = rolPorDefecto;
+	}
+
+	public Compania getCompaniaPorDefecto() {
+		return companiaPorDefecto;
+	}
+
+	public void setCompaniaPorDefecto(Compania companiaPorDefecto) {
+		this.companiaPorDefecto = companiaPorDefecto;
+	}
+
 	@Override
 	public String getLabel() {
 		// TODO Auto-generated method stub
@@ -154,6 +180,19 @@ public class Usuario extends EntidadBase implements Entidad{
 		return false;
 	}
 	
+	public Rol getRolUsuario(){
+		if(getRolPorDefecto() != null){
+			return getRolPorDefecto();
+		}else{
+			List<Rol> roles = this.getRolesActivos();
+			if(roles.isEmpty()){
+				return null;
+			}else{
+				return roles.get(0);
+			}
+		}
+	}
+
 	public List<Rol> getRolesActivos(){
 		List<Rol> listaRolesActivos = new ArrayList<Rol>();
 		for(UsuarioRol rol : getRoles()){
@@ -186,6 +225,27 @@ public class Usuario extends EntidadBase implements Entidad{
 		if(getNumeroIntentosFallidos() == Constantes.INTENTOS_FALLIDOS_MAXIMOS){
 			setBloqueado(true);
 		}
+	}
+	
+	public Integer getRolPorDefectoId(){
+		if(getRolPorDefecto() != null){
+			return getRolPorDefecto().getId();
+		}
+		return null;
+	}
+	
+	public Integer getCompaniaPorDefectoId(){
+		if(getCompaniaPorDefecto() != null){
+			return getCompaniaPorDefecto().getId();
+		}
+		return null;
+	}
+	
+	public boolean getFlagPorDefecto(){
+		if(getCompaniaPorDefecto() != null && getRolPorDefectoId() != null){
+			return true;
+		}
+		return false;
 	}
 
 }

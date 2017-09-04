@@ -28,28 +28,45 @@ public class PrivilegioServiceImpl implements PrivilegioService{
 
 		for(Privilegio privilegio : listaPrivilegiosPadres){
 			Map<String, Object> privilegioMap = new HashMap<String, Object>();
+			List<Map<String, Object>> childrens = obtenerHijosDePrivilegio(privilegio, idRol);
 			privilegioMap.put("id", privilegio.getId());
 			privilegioMap.put("text", privilegio.getDescripcion());
-			privilegioMap.put("checked", mostrarPrivilegioChecked(privilegio, idRol));
-			privilegioMap.put("children", obtenerHijosDePrivilegio(privilegio, idRol));
+			privilegioMap.put("checked", isPrivilegioChecked(privilegio, idRol, childrens));
+			privilegioMap.put("children", childrens);
 			listaDeArbolDePrivilegios.add(privilegioMap);
 		}
 
 		return listaDeArbolDePrivilegios;
 	}
 
-	public List<Map<String, Object>> obtenerHijosDePrivilegio(Privilegio privilegio, Integer idRol){
+	private List<Map<String, Object>> obtenerHijosDePrivilegio(Privilegio privilegio, Integer idRol){
 		List<Map<String, Object>> listaDePrivilegiosHijo = new ArrayList<Map<String,Object>>();
 
 		for(Privilegio privilegioHijo : privilegio.getPrivilegios()){
+			List<Map<String, Object>> childrens = obtenerHijosDePrivilegio(privilegioHijo, idRol);
 			Map<String, Object> privilegioHijoMap = new HashMap<String, Object>();
 			privilegioHijoMap.put("id", privilegioHijo.getId());
 			privilegioHijoMap.put("text", privilegioHijo.getDescripcion());
-			privilegioHijoMap.put("checked", mostrarPrivilegioChecked(privilegioHijo, idRol));
-			privilegioHijoMap.put("children", obtenerHijosDePrivilegio(privilegioHijo, idRol));
+			privilegioHijoMap.put("checked", isPrivilegioChecked(privilegioHijo, idRol, childrens));
+			privilegioHijoMap.put("children", childrens);
 			listaDePrivilegiosHijo.add(privilegioHijoMap);
 		}
 		return listaDePrivilegiosHijo;
+	}
+
+	private boolean isPrivilegioChecked(Privilegio privilegio, Integer idRol, List<Map<String, Object>> hijos){
+		boolean isPrivilegioAsociadoRol = rolDao.isPrivilegioAsociadoARol(privilegio.getId(), idRol);
+		if(!hijos.isEmpty()){
+			boolean isTodosHijosChecked = true;
+			for(Map<String, Object> privilegioMap : hijos){
+				if(((Boolean) privilegioMap.get("checked")) == false){
+					isTodosHijosChecked = false;
+				}
+			}
+			return isPrivilegioAsociadoRol && isTodosHijosChecked;
+		}else{
+			return isPrivilegioAsociadoRol;
+		}
 	}
 
 	public Privilegio get(Integer id){
@@ -60,17 +77,5 @@ public class PrivilegioServiceImpl implements PrivilegioService{
 		return privilegioDao.getTodos();
 	}
 
-	public boolean mostrarPrivilegioChecked(Privilegio privilegio, Integer idRol){
-		boolean estaAsociadoARol = rolDao.isPrivilegioAsociadoARol(privilegio.getId(), idRol);
-		boolean tieneTodosLosHijos = true;
-
-		for(Privilegio privilegioHijo: privilegio.getPrivilegios()){
-			if(!rolDao.isPrivilegioAsociadoARol(privilegioHijo.getId(), idRol)){
-				tieneTodosLosHijos = false;
-			}
-		}
-
-		return estaAsociadoARol && tieneTodosLosHijos;
-	}
 
 }

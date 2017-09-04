@@ -41,13 +41,14 @@ public class MantenimientoRolController {
 	}
 
 	@RequestMapping(value="/ver")
-	public String ver(HttpSession session, Model model, Integer id){
+	public String ver(HttpSession session, Model model, Integer id, String tab){
 		logger.info("[MantenimientoRolController] - method: ver - id: " + id);
 		if(id != null){
 			Rol rol = rolService.get(id);
 			model.addAttribute("rol", rol);
 			model.addAttribute("nombreMostrar", rol.getNombre());
 		}
+		model.addAttribute("tab", tab == null ? "privilegios" : tab);
 		return "mantenimiento/rol/verRol";
 	}
 
@@ -56,6 +57,14 @@ public class MantenimientoRolController {
 	public Map<String, Object> guardar(Model model, Rol rol){
 		logger.info("[MantenimientoRolController] - method: guardar");
 		Map<String, Object> retorno = rolService.guardar(rol);
+		return retorno;
+	}
+	
+	@RequestMapping(value="/actualizar", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> actualizar(Model model, Rol rol){
+		logger.info("[MantenimientoRolController] - method: actualizar");
+		Map<String, Object> retorno = rolService.actualizar(rol);
 		return retorno;
 	}
 

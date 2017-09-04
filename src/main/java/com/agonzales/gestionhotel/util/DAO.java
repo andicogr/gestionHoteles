@@ -50,7 +50,7 @@ public class DAO<T extends Entidad> implements IDAO<T>{
 		String sql = "SELECT e FROM " + nombre + " e";
 		return this.em.createQuery(sql).getResultList();
 	}
-  
+
 	@Override
 	public T guardar(T objeto, Integer uid){
 		if (objeto.getId() != null){
@@ -62,7 +62,6 @@ public class DAO<T extends Entidad> implements IDAO<T>{
 		}
 		objeto.setUsuarioCreacion(uid);
 		objeto.setFechaCreacion(new Date());
-
 		this.em.persist(objeto);
 		this.em.flush();
 		this.em.refresh(objeto);
@@ -108,7 +107,13 @@ public class DAO<T extends Entidad> implements IDAO<T>{
 	
 	@SuppressWarnings("unchecked")
 	public List<T> listarJson(PaginacionDTO paginacion, Map<String, Object> columnas){
-		String sql = "from " + this.getNameClass() + " a";
+		String sql = "FROM " + this.getNameClass() + " a ";
+		
+		boolean multiCompania = (Boolean) VariablesSession.getAttribute(Constantes.MULTICOMPANIA_ACTIVADO);
+
+		if(!multiCompania){
+			sql += " WHERE a.compania.id = 2";
+		}
 
 		sql += Util.OrderByPagination(columnas, paginacion.getiSortCol_0(), paginacion.getsSortDir_0());
 		
@@ -129,8 +134,14 @@ public class DAO<T extends Entidad> implements IDAO<T>{
 	
 	public Number totalListaJson() {
 
-		String sql="select count(a) from " + this.getNameClass() + " a";
+		String sql="select count(a) from " + this.getNameClass() + " a ";
 		
+		boolean multiCompania = (Boolean) VariablesSession.getAttribute(Constantes.MULTICOMPANIA_ACTIVADO);
+		
+		if(!multiCompania){
+			sql += " WHERE a.compania.id = 2";
+		}
+
 		/*List<Map<String, Object>> lista = new ArrayList<Map<String, Object>>();
 		Map<String, Object> datos = new HashMap<String, Object>();
 		if(!busqueda.getCodigo().equals("")){datos.put("1", "upper(a.codigo) like upper(:codigo)");}

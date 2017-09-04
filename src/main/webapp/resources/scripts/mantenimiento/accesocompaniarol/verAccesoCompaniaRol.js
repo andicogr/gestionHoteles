@@ -1,4 +1,4 @@
-
+deshabilitarKeyPress();
 capturarDatosInicialesDelFormulario();
 
 var reglasValidacion = {
@@ -15,11 +15,11 @@ aplicarReglasDeValidacionFormulario(reglasValidacion, mensajesValidacion);
 
 
 $("#botonRegistrar").click(function() {
-	enviarFormulario("mantenimiento/usuariorol/guardar")
+	enviarFormulario("mantenimiento/accesocompaniarol/guardar")
 });
 
 $("#botonActualizar").click(function() {
-	enviarFormulario("mantenimiento/usuariorol/actualizar")
+	enviarFormulario("mantenimiento/accesocompaniarol/actualizar")
 });
 
 function enviarFormulario(url){
@@ -41,7 +41,7 @@ function enviarFormulario(url){
 					}
 						
 					if(eval(retorno['estado']) == true){
-						cargarDivContenidoPrincipal("mantenimiento/rol/ver?id=" + retorno['idRol'])
+						cargarDivContenidoPrincipal("mantenimiento/rol/ver?id=" + retorno['idRol'] + "&tab=companias")
 					}
 				}
 			})
@@ -53,12 +53,12 @@ function enviarFormulario(url){
 }
 
 $("#botonAtras").click(function() {
-	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/rol/ver?id=" + $("#idRol").val());
+	cargarUrlEnDivContenidoPrincipalConValidacionCambiosFormulario("mantenimiento/rol/ver?id=" + $("#idRol").val() + "&tab=companias");
 });
 
 function btnEliminarRegistro(){
 	if(mensajeDeConfirmacion("Esta seguro que quiere eliminar este registro?")){
 	    eliminarRegistros("mantenimiento/accesocompaniarol/eliminar?ids="+ [$("#id").val()], 
-	    		"mantenimiento/rol/ver?id=" + $("#idRol").val());
+	    		"mantenimiento/rol/ver?id=" + $("#idRol").val() + "&tab=companias");
 	}
 }

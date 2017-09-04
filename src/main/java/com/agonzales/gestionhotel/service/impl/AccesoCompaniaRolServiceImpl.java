@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agonzales.gestionhotel.dao.AccesoCompaniaRolDao;
 import com.agonzales.gestionhotel.domain.AccesoCompaniaRol;
+import com.agonzales.gestionhotel.domain.Compania;
 import com.agonzales.gestionhotel.service.AccesoCompaniaRolService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
@@ -18,15 +21,21 @@ import com.agonzales.gestionhotel.util.Util;
 @Service("AccesoCompaniaRolService")
 public class AccesoCompaniaRolServiceImpl implements AccesoCompaniaRolService{
 	
+	private static final Logger log = LoggerFactory.getLogger(AccesoCompaniaRolServiceImpl.class);
+	
 	@Autowired
 	private AccesoCompaniaRolDao accesoCompaniaRolDao;
 	
 	@Autowired
 	private UsuarioService usuarioService;
 
+	public List<Compania> listaCompaniasActivasPorRolParaConfiguracionUsuario(Integer idRol){
+		List<Compania> listaCompanias = accesoCompaniaRolDao.listaCompaniasActivasPorRol(idRol);
+		return listaCompanias;
+	}
 
-	public List<AccesoCompaniaRol> listaDeAccesoCompaniaRolActivasPorRol(Integer idRol){
-		return accesoCompaniaRolDao.listaDeAccesoCompaniaRolActivasPorRol(idRol); 
+	public List<Compania> listaCompaniasActivasPorRol(Integer idRol){
+		return accesoCompaniaRolDao.listaCompaniasActivasPorRol(idRol); 
 	}
 
 	@Transactional
@@ -34,9 +43,13 @@ public class AccesoCompaniaRolServiceImpl implements AccesoCompaniaRolService{
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
 
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
-
-		accesoCompaniaRolDao.guardar(accesoCompaniaRol, usuarioService.getUID());
+		try {
+			accesoCompaniaRolDao.guardar(accesoCompaniaRol, usuarioService.getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+		} catch (Exception e) {
+			log.error("[AccesoCompaniaRolService] - method: guardar - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", accesoCompaniaRol.getId());
@@ -45,7 +58,7 @@ public class AccesoCompaniaRolServiceImpl implements AccesoCompaniaRolService{
 
 		return retorno;
 	}
-	
+
 	@Transactional
 	public Map<String, Object> actualizar(AccesoCompaniaRol accesoCompaniaRol){
 		Map<String, Object> retorno = new HashMap<String, Object>();
@@ -56,11 +69,15 @@ public class AccesoCompaniaRolServiceImpl implements AccesoCompaniaRolService{
 			actual.setCompania(accesoCompaniaRol.getCompania());
 			actual.setActivo(accesoCompaniaRol.isActivo());
 
-			accesoCompaniaRolDao.guardar(actual, usuarioService.getUID());
-			
-			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			try {
+				accesoCompaniaRolDao.guardar(actual, usuarioService.getUID());
+				notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			} catch (Exception e) {
+				log.error("[AccesoCompaniaRolService] - method: actualizar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}else{
-			notifiaccion = Util.crearNotificacionError("Error", Constantes.MENSAJE_ERROR_GUARDAR);
+			notifiaccion = Util.notificacionErrorDelSistema();
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -88,14 +105,18 @@ public class AccesoCompaniaRolServiceImpl implements AccesoCompaniaRolService{
 
 		for(Integer id : ids){
 			AccesoCompaniaRol accesoCompaniaRol = accesoCompaniaRolDao.get(id);
-			estadoEliminacion = accesoCompaniaRolDao.eliminar(accesoCompaniaRol);
-		}
-		if(estadoEliminacion){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
-		}else{
-			notifiaccion = Util.crearNotificacion("error", "Error", 
-					"Ocurrio un error mientras se eliminaba el registro, "
-					+ "por favor comuniquese con el administrador del sistema.", 5000);
+			
+			try {
+				estadoEliminacion = accesoCompaniaRolDao.eliminar(accesoCompaniaRol);
+				if(estadoEliminacion){
+					notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
+				}else{
+					notifiaccion = Util.notificacionErrorDelSistema();
+				}
+			} catch (Exception e) {
+				log.error("[AccesoCompaniaRolService] - method: eliminar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}
 
 		retorno.put("notificacion", notifiaccion);

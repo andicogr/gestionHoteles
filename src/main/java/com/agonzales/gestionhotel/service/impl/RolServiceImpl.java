@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,15 +16,17 @@ import com.agonzales.gestionhotel.dao.RolDao;
 import com.agonzales.gestionhotel.domain.AccesoCompaniaRol;
 import com.agonzales.gestionhotel.domain.Privilegio;
 import com.agonzales.gestionhotel.domain.Rol;
-import com.agonzales.gestionhotel.domain.UsuarioRol;
 import com.agonzales.gestionhotel.dto.PaginacionDTO;
 import com.agonzales.gestionhotel.service.RolService;
+import com.agonzales.gestionhotel.service.UsuarioRolService;
 import com.agonzales.gestionhotel.service.UsuarioService;
 import com.agonzales.gestionhotel.util.Constantes;
 import com.agonzales.gestionhotel.util.Util;
 
 @Service("RolService")
 public class RolServiceImpl implements RolService{
+	
+	private static final Logger log = LoggerFactory.getLogger(RolServiceImpl.class);
 	
 	@Autowired
 	private RolDao rolDao;
@@ -32,6 +36,9 @@ public class RolServiceImpl implements RolService{
 	
 	@Autowired
 	private AccesoCompaniaRolDao accesoCompaniaRolDao;
+	
+	@Autowired
+	private UsuarioRolService usuarioRolService;
 	
 	public Map<String, Object> listarJson(PaginacionDTO paginacion){
 
@@ -75,7 +82,34 @@ public class RolServiceImpl implements RolService{
 	public Map<String, Object> guardar(Rol rol){
 		Map<String, Object> retorno = new HashMap<String, Object>();
 		Map<String, Object> notifiaccion = null;
-		String textoNotificacion = Constantes.MENSAJE_REGISTRO_CORRECTO;
+
+		if(rolDao.isUniqueValue("nombre", rol.getNombre(), rol.getId())){
+			notifiaccion = Util.crearNotificacionError("Error", "El nombre del rol ya esta registrada en el sistema.");
+			retorno.put("notificacion", notifiaccion);
+			retorno.put("estado", false);
+			return retorno;
+		}
+
+		try {
+			rolDao.guardar(rol, usuarioService.getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_REGISTRO_CORRECTO);
+		} catch (Exception e) {
+			log.error("[RolServiceImpl] - method: guardar - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
+		
+
+		retorno.put("notificacion", notifiaccion);
+		retorno.put("id", rol.getId());
+		retorno.put("estado", true);
+
+		return retorno;
+	}
+	
+	@Transactional
+	public Map<String, Object> actualizar(Rol rol){
+		Map<String, Object> retorno = new HashMap<String, Object>();
+		Map<String, Object> notifiaccion = null;
 
 		if(rolDao.isUniqueValue("nombre", rol.getNombre(), rol.getId())){
 			notifiaccion = Util.crearNotificacionError("Error", "El nombre del rol ya esta registrada en el sistema.");
@@ -85,19 +119,23 @@ public class RolServiceImpl implements RolService{
 		}
 
 		if(rol.getId() != null){
-			textoNotificacion = Constantes.MENSAJE_ACTUALIZACION_CORRECTA;
 
 			Rol actual = rolDao.get(rol.getId());
 			actual.setNombre(rol.getNombre());
 			actual.setDescripcion(rol.getDescripcion());
 			actual.setActivo(rol.isActivo());
+			
+			try {
+				rolDao.guardar(actual, usuarioService.getUID());
+				notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_ACTUALIZACION_CORRECTA);
+			} catch (Exception e) {
+				log.error("[RolServiceImpl] - method: actualizar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 
-			rol = actual;
+		}else{
+			notifiaccion = Util.notificacionErrorDelSistema();
 		}
-
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", textoNotificacion);
-
-		rolDao.guardar(rol, usuarioService.getUID());
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", rol.getId());
@@ -130,14 +168,18 @@ public class RolServiceImpl implements RolService{
 		}
 		for(Integer id : ids){
 			Rol rol = rolDao.get(id);
-			estadoEliminacion = rolDao.eliminar(rol);
-		}
-		if(estadoEliminacion){
-			notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
-		}else{
-			notifiaccion = Util.crearNotificacion("error", "Error", 
-					"Ocurrio un error mientras se eliminaba el registro, "
-					+ "por favor comuniquese con el administrador del sistema.", 5000);
+
+			try {
+				estadoEliminacion = rolDao.eliminar(rol);
+				if(estadoEliminacion){
+					notifiaccion = Util.crearNotificacionInfo("Informacion", textoNotificacion);
+				}else{
+					notifiaccion = Util.notificacionErrorDelSistema();
+				}
+			} catch (Exception e) {
+				log.error("[RolServiceImpl] - method: eliminar - error: " + e.getMessage());
+				notifiaccion = Util.notificacionErrorDelSistema();
+			}
 		}
 
 		retorno.put("notificacion", notifiaccion);
@@ -165,20 +207,20 @@ public class RolServiceImpl implements RolService{
 	public List<Rol> listarRolesActivosSinRepetirPorUsuario(Integer idUsuario){
 		List<Rol> listaRolesActivosSinRepeteir = new ArrayList<Rol>();
 		List<Rol> listaRolesActivos = rolDao.listarRolesActivos();
-		List<UsuarioRol> listaUsuarioRolesPorUsuario = usuarioService.obtenerUsuarioRolesPorUsuario(idUsuario);
+		List<Rol> listaRolesPorUsuario = usuarioRolService.obtenerRolesPorUsuario(idUsuario);
 		
-		for(Rol rol : listaRolesActivos){
-			
+		for(Rol rolActivo : listaRolesActivos){
+
 			boolean isRolRegistrado = false;
 			
-			for(UsuarioRol usuarioRol: listaUsuarioRolesPorUsuario){
-				if(usuarioRol.getRolId() == rol.getId()){
+			for(Rol rolUsuario: listaRolesPorUsuario){
+				if(rolUsuario.getId() == rolActivo.getId()){
 					isRolRegistrado = true;
 				}
 			}
 
 			if(!isRolRegistrado){
-				listaRolesActivosSinRepeteir.add(rol);
+				listaRolesActivosSinRepeteir.add(rolActivo);
 			}
 		}
 		
@@ -200,9 +242,13 @@ public class RolServiceImpl implements RolService{
 
 		rol.setPrivilegios(listaPrivilegios);
 
-		notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_PRIVILEGIOS_ACTUALIZADOS_CORRECTAMENTE);
-
-		rolDao.guardar(rol, usuarioService.getUID());
+		try {
+			rolDao.guardar(rol, usuarioService.getUID());
+			notifiaccion = Util.crearNotificacionSuccess("Correcto", Constantes.MENSAJE_PRIVILEGIOS_ACTUALIZADOS_CORRECTAMENTE);
+		} catch (Exception e) {
+			log.error("[RolServiceImpl] - method: actualizarPrivilegios - error: " + e.getMessage());
+			notifiaccion = Util.notificacionErrorDelSistema();
+		}
 
 		retorno.put("notificacion", notifiaccion);
 		retorno.put("id", rol.getId());

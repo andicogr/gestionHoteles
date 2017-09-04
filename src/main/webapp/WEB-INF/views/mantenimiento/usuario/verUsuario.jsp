@@ -13,13 +13,6 @@
 	</div>
 </div>
 
-<sec:authorize access="hasRole('SUB_MENU_USUARIO_EDITAR_ROLES')">
-	<input id="subMenuUsuarioEditarRoles" type="text" class="hide" value="true"/>
-</sec:authorize>
-<sec:authorize access="!hasRole('SUB_MENU_USUARIO_EDITAR_ROLES')">
-	<input id="subMenuUsuarioEditarRoles" type="text" class="hide" value="false"/>
-</sec:authorize>
-
 <div class="row">
 
 	<div class="col-md-12 col-sm-12 col-xs-12">
@@ -86,7 +79,7 @@
             		</c:if>
 
 					<div class="item form-group" 
-						<c:if test="${isMultiCompaniaActivado == false}">
+						<c:if test="${multiCompania == false}">
 						 	style="display: none"
 						</c:if>
 					>
